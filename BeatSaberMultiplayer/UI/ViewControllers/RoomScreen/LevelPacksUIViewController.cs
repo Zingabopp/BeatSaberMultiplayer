@@ -119,30 +119,37 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             //    Plugin.log.Warn("Couldn't find the PlaylistsViewController.");
             //_visiblePacks = levelPacksAndPlaylists.ToArray();
             _visiblePacks = GetPlaylists();
-            SetPacks(_visiblePacks);
-            bool packWasSelected = false;
-            if(_visiblePacks.Length > lastSelectedPackIndex)
+            try
             {
-                if (_visiblePacks[lastSelectedPackIndex].collectionName == lastSelectedPackName)
+                SetPacks(_visiblePacks);
+                bool packWasSelected = false;
+                if (_visiblePacks.Length > lastSelectedPackIndex)
                 {
-                    SelectPack(lastSelectedPackIndex);
-                    packWasSelected = true;
-                }
-                else
-                {
-                    for (int i = 0; i < _visiblePacks.Length; i++)
-                        if (_visiblePacks[i].collectionName == lastSelectedPackName)
-                        {
-                            SelectPack(i);
-                            packWasSelected = true;
-                        }
-                }
+                    if (_visiblePacks[lastSelectedPackIndex].collectionName == lastSelectedPackName)
+                    {
+                        SelectPack(lastSelectedPackIndex);
+                        packWasSelected = true;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < _visiblePacks.Length; i++)
+                            if (_visiblePacks[i].collectionName == lastSelectedPackName)
+                            {
+                                SelectPack(i);
+                                packWasSelected = true;
+                            }
+                    }
 
+                }
+                if (!packWasSelected && _visiblePacks.Length > 0)
+                    SelectPack(0);
+                this._initialized = true;
             }
-            if (!packWasSelected && _visiblePacks.Length > 0)
-                SelectPack(0);
-
-            this._initialized = true;
+            catch (Exception ex)
+            {
+                Plugin.log.Error($"Error initializing LevelPacksUIViewController: {ex.Message}");
+                Plugin.log.Debug(ex);
+            }
         }
 
         string lastSelectedPackName = string.Empty;
@@ -156,17 +163,24 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             {
                 levelPacksTableData.data.Add(new CustomListTableData.CustomCellInfo(pack.collectionName, $"{pack.beatmapLevelCollection.beatmapLevels.Length} levels", pack.coverImage.texture));
             }
-       
+
             levelPacksTableData.tableView.ReloadData();
         }
 
         public void SelectPack(int index)
         {
-
-            PackSelected(levelPacksTableData.tableView, index);
-            levelPacksTableData.tableView.SelectCellWithIdx(index);
-            lastSelectedPackIndex = index;
-            lastSelectedPackName = _visiblePacks[index].collectionName;
+            try
+            {
+                PackSelected(levelPacksTableData.tableView, index);
+                levelPacksTableData.tableView.SelectCellWithIdx(index);
+                lastSelectedPackIndex = index;
+                lastSelectedPackName = _visiblePacks[index].collectionName;
+            }
+            catch (Exception ex)
+            {
+                Plugin.log.Error($"Error selecting level pack with index {index}: {ex.Message}");
+                Plugin.log.Debug(ex);
+            }
         }
 
         [UIAction("pack-selected")]
