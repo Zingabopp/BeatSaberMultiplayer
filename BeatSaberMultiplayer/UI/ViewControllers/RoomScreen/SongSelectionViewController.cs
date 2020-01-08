@@ -16,9 +16,10 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
 {
     public enum TopButtonsState { Select, SortBy, Search, Mode };
 
-    class SongSelectionViewController : BSMLResourceViewController, TableView.IDataSource
+    class SongSelectionViewController : BSMLViewController, TableView.IDataSource
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.SongSelectionViewController";
+        public string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.SongSelectionViewController";
+        public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(SongSelectionViewController));
 
         public event Action<IPreviewBeatmapLevel> SongSelected;
         public event Action<string> SearchPressed;

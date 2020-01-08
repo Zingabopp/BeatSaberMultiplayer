@@ -389,7 +389,7 @@ namespace BeatSaberMultiplayer.Data
         public string playerName;
         public ulong playerId;
 
-        public string avatarHash;
+        public string avatarHash = avatarHashPlaceholder;
 
         public PlayerUpdate updateInfo;
 
@@ -464,6 +464,8 @@ namespace BeatSaberMultiplayer.Data
 
         public void AddToMessage(NetOutgoingMessage msg)
         {
+            if (string.IsNullOrEmpty(avatarHash))
+                avatarHash = avatarHashPlaceholder;
             msg.Write(playerName);
             msg.Write(playerId);
 

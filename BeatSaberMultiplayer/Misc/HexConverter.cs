@@ -17,6 +17,8 @@ namespace BeatSaberMultiplayer.Misc
 
         public static byte[] ConvertHexToBytesX(string input)
         {
+            if (input == null)
+                input = string.Empty;
             var result = new byte[(input.Length + 1) >> 1];
             int lastcell = result.Length - 1;
             int lastchar = input.Length - 1;

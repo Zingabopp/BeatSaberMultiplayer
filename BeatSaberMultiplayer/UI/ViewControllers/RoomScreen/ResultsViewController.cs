@@ -5,6 +5,7 @@ using BeatSaberMultiplayer.Misc;
 using BeatSaberMultiplayer.UI;
 using BS_Utils.Utilities;
 using HMUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -13,12 +14,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
 {
     class ResultsViewController : BSMLResourceViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.ServerHubScreen.ResultsViewController";
-        
+        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.ResultsViewController";
+
         public IPreviewBeatmapLevel _selectedLevel;
 
         [UIComponent("level-details-rect")]
@@ -106,8 +107,15 @@ namespace BeatSaberMultiplayer
                     _scoreData[i].SetProperty("rank", i + 1);
                 }
             }
-
-            leaderboardTableView.SetScores(_scoreData, -1);
+            try
+            {
+                leaderboardTableView.SetScores(_scoreData, -1);
+            }
+            catch (Exception ex)
+            {
+                Plugin.log.Error($"Error setting leaderboard scores: {ex.Message}");
+                Plugin.log.Debug(ex);
+            }
 
         }
 
@@ -167,7 +175,7 @@ namespace BeatSaberMultiplayer
                 }
                 else
                 {
-                    if(PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel > levelResults.modifiedScore)
+                    if (PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel > levelResults.modifiedScore)
                     {
                         scoreChangeValue.text = (levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
                         scoreChangeValue.color = new Color32(240, 38, 31, 255);
@@ -177,7 +185,7 @@ namespace BeatSaberMultiplayer
                     }
                     else
                     {
-                        scoreChangeValue.text = "+"+(levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
+                        scoreChangeValue.text = "+" + (levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
                         scoreChangeValue.color = new Color32(55, 235, 43, 255);
                         scoreChangeIcon.gameObject.SetActive(true);
                         scoreChangeIcon.rectTransform.localRotation = Quaternion.Euler(180f, 0f, 0f);

@@ -1,5 +1,8 @@
 ﻿using BeatSaberMultiplayer.Data;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
+using Zenject;
 using System.Linq;
 using System.Reflection;
 
@@ -8,7 +11,7 @@ namespace BeatSaberMultiplayer.OverriddenClasses
     public class OnlineBeatmapCallbackController : BeatmapObjectCallbackController
     {
         public OnlinePlayerController owner;
-        
+
         public void Init(OnlinePlayerController newOwner)
         {
             BeatmapObjectCallbackController original = FindObjectsOfType<BeatmapObjectCallbackController>().First(x => !(x is OnlineBeatmapCallbackController));
@@ -39,16 +42,53 @@ namespace BeatSaberMultiplayer.OverriddenClasses
 
         public override void LateUpdate()
         {
-            if (_beatmapData == null || owner == null || owner.playerInfo == null)
+            if (this._firstLateUpdate)
+            {
+                this._firstLateUpdate = false;
+                return;
+            }
+            if (this._beatmapData == null)
             {
                 return;
             }
-            for (int i = 0; i < _beatmapEarlyEventCallbackData.Count; i++)
+            for (int i = 0; i < this._beatmapObjectCallbackData.Count; i++)
             {
-                BeatmapEventCallbackData beatmapEventCallbackData = _beatmapEarlyEventCallbackData[i];
-                while (beatmapEventCallbackData.nextEventIndex < _beatmapData.beatmapEventData.Length)
+                this._beatmapObjectDataCallbackCacheList.Clear();
+                BeatmapObjectCallbackController.BeatmapObjectCallbackData beatmapObjectCallbackData = this._beatmapObjectCallbackData[i];
+                for (int j = 0; j < this._beatmapData.beatmapLinesData.Length; j++)
                 {
-                    BeatmapEventData beatmapEventData = _beatmapData.beatmapEventData[beatmapEventCallbackData.nextEventIndex];
+                    while (beatmapObjectCallbackData.nextObjectIndexInLine[j] < this._beatmapData.beatmapLinesData[j].beatmapObjectsData.Length)
+                    {
+                        BeatmapObjectData beatmapObjectData = this._beatmapData.beatmapLinesData[j].beatmapObjectsData[beatmapObjectCallbackData.nextObjectIndexInLine[j]];
+                        if (beatmapObjectData.time - beatmapObjectCallbackData.aheadTime >= owner.playerInfo.updateInfo.playerProgress)
+                        {
+                            break;
+                        }
+                        if (beatmapObjectData.time >= this._spawningStartTime)
+                        {
+                            for (int k = this._beatmapObjectDataCallbackCacheList.Count; k >= 0; k--)
+                            {
+                                if (k == 0 || this._beatmapObjectDataCallbackCacheList[k - 1].time <= beatmapObjectData.time)
+                                {
+                                    this._beatmapObjectDataCallbackCacheList.Insert(k, beatmapObjectData);
+                                    break;
+                                }
+                            }
+                        }
+                        beatmapObjectCallbackData.nextObjectIndexInLine[j]++;
+                    }
+                }
+                foreach (BeatmapObjectData noteData in this._beatmapObjectDataCallbackCacheList)
+                {
+                    beatmapObjectCallbackData.callback(noteData);
+                }
+            }
+            for (int l = 0; l < this._beatmapEventCallbackData.Count; l++)
+            {
+                BeatmapObjectCallbackController.BeatmapEventCallbackData beatmapEventCallbackData = this._beatmapEventCallbackData[l];
+                while (beatmapEventCallbackData.nextEventIndex < this._beatmapData.beatmapEventData.Length)
+                {
+                    BeatmapEventData beatmapEventData = this._beatmapData.beatmapEventData[beatmapEventCallbackData.nextEventIndex];
                     if (beatmapEventData.time - beatmapEventCallbackData.aheadTime >= owner.playerInfo.updateInfo.playerProgress)
                     {
                         break;
@@ -57,61 +97,28 @@ namespace BeatSaberMultiplayer.OverriddenClasses
                     beatmapEventCallbackData.nextEventIndex++;
                 }
             }
-            for (int j = 0; j < _beatmapObjectCallbackData.Count; j++)
+            while (this._nextEventIndex < this._beatmapData.beatmapEventData.Length)
             {
-                _beatmapObjectDataCallbackCacheList.Clear();
-                BeatmapObjectCallbackData beatmapObjectCallbackData = _beatmapObjectCallbackData[j];
-                for (int k = 0; k < _beatmapData.beatmapLinesData.Length; k++)
-                {
-                    while (beatmapObjectCallbackData.nextObjectIndexInLine[k] < _beatmapData.beatmapLinesData[k].beatmapObjectsData.Length)
-                    {
-                        BeatmapObjectData beatmapObjectData = _beatmapData.beatmapLinesData[k].beatmapObjectsData[beatmapObjectCallbackData.nextObjectIndexInLine[k]];
-                        if (beatmapObjectData.time - beatmapObjectCallbackData.aheadTime >= owner.playerInfo.updateInfo.playerProgress)
-                        {
-                            break;
-                        }
-                        if (beatmapObjectData.time >= _spawningStartTime)
-                        {
-                            for (int l = _beatmapObjectDataCallbackCacheList.Count; l >= 0; l--)
-                            {
-                                if (l == 0 || _beatmapObjectDataCallbackCacheList[l - 1].time <= beatmapObjectData.time)
-                                {
-                                    _beatmapObjectDataCallbackCacheList.Insert(l, beatmapObjectData);
-                                    break;
-                                }
-                            }
-                        }
-                        beatmapObjectCallbackData.nextObjectIndexInLine[k]++;
-                    }
-                }
-                foreach (BeatmapObjectData noteData in _beatmapObjectDataCallbackCacheList)
-                {
-                    beatmapObjectCallbackData.callback(noteData);
-                }
-            }
-            for (int m = 0; m < _beatmapLateEventCallbackData.Count; m++)
-            {
-                BeatmapEventCallbackData beatmapEventCallbackData2 = _beatmapLateEventCallbackData[m];
-                while (beatmapEventCallbackData2.nextEventIndex < _beatmapData.beatmapEventData.Length)
-                {
-                    BeatmapEventData beatmapEventData2 = _beatmapData.beatmapEventData[beatmapEventCallbackData2.nextEventIndex];
-                    if (beatmapEventData2.time - beatmapEventCallbackData2.aheadTime >= owner.playerInfo.updateInfo.playerProgress)
-                    {
-                        break;
-                    }
-                    beatmapEventCallbackData2.callback(beatmapEventData2);
-                    beatmapEventCallbackData2.nextEventIndex++;
-                }
-            }
-            while (_nextEventIndex < _beatmapData.beatmapEventData.Length)
-            {
-                BeatmapEventData beatmapEventData3 = _beatmapData.beatmapEventData[_nextEventIndex];
-                if (beatmapEventData3.time >= owner.playerInfo.updateInfo.playerProgress)
+                BeatmapEventData beatmapEventData2 = this._beatmapData.beatmapEventData[this._nextEventIndex];
+                if (beatmapEventData2.time >= owner.playerInfo.updateInfo.playerProgress)
                 {
                     break;
                 }
-                SendBeatmapEventDidTriggerEvent(beatmapEventData3);
-                _nextEventIndex++;
+                this.SendBeatmapEventDidTriggerEvent(beatmapEventData2);
+                this._nextEventIndex++;
+            }
+            Raise("callbacksForThisFrameWereProcessedEvent");
+        }
+
+        internal void Raise(string eventName)
+        {
+            var frameWasProcessedEvent = (MulticastDelegate)typeof(BeatmapObjectCallbackController).GetField(eventName, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(this);
+            if (frameWasProcessedEvent != null)
+            {
+                foreach (var handler in frameWasProcessedEvent.GetInvocationList())
+                {
+                    handler.Method.Invoke(handler.Target, new object[] { this });
+                }
             }
         }
     }

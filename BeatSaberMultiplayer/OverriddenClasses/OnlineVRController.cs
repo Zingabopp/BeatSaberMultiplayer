@@ -58,7 +58,8 @@ namespace BeatSaberMultiplayer
         {
             transform.localPosition = InputTracking.GetLocalPosition(node);
             transform.localRotation = InputTracking.GetLocalRotation(node);
-            _platformHelper.AdjustPlatformSpecificControllerTransform(node, transform);
+            // TODO: Is this right?
+            _platformHelper.AdjustPlatformSpecificControllerTransform(node, transform, Vector3.zero, Vector3.zero);
         }
     }
 }

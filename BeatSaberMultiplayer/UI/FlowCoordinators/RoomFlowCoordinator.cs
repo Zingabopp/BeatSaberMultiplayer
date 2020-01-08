@@ -51,7 +51,7 @@ namespace BeatSaberMultiplayer.UI.FlowCoordinators
         ModalKeyboard _searchKeyboard;
         SongSelectionViewController _songSelectionViewController;
         DifficultySelectionViewController _difficultySelectionViewController;
-        ResultsViewController _resultsViewController;
+        BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.ResultsViewController _resultsViewController;
         PlayingNowViewController _playingNowViewController;
         LevelPacksUIViewController _levelPacksViewController;
 
@@ -96,7 +96,7 @@ namespace BeatSaberMultiplayer.UI.FlowCoordinators
                 _playerManagementViewController.gameplayModifiersChanged += UpdateLevelOptions;
                 _playerManagementViewController.transferHostButtonPressed += TransferHostConfirmation;
 
-                var dialogOrig = ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(FindObjectOfType<MainFlowCoordinator>(), "_simpleDialogPromptViewController");
+                var dialogOrig = BS_Utils.Utilities.ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(FindObjectOfType<MainFlowCoordinator>(), "_simpleDialogPromptViewController");
                 _passHostDialog = Instantiate(dialogOrig.gameObject).GetComponent<SimpleDialogPromptViewController>();
                 _hostLeaveDialog = Instantiate(dialogOrig.gameObject).GetComponent<SimpleDialogPromptViewController>();
 
@@ -1004,7 +1004,7 @@ namespace BeatSaberMultiplayer.UI.FlowCoordinators
         {
             if (_resultsViewController == null)
             {
-                _resultsViewController = BeatSaberUI.CreateViewController<ResultsViewController>();
+                _resultsViewController = BeatSaberUI.CreateViewController<BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.ResultsViewController>();
             }
             if (_roomNavigationController.viewControllers.IndexOf(_resultsViewController) < 0)
             {

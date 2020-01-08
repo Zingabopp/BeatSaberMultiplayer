@@ -19,13 +19,14 @@ namespace BeatSaberMultiplayer
         public static Discord.Discord discord;
         public static Discord.Activity discordActivity;
         public static bool overrideDiscordActivity;
-
+        private static PlayerAvatarInput _playerAvatarInput;
         private static bool joinAfterRestart;
         private static string joinSecret;
 
         public void Init(object nullObject, IPA.Logging.Logger logger)
         {
             log = logger;
+            _playerAvatarInput = new PlayerAvatarInput();
         }
 
         public void OnApplicationStart()
@@ -48,7 +49,7 @@ namespace BeatSaberMultiplayer
             }
             catch (Exception e)
             {
-                log.Warn("Unable to load presets! Exception: "+e);
+                log.Warn("Unable to load presets! Exception: " + e);
             }
 
             Sprites.ConvertSprites();
@@ -64,17 +65,31 @@ namespace BeatSaberMultiplayer
             {
                 Plugin.log.Error("Unable to patch assembly! Exception: " + e);
             }
+            try
+            {
+                discord = new Discord.Discord(661577830919962645, (UInt64)Discord.CreateFlags.NoRequireDiscord);
 
-            discord = new Discord.Discord(661577830919962645, (UInt64)Discord.CreateFlags.NoRequireDiscord);
+                discord.SetLogHook(Discord.LogLevel.Debug, DiscordLogCallback);
+                var activityManager = discord.GetActivityManager();
 
-            discord.SetLogHook(Discord.LogLevel.Debug, DiscordLogCallback);
-
-            var activityManager = discord.GetActivityManager();
-
-            activityManager.RegisterSteam(620980);
-            activityManager.OnActivityJoin += OnActivityJoin;
-            activityManager.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
-            activityManager.OnActivityInvite += ActivityManager_OnActivityInvite;
+                activityManager.RegisterSteam(620980);
+                activityManager.OnActivityJoin += OnActivityJoin;
+                activityManager.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
+                activityManager.OnActivityInvite += ActivityManager_OnActivityInvite;
+            }
+            catch(Exception ex)
+            {
+                log.Error($"Error initializing Discord hook: {ex.Message}");
+                log.Debug(ex);
+            }
+            try
+            {
+                ResourcesStorage.RoomScreenResources.Load();
+            }
+            catch(Exception ex)
+            {
+                Plugin.log.Error(ex);
+            }
         }
 
         private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)

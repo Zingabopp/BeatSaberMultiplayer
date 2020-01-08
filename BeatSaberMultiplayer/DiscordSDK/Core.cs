@@ -1049,7 +1049,7 @@ namespace Discord
         public void RunCallbacks()
         {
             var res = Methods.RunCallbacks(MethodsPtr);
-            if (res != Result.Ok)
+            if (res != Result.Ok && res != Result.NotRunning)
             {
                 throw new ResultException(res);
             }

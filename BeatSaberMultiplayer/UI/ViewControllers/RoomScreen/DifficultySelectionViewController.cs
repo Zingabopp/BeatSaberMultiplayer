@@ -17,10 +17,10 @@ using Image = UnityEngine.UI.Image;
 
 namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
 {
-    class DifficultySelectionViewController : BSMLResourceViewController
+    class DifficultySelectionViewController : BSMLViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.DifficultySelectionViewController";
-
+        public string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.DifficultySelectionViewController";
+        public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(DifficultySelectionViewController));
         public event Action discardPressed;
         public event Action levelOptionsChanged;
         public event Action<IBeatmapLevel, BeatmapCharacteristicSO, BeatmapDifficulty> playPressed;
@@ -261,13 +261,14 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
 
         private async void SetContent(IBeatmapLevel level)
         {
-            if (level.beatmapCharacteristics.Contains(_playerDataModel.playerData.lastSelectedBeatmapCharacteristic))
+            if (level.beatmapLevelData.difficultyBeatmapSets.Where(s => s.beatmapCharacteristic == _playerDataModel.playerData.lastSelectedBeatmapCharacteristic).Count() > 0)
             {
                 _selectedDifficultyBeatmap = level.GetDifficultyBeatmap(_playerDataModel.playerData.lastSelectedBeatmapCharacteristic, _playerDataModel.playerData.lastSelectedBeatmapDifficulty);
             }
-            else if (level.beatmapCharacteristics.Length > 0)
+            // else if (level.beatmapCharacteristics.Length > 0)
+            else if(level.beatmapLevelData.difficultyBeatmapSets.Length > 0)
             {
-                _selectedDifficultyBeatmap = level.GetDifficultyBeatmap(level.beatmapCharacteristics[0], _playerDataModel.playerData.lastSelectedBeatmapDifficulty);
+                _selectedDifficultyBeatmap = level.GetDifficultyBeatmap(level.beatmapLevelData.difficultyBeatmapSets[0].beatmapCharacteristic, _playerDataModel.playerData.lastSelectedBeatmapDifficulty);
             }
             else
                 Plugin.log.Critical("Unable to set level! No beatmap characteristics found!");

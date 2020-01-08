@@ -73,7 +73,7 @@ namespace BeatSaberMultiplayer.OverriddenClasses
 
             if (_beatmapObjectCallbackController != null)
             {
-                _beatmapObjectCallbackId = _beatmapObjectCallbackController.AddBeatmapObjectCallback(new BeatmapObjectCallbackController.BeatmapObjectCallback(BeatmapObjectSpawnCallback), _spawnAheadTime);
+                _beatmapObjectCallbackId = _beatmapObjectCallbackController.AddBeatmapObjectCallback(new BeatmapObjectCallbackController.BeatmapObjectCallback(this.HandleBeatmapObjectCallback), _spawnAheadTime);
             }
 
             _localPlayer = FindObjectsOfType<PlayerController>().First(x => !(x is OnlinePlayerController));
@@ -87,7 +87,7 @@ namespace BeatSaberMultiplayer.OverriddenClasses
             _activeObstacles = new List<ObstacleController>();
         }
 
-        public override void BeatmapObjectSpawnCallback(BeatmapObjectData beatmapObjectData)
+        public override void SpawnBeatmapObject(BeatmapObjectData beatmapObjectData)
         {
             if (_disableSpawning)
             {
@@ -109,7 +109,8 @@ namespace BeatSaberMultiplayer.OverriddenClasses
                 ObstacleController obstacleController = this._obstaclePool.Spawn();
                 this.SetObstacleEventCallbacks(obstacleController);
                 obstacleController.transform.SetPositionAndRotation(a + noteOffset, Quaternion.identity);
-                obstacleController.Init(obstacleData, this._spawnRotationProcesser.rotation, a + noteOffset, a2 + noteOffset, a3 + noteOffset, num, num2, beatmapObjectData.time - this._spawnAheadTime, this._noteLinesDistance, height);
+                obstacleController.Init(obstacleData, this._spawnRotationProcesser.rotation, a + noteOffset, a2 + 
+                    noteOffset, a3 + noteOffset, num, num2, beatmapObjectData.time - this._spawnAheadTime, this._noteLinesDistance, height);
                 obstacleController.SetPrivateField("_playerController", owner);
                 obstacleController.SetPrivateField("_audioTimeSyncController", onlineSyncController);
                 obstacleController.finishedMovementEvent += ResetControllers;

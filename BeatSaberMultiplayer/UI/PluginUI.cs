@@ -164,7 +164,7 @@ namespace BeatSaberMultiplayer.UI
 
                     if (_noUserInfoWarning == null)
                     {
-                        var dialogOrig = ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(mainFlow, "_simpleDialogPromptViewController");
+                        var dialogOrig = BS_Utils.Utilities.ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(mainFlow, "_simpleDialogPromptViewController");
                         _noUserInfoWarning = Instantiate(dialogOrig.gameObject).GetComponent<SimpleDialogPromptViewController>();
                     }
 

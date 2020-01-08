@@ -32,13 +32,13 @@ namespace BeatSaberMultiplayer.UI
         {
             ModelSaberAPI.hashesCalculated -= ListAllAvatars;
             publicAvatars.Clear();
-            foreach (var avatar in CustomAvatar.Plugin.Instance.AvatarLoader.Avatars)
-            {
-                if (avatar.IsLoaded)
-                {
-                    publicAvatars.Add(avatar);
-                }
-            }
+            //foreach (var avatar in CustomAvatar.Plugin.Instance.AvatarLoader.Avatars)
+            //{
+            //    if (avatar.IsLoaded)
+            //    {
+            //        publicAvatars.Add(avatar);
+            //    }
+            //}
 
             if (publicAvatarSetting)
             {
@@ -55,7 +55,7 @@ namespace BeatSaberMultiplayer.UI
             }
             else
             {
-                return CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault();
+                return null;// CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault();
             }
         }
 
@@ -65,7 +65,7 @@ namespace BeatSaberMultiplayer.UI
         [UIAction("public-avatar-formatter")]
         public string PublicAvatarFormatter(object avatar)
         {
-            string name = (avatar as CustomAvatar.CustomAvatar)?.Name;
+            string name = null;// (avatar as CustomAvatar.CustomAvatar)?.Name;
             return (avatar == null) ? "LOADING AVATARS..." : (string.IsNullOrEmpty(name) ? "NO NAME" : name);
         }
 

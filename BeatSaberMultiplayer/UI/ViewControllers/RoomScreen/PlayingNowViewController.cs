@@ -15,11 +15,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
 {
-    class PlayingNowViewController : BSMLResourceViewController
+    class PlayingNowViewController : BSMLViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.ServerHubScreen.PlayingNowViewController";
+        public string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.PlayingNowViewController";
+        public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(PlayingNowViewController));
 
         public event Action playNowPressed;
 

@@ -12,7 +12,7 @@ using Image = UnityEngine.UI.Image;
 
 namespace BeatSaberMultiplayer
 {
-    public class AvatarController : MonoBehaviour, IAvatarFullBodyInput
+    public class AvatarController : MonoBehaviour//, IAvatarFullBodyInput
     {
         static CustomAvatar.CustomAvatar defaultAvatarInstance;
 
@@ -25,7 +25,7 @@ namespace BeatSaberMultiplayer
         string playerName;
 
         SpawnedAvatar avatar;
-        AvatarScriptPack.FirstPersonExclusion exclusionScript;
+        //AvatarScriptPack.FirstPersonExclusion exclusionScript;
 
         string currentAvatarHash;
 
@@ -67,49 +67,49 @@ namespace BeatSaberMultiplayer
 
         public static void LoadAvatars()
         {
-            if (defaultAvatarInstance == null)
-            {
-                if (Config.Instance.DownloadAvatars)
-                {
-                    defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("loading.avatar"));
+            //if (defaultAvatarInstance == null)
+            //{
+            //    if (Config.Instance.DownloadAvatars)
+            //    {
+            //        defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("loading.avatar"));
 
-                    if (defaultAvatarInstance == null)//fallback to multiplayer avatar
-                    {
-                        defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("multiplayer.avatar"));
-                    }
+            //        if (defaultAvatarInstance == null)//fallback to multiplayer avatar
+            //        {
+            //            defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("multiplayer.avatar"));
+            //        }
 
-                    if (defaultAvatarInstance == null)//fallback to default avatar
-                    {
-                        defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("templatefullbody.avatar"));
-                    }
+            //        if (defaultAvatarInstance == null)//fallback to default avatar
+            //        {
+            //            defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("templatefullbody.avatar"));
+            //        }
 
-                    if (defaultAvatarInstance == null)//fallback to ANY avatar
-                    {
-                        defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault();
-                    }
-                }
-                else
-                {
-                    defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("multiplayer.avatar"));
+            //        if (defaultAvatarInstance == null)//fallback to ANY avatar
+            //        {
+            //            defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault();
+            //        }
+            //    }
+            //    else
+            //    {
+            //        defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("multiplayer.avatar"));
 
-                    if (defaultAvatarInstance == null)//fallback to default avatar
-                    {
-                        defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("templatefullbody.avatar"));
-                    }
+            //        if (defaultAvatarInstance == null)//fallback to default avatar
+            //        {
+            //            defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault(x => x.FullPath.ToLower().Contains("templatefullbody.avatar"));
+            //        }
 
-                    if (defaultAvatarInstance == null)//fallback to ANY avatar
-                    {
-                        defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault();
-                    }
-                }
+            //        if (defaultAvatarInstance == null)//fallback to ANY avatar
+            //        {
+            //            defaultAvatarInstance = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault();
+            //        }
+            //    }
 
-            }
+            //}
 #if DEBUG
             Plugin.log.Info($"Found avatar, isLoaded={defaultAvatarInstance.IsLoaded}");
 #endif
-            if (defaultAvatarInstance != null && !defaultAvatarInstance.IsLoaded)
+            if (false)
             {
-                defaultAvatarInstance.Load(null);
+                //defaultAvatarInstance.Load(null);
             }
         }
 
@@ -120,52 +120,53 @@ namespace BeatSaberMultiplayer
 
         IEnumerator InitializeAvatarController()
         {
-            if (!defaultAvatarInstance.IsLoaded)
-            {
-#if DEBUG
-                Plugin.log.Info("Waiting for avatar to load");
-#endif
-                yield return new WaitWhile(delegate () { return !defaultAvatarInstance.IsLoaded; });
-            }
-            else
-            {
-                yield return null;
-            }
+            yield break;
+            //if (!defaultAvatarInstance.IsLoaded)
+            //{
+//#if DEBUG
+//                Plugin.log.Info("Waiting for avatar to load");
+//#endif
+//                yield return new WaitWhile(delegate () { return !defaultAvatarInstance.IsLoaded; });
+//            }
+//            else
+//            {
+//                yield return null;
+//            }
 
-#if DEBUG
-            Plugin.log.Info("Spawning avatar");
-#endif
-            centerAdjust = FindObjectOfType<VRCenterAdjust>();
+//#if DEBUG
+//            Plugin.log.Info("Spawning avatar");
+//#endif
+//            centerAdjust = FindObjectOfType<VRCenterAdjust>();
 
-            avatar = AvatarSpawner.SpawnAvatar(defaultAvatarInstance, this);
-            exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
-            if (exclusionScript != null)
-                exclusionScript.SetVisible();
+//            avatar = AvatarSpawner.SpawnAvatar(defaultAvatarInstance, this);
+//            exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
+//            if (exclusionScript != null)
+//                exclusionScript.SetVisible();
             
-            playerNameText = CustomExtensions.CreateWorldText(transform, "INVALID");
-            playerNameText.rectTransform.anchoredPosition3D = new Vector3(0f, 0.25f, 0f);
-            playerNameText.alignment = TextAlignmentOptions.Center;
-            playerNameText.fontSize = 2.5f;
+//            playerNameText = CustomExtensions.CreateWorldText(transform, "INVALID");
+//            playerNameText.rectTransform.anchoredPosition3D = new Vector3(0f, 0.25f, 0f);
+//            playerNameText.alignment = TextAlignmentOptions.Center;
+//            playerNameText.fontSize = 2.5f;
 
-            playerSpeakerIcon = new GameObject("Player Speaker Icon", typeof(Canvas), typeof(CanvasRenderer)).AddComponent<Image>();
-            playerSpeakerIcon.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
-            playerSpeakerIcon.rectTransform.SetParent(transform);
-            playerSpeakerIcon.rectTransform.localScale = new Vector3(0.004f, 0.004f, 1f);
-            playerSpeakerIcon.rectTransform.pivot = new Vector2(0.5f, 0.5f);
-            playerSpeakerIcon.rectTransform.anchoredPosition3D = new Vector3(0f, 0.65f, 0f);
-            playerSpeakerIcon.sprite = Sprites.speakerIcon;
+//            playerSpeakerIcon = new GameObject("Player Speaker Icon", typeof(Canvas), typeof(CanvasRenderer)).AddComponent<Image>();
+//            playerSpeakerIcon.GetComponent<Canvas>().renderMode = RenderMode.WorldSpace;
+//            playerSpeakerIcon.rectTransform.SetParent(transform);
+//            playerSpeakerIcon.rectTransform.localScale = new Vector3(0.004f, 0.004f, 1f);
+//            playerSpeakerIcon.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+//            playerSpeakerIcon.rectTransform.anchoredPosition3D = new Vector3(0f, 0.65f, 0f);
+//            playerSpeakerIcon.sprite = Sprites.speakerIcon;
             
-            avatar.GameObject.transform.SetParent(centerAdjust.transform, false);
-            transform.SetParent(centerAdjust.transform, false);
+//            avatar.GameObject.transform.SetParent(centerAdjust.transform, false);
+//            transform.SetParent(centerAdjust.transform, false);
 
-            if (ModelSaberAPI.cachedAvatars.Any(x => x.Value == avatar.CustomAvatar))
-            {
-                currentAvatarHash = ModelSaberAPI.cachedAvatars.First(x => x.Value == avatar.CustomAvatar).Key;
-            }
-            else
-            {
-                currentAvatarHash = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-            }
+//            if (ModelSaberAPI.cachedAvatars.Any(x => x.Value == avatar.CustomAvatar))
+//            {
+//                currentAvatarHash = ModelSaberAPI.cachedAvatars.First(x => x.Value == avatar.CustomAvatar).Key;
+//            }
+//            else
+//            {
+//                currentAvatarHash = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+//            }
         }
 
         void Update()
@@ -190,14 +191,14 @@ namespace BeatSaberMultiplayer
                         }
                         else
                         {
-                            playerNameText.rectTransform.rotation = Quaternion.LookRotation(playerNameText.rectTransform.position - CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput.HeadPosRot.Position);
-                            playerSpeakerIcon.rectTransform.rotation = Quaternion.LookRotation(playerSpeakerIcon.rectTransform.position - CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput.HeadPosRot.Position);
+                            playerNameText.rectTransform.rotation = Quaternion.LookRotation(playerNameText.rectTransform.position - PlayerAvatarInput.instance.HeadPosRot.Position);
+                            playerSpeakerIcon.rectTransform.rotation = Quaternion.LookRotation(playerSpeakerIcon.rectTransform.position - PlayerAvatarInput.instance.HeadPosRot.Position);
                         }
                     }
                     else
                     {
-                        playerNameText.rectTransform.rotation = Quaternion.LookRotation(playerNameText.rectTransform.position - CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput.HeadPosRot.Position);
-                        playerSpeakerIcon.rectTransform.rotation = Quaternion.LookRotation(playerSpeakerIcon.rectTransform.position - CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput.HeadPosRot.Position);
+                        playerNameText.rectTransform.rotation = Quaternion.LookRotation(playerNameText.rectTransform.position - PlayerAvatarInput.instance.HeadPosRot.Position);
+                        playerSpeakerIcon.rectTransform.rotation = Quaternion.LookRotation(playerSpeakerIcon.rectTransform.position - PlayerAvatarInput.instance.HeadPosRot.Position);
                     }
 
                     if (rainbowName)
@@ -211,7 +212,7 @@ namespace BeatSaberMultiplayer
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Plugin.log.Warn($"Unable to rotate text to the camera! Exception: {e}");
             }
@@ -221,8 +222,8 @@ namespace BeatSaberMultiplayer
         void OnDestroy()
         {
             Plugin.log.Debug("Destroying avatar");
-            if(avatar != null && avatar.GameObject != null)
-                Destroy(avatar.GameObject);
+            //if(avatar != null && avatar.GameObject != null)
+            //    Destroy(avatar.GameObject);
         }
 
         public void SetPlayerInfo(PlayerInfo _playerInfo, float offset, bool isLocal)
@@ -231,7 +232,7 @@ namespace BeatSaberMultiplayer
             {
                 if (playerNameText != null) playerNameText.gameObject.SetActive(false);
                 if (playerSpeakerIcon != null) playerSpeakerIcon.gameObject.SetActive(false);
-                if (avatar != null && avatar.GameObject != null) Destroy(avatar.GameObject);
+                //if (avatar != null && avatar.GameObject != null) Destroy(avatar.GameObject);
                 return;
             }
 
@@ -250,10 +251,10 @@ namespace BeatSaberMultiplayer
                         playerNameText.gameObject.SetActive(false);
                         playerSpeakerIcon.gameObject.SetActive(false);
 #if !DEBUG
-                        if (avatar != null)
-                        {
-                            Destroy(avatar.GameObject);
-                        }
+                        //if (avatar != null)
+                        //{
+                        //    Destroy(avatar.GameObject);
+                        //}
 #endif
                     }
                     else
@@ -273,84 +274,84 @@ namespace BeatSaberMultiplayer
                 if ((avatar == null || currentAvatarHash != playerAvatarHash))
 #endif
                     {
-                    if (ModelSaberAPI.cachedAvatars.ContainsKey(playerAvatarHash))
-                    {
-                        CustomAvatar.CustomAvatar cachedAvatar = ModelSaberAPI.cachedAvatars[playerAvatarHash];
+                    //if (ModelSaberAPI.cachedAvatars.ContainsKey(playerAvatarHash))
+                    //{
+                    //    CustomAvatar.CustomAvatar cachedAvatar = ModelSaberAPI.cachedAvatars[playerAvatarHash];
                         
-                        if (cachedAvatar != null)
-                        {
-                            if (pendingAvatars.Contains(cachedAvatar))
-                            {
-                                AvatarLoaded -= AvatarController_AvatarLoaded;
-                                AvatarLoaded += AvatarController_AvatarLoaded;
-                            }
-                            else if (!pendingAvatars.Contains(cachedAvatar) && !cachedAvatar.IsLoaded)
-                            {
-                                if (avatar != null)
-                                {
-                                    Destroy(avatar.GameObject);
-                                }
+                    //    if (cachedAvatar != null)
+                    //    {
+                    //        if (pendingAvatars.Contains(cachedAvatar))
+                    //        {
+                    //            AvatarLoaded -= AvatarController_AvatarLoaded;
+                    //            AvatarLoaded += AvatarController_AvatarLoaded;
+                    //        }
+                    //        else if (!pendingAvatars.Contains(cachedAvatar) && !cachedAvatar.IsLoaded)
+                    //        {
+                    //            if (avatar != null)
+                    //            {
+                    //                Destroy(avatar.GameObject);
+                    //            }
 
-                                avatar = AvatarSpawner.SpawnAvatar(defaultAvatarInstance, this);
-                                exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
-                                if (exclusionScript != null)
-                                    exclusionScript.SetVisible();
+                    //            avatar = AvatarSpawner.SpawnAvatar(defaultAvatarInstance, this);
+                    //            exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
+                    //            if (exclusionScript != null)
+                    //                exclusionScript.SetVisible();
                                 
-                                pendingAvatars.Add(cachedAvatar);
-                                AvatarLoaded -= AvatarController_AvatarLoaded;
-                                AvatarLoaded += AvatarController_AvatarLoaded;
-                                cachedAvatar.Load((CustomAvatar.CustomAvatar loadedAvatar, AvatarLoadResult result) =>
-                               {
-                                   if (result == AvatarLoadResult.Completed)
-                                   {
-                                       pendingAvatars.Remove(ModelSaberAPI.cachedAvatars[playerAvatarHash]);
-                                       AvatarLoaded?.Invoke(ModelSaberAPI.cachedAvatars.First(x => x.Value == loadedAvatar).Key);
-                                   }
-                               });
-                            }
-                            else
-                            {
-                                if (avatar != null)
-                                {
-                                    Destroy(avatar.GameObject);
-                                }
+                    //            pendingAvatars.Add(cachedAvatar);
+                    //            AvatarLoaded -= AvatarController_AvatarLoaded;
+                    //            AvatarLoaded += AvatarController_AvatarLoaded;
+                    //            cachedAvatar.Load((CustomAvatar.CustomAvatar loadedAvatar, AvatarLoadResult result) =>
+                    //           {
+                    //               if (result == AvatarLoadResult.Completed)
+                    //               {
+                    //                   pendingAvatars.Remove(ModelSaberAPI.cachedAvatars[playerAvatarHash]);
+                    //                   AvatarLoaded?.Invoke(ModelSaberAPI.cachedAvatars.First(x => x.Value == loadedAvatar).Key);
+                    //               }
+                    //           });
+                    //        }
+                    //        else
+                    //        {
+                    //            if (avatar != null)
+                    //            {
+                    //                Destroy(avatar.GameObject);
+                    //            }
                                 
-                                avatar = AvatarSpawner.SpawnAvatar(cachedAvatar, this);
-                                exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
-                                if (exclusionScript != null)
-                                    exclusionScript.SetVisible();
+                    //            avatar = AvatarSpawner.SpawnAvatar(cachedAvatar, this);
+                    //            exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
+                    //            if (exclusionScript != null)
+                    //                exclusionScript.SetVisible();
                                 
-                                currentAvatarHash = playerAvatarHash;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (Config.Instance.DownloadAvatars)
-                        {
-                            if (ModelSaberAPI.queuedAvatars.Contains(playerAvatarHash))
-                            {
-                                ModelSaberAPI.avatarDownloaded -= AvatarDownloaded;
-                                ModelSaberAPI.avatarDownloaded += AvatarDownloaded;
-                            }
-                            else
-                            {
-                                ModelSaberAPI.avatarDownloaded -= AvatarDownloaded;
-                                ModelSaberAPI.avatarDownloaded += AvatarDownloaded;
-                                SharedCoroutineStarter.instance.StartCoroutine(ModelSaberAPI.DownloadAvatarCoroutine(playerAvatarHash));
+                    //            currentAvatarHash = playerAvatarHash;
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (Config.Instance.DownloadAvatars)
+                    //    {
+                    //        if (ModelSaberAPI.queuedAvatars.Contains(playerAvatarHash))
+                    //        {
+                    //            ModelSaberAPI.avatarDownloaded -= AvatarDownloaded;
+                    //            ModelSaberAPI.avatarDownloaded += AvatarDownloaded;
+                    //        }
+                    //        else
+                    //        {
+                    //            ModelSaberAPI.avatarDownloaded -= AvatarDownloaded;
+                    //            ModelSaberAPI.avatarDownloaded += AvatarDownloaded;
+                    //            SharedCoroutineStarter.instance.StartCoroutine(ModelSaberAPI.DownloadAvatarCoroutine(playerAvatarHash));
 
-                                if (avatar != null)
-                                {
-                                    Destroy(avatar.GameObject);
-                                }
+                    //            if (avatar != null)
+                    //            {
+                    //                Destroy(avatar.GameObject);
+                    //            }
 
-                                avatar = AvatarSpawner.SpawnAvatar(defaultAvatarInstance, this);
-                                exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
-                                if (exclusionScript != null)
-                                    exclusionScript.SetVisible();
-                            }
-                        }
-                    }
+                    //            avatar = AvatarSpawner.SpawnAvatar(defaultAvatarInstance, this);
+                    //            exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
+                    //            if (exclusionScript != null)
+                    //                exclusionScript.SetVisible();
+                    //        }
+                    //    }
+                    //}
                 }
 
                 Vector3 offsetVector = new Vector3(offset, 0f, 0f);
@@ -407,42 +408,42 @@ namespace BeatSaberMultiplayer
 
         private void AvatarController_AvatarLoaded(string hash)
         {
-            if (this != null && (!ModelSaberAPI.cachedAvatars.ContainsValue(avatar.CustomAvatar) || ModelSaberAPI.cachedAvatars.First(x => x.Value == avatar.CustomAvatar).Key != playerAvatarHash) && playerAvatarHash == hash)
-            {
-                Plugin.log.Debug($"Avatar with hash \"{hash}\" loaded! (1)");
-                AvatarLoaded -= AvatarController_AvatarLoaded;
+            //if (this != null && (!ModelSaberAPI.cachedAvatars.ContainsValue(avatar.CustomAvatar) || ModelSaberAPI.cachedAvatars.First(x => x.Value == avatar.CustomAvatar).Key != playerAvatarHash) && playerAvatarHash == hash)
+            //{
+            //    Plugin.log.Debug($"Avatar with hash \"{hash}\" loaded! (1)");
+            //    AvatarLoaded -= AvatarController_AvatarLoaded;
 
-                if (avatar != null)
-                {
-                    Destroy(avatar.GameObject);
-                }
+            //    if (avatar != null)
+            //    {
+            //        Destroy(avatar.GameObject);
+            //    }
 
-                avatar = AvatarSpawner.SpawnAvatar(ModelSaberAPI.cachedAvatars[hash], this);
-                exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
-                if (exclusionScript != null)
-                    exclusionScript.SetVisible();
-                currentAvatarHash = hash;
-            }
+            //    avatar = AvatarSpawner.SpawnAvatar(ModelSaberAPI.cachedAvatars[hash], this);
+            //    exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
+            //    if (exclusionScript != null)
+            //        exclusionScript.SetVisible();
+            //    currentAvatarHash = hash;
+            //}
         }
 
         private void AvatarDownloaded(string hash)
         {
-            if (this != null && (!ModelSaberAPI.cachedAvatars.ContainsValue(avatar.CustomAvatar) || ModelSaberAPI.cachedAvatars.First(x => x.Value == avatar.CustomAvatar).Key != playerAvatarHash) && playerAvatarHash == hash)
-            {
-                Plugin.log.Debug($"Avatar with hash \"{hash}\" loaded! (2)");
-                ModelSaberAPI.avatarDownloaded -= AvatarDownloaded;
+            //if (this != null && (!ModelSaberAPI.cachedAvatars.ContainsValue(avatar.CustomAvatar) || ModelSaberAPI.cachedAvatars.First(x => x.Value == avatar.CustomAvatar).Key != playerAvatarHash) && playerAvatarHash == hash)
+            //{
+            //    Plugin.log.Debug($"Avatar with hash \"{hash}\" loaded! (2)");
+            //    ModelSaberAPI.avatarDownloaded -= AvatarDownloaded;
 
-                if (avatar != null)
-                {
-                    Destroy(avatar.GameObject);
-                }
+            //    if (avatar != null)
+            //    {
+            //        Destroy(avatar.GameObject);
+            //    }
                 
-                avatar = AvatarSpawner.SpawnAvatar(ModelSaberAPI.cachedAvatars[hash], this);
-                exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
-                if (exclusionScript != null)
-                    exclusionScript.SetVisible();
-                currentAvatarHash = hash;
-            }
+            //    avatar = AvatarSpawner.SpawnAvatar(ModelSaberAPI.cachedAvatars[hash], this);
+            //    exclusionScript = avatar.GameObject.GetComponentsInChildren<AvatarScriptPack.FirstPersonExclusion>().FirstOrDefault();
+            //    if (exclusionScript != null)
+            //        exclusionScript.SetVisible();
+            //    currentAvatarHash = hash;
+            //}
         }
 
         private void SetRendererInChilds(Transform origin, bool enabled)

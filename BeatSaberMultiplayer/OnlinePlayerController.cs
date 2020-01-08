@@ -15,7 +15,7 @@ namespace BeatSaberMultiplayer
         private const int _voipDelay = 1;
 
         public PlayerInfo playerInfo;
-        public AvatarController avatar;
+        public AvatarController avatar { get; set; }
         public AudioSource voipSource;
 
         public OnlineBeatmapCallbackController beatmapCallbackController;

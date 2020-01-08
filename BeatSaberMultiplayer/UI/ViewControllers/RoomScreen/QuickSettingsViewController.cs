@@ -9,12 +9,14 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
     {
         private Settings _settings;
 
+        public  string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(QuickSettingsViewController));
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
+
             if (firstActivation)
             {
                 _settings = new GameObject("Multiplayer Quick Settings").AddComponent<Settings>();
-                BSMLParser.instance.Parse(Utilities.GetResourceContent(Assembly.GetAssembly(this.GetType()), "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.QuickSettingsViewController"), gameObject, _settings);
+                BSMLParser.instance.Parse(Content, gameObject, _settings);
             }
         }
     }

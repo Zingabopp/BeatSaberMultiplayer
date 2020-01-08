@@ -124,20 +124,20 @@ namespace BeatSaberMultiplayer.Misc
                     Plugin.log.Debug("Downloaded avatar!");
                     Plugin.log.Debug($"Loading avatar...");
 
-                    downloadedAvatar.Load(
-                        (CustomAvatar.CustomAvatar avatar, CustomAvatar.AvatarLoadResult result) => 
-                        {
-                            if (result == CustomAvatar.AvatarLoadResult.Completed)
-                            {
-                                queuedAvatars.Remove(hash);
-                                cachedAvatars.Add(hash, downloadedAvatar);
-                                avatarDownloaded?.Invoke(hash);
-                            }
-                            else
-                            {
-                                Plugin.log.Error("Unable to load avatar! " + result.ToString());
-                            }
-                        });
+                    //downloadedAvatar.Load(
+                    //    (CustomAvatar.CustomAvatar avatar, CustomAvatar.AvatarLoadResult result) => 
+                    //    {
+                    //        if (result == CustomAvatar.AvatarLoadResult.Completed)
+                    //        {
+                    //            queuedAvatars.Remove(hash);
+                    //            cachedAvatars.Add(hash, downloadedAvatar);
+                    //            avatarDownloaded?.Invoke(hash);
+                    //        }
+                    //        else
+                    //        {
+                    //            Plugin.log.Error("Unable to load avatar! " + result.ToString());
+                    //        }
+                    //    });
                     
                 }
                 catch (Exception e)
@@ -151,65 +151,66 @@ namespace BeatSaberMultiplayer.Misc
 
         public static async void HashAllAvatars()
         {
-            if (cachedAvatars.Count != CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.Count && !isCalculatingHashes)
-            {
-                isCalculatingHashes = true;
-                Plugin.log.Debug($"Hashing all avatars... {cachedAvatars.Count} of {CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.Count} avatars hashed");
-                try
-                {
-                    cachedAvatars.Clear();
-                    totalAvatarsCount = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.Count;
-                    calculatedHashesCount = 0;
-                    foreach (CustomAvatar.CustomAvatar avatar in CustomAvatar.Plugin.Instance.AvatarLoader.Avatars)
-                    {
-                        if (!avatar.IsLoaded)
-                        {
-                            AutoResetEvent wh = new AutoResetEvent(false);
+            //if (cachedAvatars.Count != CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.Count && !isCalculatingHashes)
+            //{
+            //    isCalculatingHashes = true;
+            //    Plugin.log.Debug($"Hashing all avatars... {cachedAvatars.Count} of {CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.Count} avatars hashed");
+            //    try
+            //    {
+            //        cachedAvatars.Clear();
+            //        totalAvatarsCount = CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.Count;
+            //        calculatedHashesCount = 0;
+            //        foreach (CustomAvatar.CustomAvatar avatar in CustomAvatar.Plugin.Instance.AvatarLoader.Avatars)
+            //        {
+            //            if (!avatar.IsLoaded)
+            //            {
+            //                AutoResetEvent wh = new AutoResetEvent(false);
 
-                            avatar.Load(async (loadedAvatar, result) =>
-                            {
-                                if (result == CustomAvatar.AvatarLoadResult.Completed)
-                                    await HashAvatar(avatar).ConfigureAwait(false);
-                                wh.Set();
-                            });
+            //                avatar.Load(async (loadedAvatar, result) =>
+            //                {
+            //                    if (result == CustomAvatar.AvatarLoadResult.Completed)
+            //                        await HashAvatar(avatar).ConfigureAwait(false);
+            //                    wh.Set();
+            //                });
 
-                            await Task.Run(() => wh.WaitOne()).ConfigureAwait(false);
-                            calculatedHashesCount++;
-                        }
-                        else
-                        {
-                            await HashAvatar(avatar).ConfigureAwait(false);
-                            calculatedHashesCount++;
-                        }
+            //                await Task.Run(() => wh.WaitOne()).ConfigureAwait(false);
+            //                calculatedHashesCount++;
+            //            }
+            //            else
+            //            {
+            //                await HashAvatar(avatar).ConfigureAwait(false);
+            //                calculatedHashesCount++;
+            //            }
 
-                    }
-                    Plugin.log.Debug("All avatars hashed and loaded!");
+            //        }
+            //        Plugin.log.Debug("All avatars hashed and loaded!");
 
-                    HMMainThreadDispatcher.instance.Enqueue(() => {
-                        hashesCalculated?.Invoke();
-                    });
-                }
-                catch (Exception e)
-                {
-                    Plugin.log.Error($"Unable to hash and load avatars! Exception: {e}");
-                }
-                isCalculatingHashes = false;
-            }
+            //        HMMainThreadDispatcher.instance.Enqueue(() => {
+            //            hashesCalculated?.Invoke();
+            //        });
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Plugin.log.Error($"Unable to hash and load avatars! Exception: {e}");
+            //    }
+            //    isCalculatingHashes = false;
+            //}
         }
 
         private static async Task HashAvatar(CustomAvatar.CustomAvatar avatar)
         {
             await Task.Run(() =>
             {
-                string hash;
-                if (SongDownloader.CreateMD5FromFile(avatar.FullPath, out hash))
-                {
-                    if (!cachedAvatars.ContainsKey(hash))
-                    {
-                        cachedAvatars.Add(hash, avatar);
-                        Plugin.log.Debug("Hashed avatar " + avatar.Name + "! Hash: " + hash);
-                    }
-                }
+                return null;
+                //string hash;
+                //if (SongDownloader.CreateMD5FromFile(avatar.FullPath, out hash))
+                //{
+                //    if (!cachedAvatars.ContainsKey(hash))
+                //    {
+                //        cachedAvatars.Add(hash, avatar);
+                //        Plugin.log.Debug("Hashed avatar " + avatar.Name + "! Hash: " + hash);
+                //    }
+                //}
             }).ConfigureAwait(false);
         }
     }

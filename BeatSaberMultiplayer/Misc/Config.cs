@@ -170,7 +170,7 @@ namespace BeatSaberMultiplayer
 
         public bool ShowAvatarsInGame
         {
-            get { return _showAvatarsInGame; }
+            get { return false; }
             set
             {
                 _showAvatarsInGame = value;
@@ -190,7 +190,7 @@ namespace BeatSaberMultiplayer
 
         public bool ShowAvatarsInRoom
         {
-            get { return _showAvatarsInRoom; }
+            get { return false; }
             set
             {
                 _showAvatarsInRoom = value;
@@ -200,7 +200,7 @@ namespace BeatSaberMultiplayer
 
         public bool DownloadAvatars
         {
-            get { return _downloadAvatars; }
+            get { return false; }
             set
             {
                 _downloadAvatars = value;
@@ -210,7 +210,7 @@ namespace BeatSaberMultiplayer
 
         public bool SeparateAvatarForMultiplayer
         {
-            get { return _separateAvatarForMultiplayer; }
+            get { return false; }
             set
             {
                 _separateAvatarForMultiplayer = value;
@@ -342,8 +342,8 @@ namespace BeatSaberMultiplayer
             _serverHubPorts = new int[0];
             _showAvatarsInGame = false;
             _showOtherPlayersBlocks = false;
-            _showAvatarsInRoom = true;
-            _downloadAvatars = true;
+            _showAvatarsInRoom = false;
+            _downloadAvatars = false;
             _spectatorMode = false;
             _separateAvatarForMultiplayer = false;
             _publicAvatarHash = Data.PlayerInfo.avatarHashPlaceholder;
