@@ -384,7 +384,7 @@ namespace BeatSaberMultiplayer
                 if (spectatedPlayer == null && _leftSaber != null && _rightSaber != null)
                 {
                     spectatedPlayer = new GameObject("SpectatedPlayerController").AddComponent<OnlinePlayerController>();
-                    spectatedPlayer.SetAvatarState(Config.Instance.ShowAvatarsInGame);
+                    //spectatedPlayer.SetAvatarState(Config.Instance.ShowAvatarsInGame);
                     spectatedPlayer.SetSabers(_leftSaber, _rightSaber);
 
                     ReplacePlayerController(spectatedPlayer);

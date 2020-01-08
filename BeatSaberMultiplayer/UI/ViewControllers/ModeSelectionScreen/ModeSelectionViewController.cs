@@ -74,17 +74,17 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.ModeSelectionScreen
                     _buttonsRect.gameObject.SetActive(true);
                 }
 
-                if (ModelSaberAPI.isCalculatingHashes)
-                {
-                    _buttonsRect.gameObject.SetActive(false);
-                    _avatarsLoadingRect.gameObject.SetActive(true);
-                    ModelSaberAPI.hashesCalculated += ModelSaberAPI_hashesCalculated;
+                //if (ModelSaberAPI.isCalculatingHashes)
+                //{
+                //    _buttonsRect.gameObject.SetActive(false);
+                //    _avatarsLoadingRect.gameObject.SetActive(true);
+                //    ModelSaberAPI.hashesCalculated += ModelSaberAPI_hashesCalculated;
 
-                    _progressBarBG.color = new Color(1f, 1f, 1f, 0.2f);
-                    _progressBarTop.color = new Color(1f, 1f, 1f, 1f);
+                //    _progressBarBG.color = new Color(1f, 1f, 1f, 0.2f);
+                //    _progressBarTop.color = new Color(1f, 1f, 1f, 1f);
 
-                }
-                else
+                //}
+                //else
                     _avatarsLoadingRect.gameObject.SetActive(false);
 
                 var pluginVersion = IPA.Loader.PluginManager.GetPlugin("Beat Saber Multiplayer").Metadata.Version.ToString();
@@ -96,11 +96,11 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.ModeSelectionScreen
 
         private void Update()
         {
-            if (ModelSaberAPI.isCalculatingHashes)
-            {
-                _loadingProgressText.text = $"{ModelSaberAPI.calculatedHashesCount} out of {ModelSaberAPI.totalAvatarsCount}";
-                _progressBarTop.rectTransform.sizeDelta = new Vector2(60f * (ModelSaberAPI.calculatedHashesCount / (float)ModelSaberAPI.totalAvatarsCount), 6f);
-            }
+            //if (ModelSaberAPI.isCalculatingHashes)
+            //{
+            //    _loadingProgressText.text = $"{ModelSaberAPI.calculatedHashesCount} out of {ModelSaberAPI.totalAvatarsCount}";
+            //    _progressBarTop.rectTransform.sizeDelta = new Vector2(60f * (ModelSaberAPI.calculatedHashesCount / (float)ModelSaberAPI.totalAvatarsCount), 6f);
+            //}
         }
 
         private void ModelSaberAPI_hashesCalculated()

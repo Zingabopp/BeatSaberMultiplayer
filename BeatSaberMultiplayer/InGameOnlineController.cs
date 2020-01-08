@@ -4,7 +4,7 @@ using BeatSaberMultiplayer.OverriddenClasses;
 using BeatSaberMultiplayer.UI;
 using BeatSaberMultiplayer.VOIP;
 using BS_Utils.Gameplay;
-using CustomAvatar;
+//using CustomAvatar;
 using Lidgren.Network;
 using SongCore.Utilities;
 using System;
@@ -381,7 +381,7 @@ namespace BeatSaberMultiplayer
 
                             if (player != null)
                             {
-                                player.SetAvatarState(!Client.Instance.inRadioMode && IsPlayerVisible(player.playerInfo.playerId));
+                                //player.SetAvatarState(!Client.Instance.inRadioMode && IsPlayerVisible(player.playerInfo.playerId));
                                 player.SetBlocksState(!Client.Instance.inRadioMode &&  _currentScene == _gameSceneName && Config.Instance.ShowOtherPlayersBlocks && !Client.Instance.playerInfo.Equals(player.playerInfo) && !Config.Instance.SpectatorMode && player.playerInfo.updateInfo.playerState == PlayerState.Game);
                             }
                         }
@@ -405,7 +405,7 @@ namespace BeatSaberMultiplayer
                             else
                             {
                                 int playerIndex = _playerIds.IndexOf(pair.Key);
-                                pair.Value.avatarOffset = (playerIndex - localPlayerIndex) * (_currentScene == _gameSceneName ? 5f : 0f);
+                                pair.Value.avatarOffset = new Vector3((playerIndex - localPlayerIndex) * (_currentScene == _gameSceneName ? 5f : 0f), 0, 0);
 
                                 while (playerScores.Count <= playerIndex)
                                     playerScores.Add(default);
@@ -769,19 +769,19 @@ namespace BeatSaberMultiplayer
             }
         }
 
-        private void PlayerAvatarManager_AvatarChanged(CustomAvatar.CustomAvatar obj)
-        {
-            if (!Config.Instance.SeparateAvatarForMultiplayer && Client.Instance.connected)
-            {
-                Client.Instance.playerInfo.avatarHash = null;// ModelSaberAPI.cachedAvatars.FirstOrDefault(x => x.Value == CustomAvatar.Plugin.Instance.PlayerAvatarManager.GetCurrentAvatar()).Key;
-                sendFullUpdate = true;
+        //private void PlayerAvatarManager_AvatarChanged(CustomAvatar.CustomAvatar obj)
+        //{
+        //    if (!Config.Instance.SeparateAvatarForMultiplayer && Client.Instance.connected)
+        //    {
+        //        Client.Instance.playerInfo.avatarHash = null;// ModelSaberAPI.cachedAvatars.FirstOrDefault(x => x.Value == CustomAvatar.Plugin.Instance.PlayerAvatarManager.GetCurrentAvatar()).Key;
+        //        sendFullUpdate = true;
 
-                if (string.IsNullOrEmpty(Client.Instance.playerInfo.avatarHash))
-                {
-                    Client.Instance.playerInfo.avatarHash = PlayerInfo.avatarHashPlaceholder;
-                }
-            }
-        }
+        //        if (string.IsNullOrEmpty(Client.Instance.playerInfo.avatarHash))
+        //        {
+        //            Client.Instance.playerInfo.avatarHash = PlayerInfo.avatarHashPlaceholder;
+        //        }
+        //    }
+        //}
 
         public void UpdatePlayerInfo()
         {

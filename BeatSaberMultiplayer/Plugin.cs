@@ -120,7 +120,7 @@ namespace BeatSaberMultiplayer
 
         private void MenuSceneLoadedFresh()
         {
-            ModelSaberAPI.HashAllAvatars();
+            //ModelSaberAPI.HashAllAvatars();
             PluginUI.OnLoad();
             InGameOnlineController.OnLoad();
             SpectatingController.OnLoad();

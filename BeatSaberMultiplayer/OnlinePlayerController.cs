@@ -15,14 +15,14 @@ namespace BeatSaberMultiplayer
         private const int _voipDelay = 1;
 
         public PlayerInfo playerInfo;
-        public AvatarController avatar { get; set; }
+        public IPlayerInfoReceiver PlayerInfoReceiver { get; set; }
         public AudioSource voipSource;
 
         public OnlineBeatmapCallbackController beatmapCallbackController;
         public OnlineBeatmapSpawnController beatmapSpawnController;
         public OnlineAudioTimeController audioTimeController;
 
-        public float avatarOffset;
+        public Vector3 avatarOffset { get; set; }
         public bool noInterpolation = false;
         public bool destroyed = false;
 
@@ -151,9 +151,9 @@ namespace BeatSaberMultiplayer
 
         public override void Update()
         {
-            if (avatar != null)
+            if (PlayerInfoReceiver != null)
             {
-                avatar.SetPlayerInfo(playerInfo, avatarOffset, Client.Instance.playerInfo.Equals(playerInfo));
+                PlayerInfoReceiver.SetPlayerInfo(playerInfo, avatarOffset, Client.Instance.playerInfo.Equals(playerInfo));
             }
 
             if (voipSource != null)
@@ -230,7 +230,7 @@ namespace BeatSaberMultiplayer
 
                 _overrideHeadPos = true;
                 _overriddenHeadPos = playerInfo.updateInfo.headPos;
-                _headPos = playerInfo.updateInfo.headPos + Vector3.right * avatarOffset;
+                _headPos = playerInfo.updateInfo.headPos + avatarOffset;
                 transform.position = _headPos;
             }
         }
@@ -244,9 +244,9 @@ namespace BeatSaberMultiplayer
 
             destroyed = true;
             
-            if (avatar != null)
+            if (PlayerInfoReceiver != null)
             {
-                Destroy(avatar.gameObject);
+                PlayerInfoReceiver.DestroyReceiver();
             }
 
             if (beatmapCallbackController != null && beatmapSpawnController != null && audioTimeController != null)
@@ -329,19 +329,19 @@ namespace BeatSaberMultiplayer
             }
         }
 
-        public void SetAvatarState(bool enabled)
-        {
-            if(enabled && (object)avatar == null)
-            {
-                avatar = new GameObject("AvatarController").AddComponent<AvatarController>();
-                avatar.SetPlayerInfo(playerInfo, avatarOffset, Client.Instance.playerInfo.Equals(playerInfo));
-            }
-            else if(!enabled && avatar != null)
-            {
-                Destroy(avatar.gameObject);
-                avatar = null;
-            }
-        }
+        //public void SetAvatarState(bool enabled)
+        //{
+        //    if(enabled && (object)avatar == null)
+        //    {
+        //        avatar = new GameObject("AvatarController").AddComponent<AvatarController>();
+        //        avatar.SetPlayerInfo(playerInfo, avatarOffset, Client.Instance.playerInfo.Equals(playerInfo));
+        //    }
+        //    else if(!enabled && avatar != null)
+        //    {
+        //        Destroy(avatar.gameObject);
+        //        avatar = null;
+        //    }
+        //}
 
         public void VoIPUpdate()
         {

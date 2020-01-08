@@ -17,7 +17,7 @@ namespace BeatSaberMultiplayer.UI.FlowCoordinators
             {
                 title = "Select Mode";
 
-                AvatarController.LoadAvatars();
+                //AvatarController.LoadAvatars();
 
                 _selectionViewController = BeatSaberUI.CreateViewController<ViewControllers.ModeSelectionScreen.ModeSelectionViewController>();
                 _selectionViewController.didSelectRooms += () =>
@@ -42,15 +42,15 @@ namespace BeatSaberMultiplayer.UI.FlowCoordinators
             uint roomId = uint.Parse(secret.Substring(secret.IndexOf('?') + 1, secret.IndexOf('#') - secret.IndexOf('?') - 1));
             string password = secret.Substring(secret.IndexOf('#') + 1);
 
-            if (ModelSaberAPI.isCalculatingHashes)
-            {
-                ModelSaberAPI.hashesCalculated += () =>
-                {
-                    PresentFlowCoordinator(PluginUI.instance.serverHubFlowCoordinator, null, true);
-                    PluginUI.instance.serverHubFlowCoordinator.JoinRoom(ip, port, roomId, !string.IsNullOrEmpty(password), password);
-                };
-            }
-            else
+            //if (ModelSaberAPI.isCalculatingHashes)
+            //{
+            //    ModelSaberAPI.hashesCalculated += () =>
+            //    {
+            //        PresentFlowCoordinator(PluginUI.instance.serverHubFlowCoordinator, null, true);
+            //        PluginUI.instance.serverHubFlowCoordinator.JoinRoom(ip, port, roomId, !string.IsNullOrEmpty(password), password);
+            //    };
+            //}
+            //else
             {
                 PresentFlowCoordinator(PluginUI.instance.serverHubFlowCoordinator, null, true);
                 PluginUI.instance.serverHubFlowCoordinator.JoinRoom(ip, port, roomId, !string.IsNullOrEmpty(password), password);

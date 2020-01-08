@@ -14,13 +14,13 @@ namespace BeatSaberMultiplayer.UI
 
         public void Awake()
         {
-            if (ModelSaberAPI.isCalculatingHashes)
-            {
-                ModelSaberAPI.hashesCalculated -= ListAllAvatars;
-                ModelSaberAPI.hashesCalculated += ListAllAvatars;
-            }
-            else
-                ListAllAvatars();
+            //if (ModelSaberAPI.isCalculatingHashes)
+            //{
+            //    ModelSaberAPI.hashesCalculated -= ListAllAvatars;
+            //    ModelSaberAPI.hashesCalculated += ListAllAvatars;
+            //}
+            //else
+            //    ListAllAvatars();
 
             AudioSettings.OnAudioConfigurationChanged += UpdateMicrophoneList;
             UpdateMicrophoneList(false);
@@ -28,36 +28,36 @@ namespace BeatSaberMultiplayer.UI
 
         #region General settings
 
-        void ListAllAvatars()
-        {
-            ModelSaberAPI.hashesCalculated -= ListAllAvatars;
-            publicAvatars.Clear();
-            //foreach (var avatar in CustomAvatar.Plugin.Instance.AvatarLoader.Avatars)
-            //{
-            //    if (avatar.IsLoaded)
-            //    {
-            //        publicAvatars.Add(avatar);
-            //    }
-            //}
+        //void ListAllAvatars()
+        //{
+        //    ModelSaberAPI.hashesCalculated -= ListAllAvatars;
+        //    publicAvatars.Clear();
+        //    //foreach (var avatar in CustomAvatar.Plugin.Instance.AvatarLoader.Avatars)
+        //    //{
+        //    //    if (avatar.IsLoaded)
+        //    //    {
+        //    //        publicAvatars.Add(avatar);
+        //    //    }
+        //    //}
 
-            if (publicAvatarSetting)
-            {
-                publicAvatarSetting.tableView.ReloadData();
-                publicAvatarSetting.ReceiveValue();
-            }
-        }
+        //    if (publicAvatarSetting)
+        //    {
+        //        publicAvatarSetting.tableView.ReloadData();
+        //        publicAvatarSetting.ReceiveValue();
+        //    }
+        //}
 
-        CustomAvatar.CustomAvatar GetSelectedAvatar()
-        {
-            if (ModelSaberAPI.cachedAvatars.TryGetValue(Config.Instance.PublicAvatarHash, out CustomAvatar.CustomAvatar avatar))
-            {
-                return avatar;
-            }
-            else
-            {
-                return null;// CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault();
-            }
-        }
+        //CustomAvatar.CustomAvatar GetSelectedAvatar()
+        //{
+        //    if (ModelSaberAPI.cachedAvatars.TryGetValue(Config.Instance.PublicAvatarHash, out CustomAvatar.CustomAvatar avatar))
+        //    {
+        //        return avatar;
+        //    }
+        //    else
+        //    {
+        //        return null;// CustomAvatar.Plugin.Instance.AvatarLoader.Avatars.FirstOrDefault();
+        //    }
+        //}
 
         [UIComponent("public-avatar-setting")]
         public DropDownListSetting publicAvatarSetting;
@@ -104,12 +104,12 @@ namespace BeatSaberMultiplayer.UI
             set { InGameOnlineController.Instance.SetSeparatePublicAvatarState(value); }
         }
 
-        [UIValue("public-avatar-value")]
-        public object publicAvater
-        {
-            get { return GetSelectedAvatar(); }
-            set { InGameOnlineController.Instance.SetSeparatePublicAvatarHash(ModelSaberAPI.cachedAvatars.FirstOrDefault(x => x.Value == (value as CustomAvatar.CustomAvatar)).Key); }
-        }
+        //[UIValue("public-avatar-value")]
+        //public object publicAvater
+        //{
+        //    get { return GetSelectedAvatar(); }
+        //    set { InGameOnlineController.Instance.SetSeparatePublicAvatarHash(ModelSaberAPI.cachedAvatars.FirstOrDefault(x => x.Value == (value as CustomAvatar.CustomAvatar)).Key); }
+        //}
 
         [UIValue("public-avatar-options")]
         public List<object> publicAvatars = new List<object>() { null };
