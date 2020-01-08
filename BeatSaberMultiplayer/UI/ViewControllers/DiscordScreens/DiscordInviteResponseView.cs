@@ -9,7 +9,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
 {
     class DiscordInviteResponseView : BSMLResourceViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens.DiscordInviteResponseView";
+        public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
         public User user;
         public Activity activity;

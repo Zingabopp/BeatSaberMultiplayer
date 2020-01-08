@@ -21,10 +21,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         void TransferHostButtonWasPressed(PlayerInfo player);
     }
 
-    class PlayerManagementViewController : BSMLViewController, IPlayerManagementButtons
+    class PlayerManagementViewController : BSMLResourceViewController, IPlayerManagementButtons
     {
-        public string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.PlayerManagementViewController";
-        public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(PlayerManagementViewController));
+        public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
         public event Action gameplayModifiersChanged;
         public event Action<PlayerInfo> transferHostButtonPressed;

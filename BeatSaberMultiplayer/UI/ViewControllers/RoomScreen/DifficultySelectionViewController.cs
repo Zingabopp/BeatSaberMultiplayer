@@ -17,10 +17,9 @@ using Image = UnityEngine.UI.Image;
 
 namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
-    class DifficultySelectionViewController : BSMLViewController
+    class DifficultySelectionViewController : BSMLResourceViewController
     {
-        public string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.DifficultySelectionViewController";
-        public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(DifficultySelectionViewController));
+        public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
         public event Action discardPressed;
         public event Action levelOptionsChanged;
         public event Action<IBeatmapLevel, BeatmapCharacteristicSO, BeatmapDifficulty> playPressed;

@@ -85,14 +85,6 @@ namespace BeatSaberMultiplayerLite
                 log.Debug(ex);
             }
             */
-            try
-            {
-                ResourcesStorage.RoomScreenResources.Load();
-            }
-            catch(Exception ex)
-            {
-                Plugin.log.Error(ex);
-            }
         }
         /*
         private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)
