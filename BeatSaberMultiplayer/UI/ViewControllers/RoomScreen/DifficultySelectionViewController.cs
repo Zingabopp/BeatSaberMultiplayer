@@ -2,8 +2,8 @@
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Misc;
 using HMUI;
 using Polyglot;
 using System;
@@ -15,11 +15,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     class DifficultySelectionViewController : BSMLViewController
     {
-        public string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.DifficultySelectionViewController";
+        public string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.DifficultySelectionViewController";
         public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(DifficultySelectionViewController));
         public event Action discardPressed;
         public event Action levelOptionsChanged;

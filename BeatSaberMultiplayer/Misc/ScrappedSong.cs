@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BeatSaberMultiplayer.Misc
+namespace BeatSaberMultiplayerLite.Misc
 {
     public struct ScrappedSong
     {

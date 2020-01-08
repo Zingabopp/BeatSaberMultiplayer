@@ -2,7 +2,7 @@
 using System;
 using System.IO;
 
-namespace BeatSaberMultiplayer.Data
+namespace BeatSaberMultiplayerLite.Data
 {
     [Serializable]
     public class RoomPreset

@@ -1,12 +1,12 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components.Settings;
-using BeatSaberMultiplayer.Misc;
+using BeatSaberMultiplayerLite.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.UI
+namespace BeatSaberMultiplayerLite.UI
 {
     class Settings : MonoBehaviour
     {

@@ -1,9 +1,9 @@
 ﻿using BeatSaberMarkupLanguage;
-using BeatSaberMultiplayer.Misc;
+using BeatSaberMultiplayerLite.Misc;
 using HMUI;
 using System;
 
-namespace BeatSaberMultiplayer.UI.FlowCoordinators
+namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 {
     class ModeSelectionFlowCoordinator : FlowCoordinator
     {

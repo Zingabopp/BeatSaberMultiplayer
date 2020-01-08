@@ -1,4 +1,4 @@
-﻿using BeatSaberMultiplayer.Misc;
+﻿using BeatSaberMultiplayerLite.Misc;
 using HMUI;
 using System;
 using System.Collections.Generic;
@@ -6,19 +6,19 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using BeatSaberMultiplayer.UI.FlowCoordinators;
+using BeatSaberMultiplayerLite.UI.FlowCoordinators;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BS_Utils.Utilities;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     public enum TopButtonsState { Select, SortBy, Search, Mode };
 
     class SongSelectionViewController : BSMLViewController, TableView.IDataSource
     {
-        public string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.SongSelectionViewController";
+        public string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.SongSelectionViewController";
         public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(SongSelectionViewController));
 
         public event Action<IPreviewBeatmapLevel> SongSelected;

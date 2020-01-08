@@ -1,10 +1,10 @@
-﻿using BeatSaberMultiplayer.Data;
+﻿using BeatSaberMultiplayerLite.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace BeatSaberMultiplayer.Misc
+namespace BeatSaberMultiplayerLite.Misc
 {
     public static class PresetsCollection
     {

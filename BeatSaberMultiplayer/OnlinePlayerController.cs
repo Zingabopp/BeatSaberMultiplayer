@@ -1,14 +1,14 @@
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.OverriddenClasses;
-using BeatSaberMultiplayer.VOIP;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.OverriddenClasses;
+using BeatSaberMultiplayerLite.VOIP;
 using BS_Utils.Utilities;
 using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     public class OnlinePlayerController : PlayerController
     {

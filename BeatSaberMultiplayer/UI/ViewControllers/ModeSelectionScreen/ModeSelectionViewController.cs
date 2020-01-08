@@ -1,17 +1,17 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayer.Misc;
+using BeatSaberMultiplayerLite.Misc;
 using System;
 using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.ModeSelectionScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
 {
     class ModeSelectionViewController : BSMLResourceViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.ModeSelectionScreen.ModeSelectionViewController";
+        public override string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen.ModeSelectionViewController";
 
         public event Action didSelectRooms;
         public event Action didSelectRadio;
@@ -86,11 +86,17 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.ModeSelectionScreen
                 //}
                 //else
                     _avatarsLoadingRect.gameObject.SetActive(false);
+                try
+                {
+                    var pluginVersion = IPA.Loader.PluginManager.GetPlugin("Beat Saber Multiplayer Lite").Metadata.Version.ToString();
+                    var pluginBuild = pluginVersion.Substring(pluginVersion.LastIndexOf('.') + 1);
 
-                var pluginVersion = IPA.Loader.PluginManager.GetPlugin("Beat Saber Multiplayer").Metadata.Version.ToString();
-                var pluginBuild = pluginVersion.Substring(pluginVersion.LastIndexOf('.') + 1);
-
-                _versionText.text = $"v{pluginVersion}{(!int.TryParse(pluginBuild, out var buildNumber) ? " <color=red>(UNSTABLE)</color>" : "")}";
+                    _versionText.text = $"v{pluginVersion}{(!int.TryParse(pluginBuild, out var buildNumber) ? " <color=red>(UNSTABLE)</color>" : "")}";
+                }catch(Exception ex)
+                {
+                    Plugin.log.Error($"Error getting version text: {ex.Message}");
+                    _versionText.text = "ERROR";
+                }
             }
         }
 

@@ -1,7 +1,7 @@
 ﻿using Lidgren.Network;
 using NSpeex;
 
-namespace BeatSaberMultiplayer.VOIP
+namespace BeatSaberMultiplayerLite.VOIP
 {
     //https://github.com/DwayneBull/UnityVOIP/blob/master/VoipFragment.cs
     public struct VoipFragment

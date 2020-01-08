@@ -1,9 +1,9 @@
-﻿using BeatSaberMultiplayer.UI;
+﻿using BeatSaberMultiplayerLite.UI;
 using NSpeex;
 using System;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.VOIP
+namespace BeatSaberMultiplayerLite.VOIP
 {
     //https://github.com/DwayneBull/UnityVOIP/blob/master/VoipListener.cs
     public class VoipListener : MonoBehaviour

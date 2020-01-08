@@ -1,7 +1,7 @@
 ﻿using Lidgren.Network;
 using SimpleJSON;
 
-namespace BeatSaberMultiplayer.Data
+namespace BeatSaberMultiplayerLite.Data
 {
     public enum ChannelState : byte { InGame, Voting, NextSong, Results };
 

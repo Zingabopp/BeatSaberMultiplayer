@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     [Serializable]
     public class Config {
@@ -13,11 +13,6 @@ namespace BeatSaberMultiplayer
         [SerializeField] private string _modVersion;
         [SerializeField] private string[] _serverHubIPs;
         [SerializeField] private int[] _serverHubPorts;
-        [SerializeField] private bool _showAvatarsInGame;
-        [SerializeField] private bool _showOtherPlayersBlocks;
-        [SerializeField] private bool _showAvatarsInRoom;
-        [SerializeField] private bool _downloadAvatars;
-        [SerializeField] private bool _separateAvatarForMultiplayer;
         [SerializeField] private string _publicAvatarHash;
         [SerializeField] private bool _spectatorMode;
         [SerializeField] private int _submitScores;
@@ -168,73 +163,6 @@ namespace BeatSaberMultiplayer
             }
         }
 
-        public bool ShowAvatarsInGame
-        {
-            get { return false; }
-            set
-            {
-                _showAvatarsInGame = value;
-                MarkDirty();
-            }
-        }
-
-        public bool ShowOtherPlayersBlocks
-        {
-            get { return _showOtherPlayersBlocks; }
-            set
-            {
-                _showOtherPlayersBlocks = value;
-                MarkDirty();
-            }
-        }
-
-        public bool ShowAvatarsInRoom
-        {
-            get { return false; }
-            set
-            {
-                _showAvatarsInRoom = value;
-                MarkDirty();
-            }
-        }
-
-        public bool DownloadAvatars
-        {
-            get { return false; }
-            set
-            {
-                _downloadAvatars = value;
-                MarkDirty();
-            }
-        }
-
-        public bool SeparateAvatarForMultiplayer
-        {
-            get { return false; }
-            set
-            {
-                _separateAvatarForMultiplayer = value;
-                MarkDirty();
-            }
-        }
-
-        public string PublicAvatarHash
-        {
-            get { return _publicAvatarHash; }
-            set
-            {
-                if (value == null)
-                {
-                    _publicAvatarHash = Data.PlayerInfo.avatarHashPlaceholder;
-                }
-                else
-                {
-                    _publicAvatarHash = value;
-                }
-                MarkDirty();
-            }
-        }
-
         public bool SpectatorMode
         {
             get { return _spectatorMode; }
@@ -340,13 +268,7 @@ namespace BeatSaberMultiplayer
             _modVersion = string.Empty;
             _serverHubIPs = new string[0];
             _serverHubPorts = new int[0];
-            _showAvatarsInGame = false;
-            _showOtherPlayersBlocks = false;
-            _showAvatarsInRoom = false;
-            _downloadAvatars = false;
             _spectatorMode = false;
-            _separateAvatarForMultiplayer = false;
-            _publicAvatarHash = Data.PlayerInfo.avatarHashPlaceholder;
             _submitScores = 2;
             _beatSaverURL = "https://beatsaver.com";
 

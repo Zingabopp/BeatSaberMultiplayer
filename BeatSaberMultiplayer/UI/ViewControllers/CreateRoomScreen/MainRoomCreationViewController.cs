@@ -2,17 +2,17 @@
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayer.Data;
+using BeatSaberMultiplayerLite.Data;
 using BS_Utils.Gameplay;
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.CreateRoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
 {
     class MainRoomCreationViewController : BSMLResourceViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.CreateRoomScreen.MainRoomCreationViewController";
+        public override string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen.MainRoomCreationViewController";
 
         public event Action didFinishEvent;
         public event Action<RoomSettings> CreatedRoom;

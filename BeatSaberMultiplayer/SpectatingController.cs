@@ -2,15 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Misc;
 using IPA.Utilities;
 using Lidgren.Network;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     public class ReplayData
     {

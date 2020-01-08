@@ -31,11 +31,11 @@
               <text id="bombs-count-text" text="--" align="Center"/>
             </vertical>
             <vertical>
-              <img src="BeatSaberMultiplayer.Assets.StarIcon.png" preserve-aspect="true"  pref-width="4" pref-height="4"/>
+              <img src="BeatSaberMultiplayerLite.Assets.StarIcon.png" preserve-aspect="true"  pref-width="4" pref-height="4"/>
               <text id="stars-text" text="--" align="Center"/>
             </vertical>
             <vertical>
-              <img src="BeatSaberMultiplayer.Assets.RatingIcon.png" preserve-aspect="true"  pref-width="4" pref-height="4"/>
+              <img src="BeatSaberMultiplayerLite.Assets.RatingIcon.png" preserve-aspect="true"  pref-width="4" pref-height="4"/>
               <text id="rating-text" text="--" align="Center"/>
             </vertical>
           </horizontal>
@@ -56,8 +56,8 @@
           <vertical vertical-fit='PreferredSize'>
             <text id='loading-progress-text' text='0.00%' font-size='5.5' align='Center' pref-height='8'/>
             <stack child-align='MiddleLeft' horizontal-fit='PreferredSize' child-expand-width='false'>
-              <raw-image id='progress-bar-bg' src='BeatSaberMultiplayer.Assets.WhitePixel.png' pref-width='60' pref-height='6' />
-              <raw-image id='progress-bar-top' src='BeatSaberMultiplayer.Assets.WhitePixel.png' ignore-layout='true' size-delta-y='6' anchor-pos-x='-30' pivot-x='0' />
+              <raw-image id='progress-bar-bg' src='BeatSaberMultiplayerLite.Assets.WhitePixel.png' pref-width='60' pref-height='6' />
+              <raw-image id='progress-bar-top' src='BeatSaberMultiplayerLite.Assets.WhitePixel.png' ignore-layout='true' size-delta-y='6' anchor-pos-x='-30' pivot-x='0' />
             </stack>
           </vertical>
         </bg>

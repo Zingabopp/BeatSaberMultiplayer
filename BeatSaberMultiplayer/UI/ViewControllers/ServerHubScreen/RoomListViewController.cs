@@ -1,8 +1,8 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.UI.FlowCoordinators;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.UI.FlowCoordinators;
 using HMUI;
 using System;
 using System.Collections.Generic;
@@ -11,11 +11,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.ServerHubScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
 {
     class RoomListViewController : BSMLResourceViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.ServerHubScreen.RoomListViewController";
+        public override string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen.RoomListViewController";
 
         public event Action createRoomButtonPressed;
         public event Action<ServerHubRoom> selectedRoom;

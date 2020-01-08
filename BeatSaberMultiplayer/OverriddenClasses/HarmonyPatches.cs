@@ -1,9 +1,9 @@
-﻿using BeatSaberMultiplayer.Data;
+﻿using BeatSaberMultiplayerLite.Data;
 using Harmony;
 using IPA.Utilities;
 using System;
 
-namespace BeatSaberMultiplayer.OverriddenClasses
+namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
     [HarmonyPatch(typeof(BeatmapObjectSpawnController))]
     [HarmonyPatch("HandleNoteWasCut")]

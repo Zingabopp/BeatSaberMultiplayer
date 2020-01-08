@@ -1,4 +1,4 @@
-﻿using BeatSaberMultiplayer.Data;
+﻿using BeatSaberMultiplayerLite.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,12 +8,12 @@ using UnityEngine;
 using Lidgren.Network;
 using BS_Utils.Gameplay;
 using System.Reflection;
-using BeatSaberMultiplayer.UI.ViewControllers.ServerHubScreen;
+using BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen;
 using HMUI;
 using BeatSaberMarkupLanguage;
 using BS_Utils.Utilities;
 
-namespace BeatSaberMultiplayer.UI.FlowCoordinators
+namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 {
 
     public struct ServerHubRoom

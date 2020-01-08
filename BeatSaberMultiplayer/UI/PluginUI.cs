@@ -1,9 +1,9 @@
 ﻿using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.FloatingScreen;
 using BeatSaberMarkupLanguage.Settings;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.UI.FlowCoordinators;
-using BeatSaberMultiplayer.UI.ViewControllers.DiscordScreens;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.UI.FlowCoordinators;
+using BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens;
 using BS_Utils.Gameplay;
 using BS_Utils.Utilities;
 using Discord;
@@ -19,7 +19,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-namespace BeatSaberMultiplayer.UI
+namespace BeatSaberMultiplayerLite.UI
 {
     class PluginUI : MonoBehaviour
     {
@@ -118,7 +118,7 @@ namespace BeatSaberMultiplayer.UI
                 StartCoroutine(CheckVersion());
 
                 _settings = new GameObject("Multiplayer Settings").AddComponent<Settings>();
-                BSMLSettings.instance.AddSettingsMenu("Multiplayer", "BeatSaberMultiplayer.UI.Settings", _settings);
+                BSMLSettings.instance.AddSettingsMenu("Multiplayer", "BeatSaberMultiplayerLite.UI.Settings", _settings);
             }
             catch (Exception e)
             {
@@ -250,25 +250,31 @@ namespace BeatSaberMultiplayer.UI
             www.timeout = 10;
 
             yield return www.SendWebRequest();
-
-            if (!www.isNetworkError && !www.isHttpError)
+            try
             {
-                JSONNode releases = JSON.Parse(www.downloadHandler.text);
-
-                JSONNode latestRelease = releases[0];
-
-                SemVer.Version currentVer = IPA.Loader.PluginManager.GetPlugin("Beat Saber Multiplayer").Metadata.Version;
-                SemVer.Version githubVer = new SemVer.Version(latestRelease["tag_name"], true);
-
-                bool newTag = new SemVer.Range($">{currentVer}").IsSatisfied(githubVer);
-
-                if (newTag)
+                if (!www.isNetworkError && !www.isHttpError)
                 {
-                    Plugin.log.Info($"An update for the mod is available!\nNew mod version: {(string)latestRelease["tag_name"]}\nCurrent mod version: {currentVer}");
-                    _newVersionText.gameObject.SetActive(true);
-                    _newVersionText.text = $"Version {(string)latestRelease["tag_name"]}\n of the mod is available!\nCurrent mod version: {currentVer}";
-                    _newVersionText.alignment = TextAlignmentOptions.Center;
+                    JSONNode releases = JSON.Parse(www.downloadHandler.text);
+
+                    JSONNode latestRelease = releases[0];
+
+                    SemVer.Version currentVer = IPA.Loader.PluginManager.GetPlugin("Beat Saber Multiplayer Lite").Metadata.Version;
+                    SemVer.Version githubVer = new SemVer.Version(latestRelease["tag_name"], true);
+
+                    bool newTag = new SemVer.Range($">{currentVer}").IsSatisfied(githubVer);
+
+                    if (newTag)
+                    {
+                        Plugin.log.Info($"An update for the mod is available!\nNew mod version: {(string)latestRelease["tag_name"]}\nCurrent mod version: {currentVer}");
+                        _newVersionText.gameObject.SetActive(true);
+                        _newVersionText.text = $"Version {(string)latestRelease["tag_name"]}\n of the mod is available!\nCurrent mod version: {currentVer}";
+                        _newVersionText.alignment = TextAlignmentOptions.Center;
+                    }
                 }
+            }catch(Exception ex)
+            {
+                Plugin.log.Error($"Error checking version: {ex.Message}");
+                Plugin.log.Debug(ex);
             }
         }
     }

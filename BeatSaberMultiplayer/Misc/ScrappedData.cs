@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace BeatSaberMultiplayer.Misc
+namespace BeatSaberMultiplayerLite.Misc
 {
     public class ScrappedData : MonoBehaviour
     {

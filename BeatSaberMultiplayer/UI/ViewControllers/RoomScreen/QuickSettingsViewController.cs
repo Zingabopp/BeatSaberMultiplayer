@@ -3,7 +3,7 @@ using HMUI;
 using System.Reflection;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     class QuickSettingsViewController : ViewController
     {

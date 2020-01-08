@@ -1,8 +1,8 @@
 ﻿using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Components;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.UI.ViewControllers.RoomScreen;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen;
 using BS_Utils.Utilities;
 using Discord;
 using HMUI;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.UI.FlowCoordinators
+namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 {
     public enum SortMode { Default, Difficulty, Newest };
 
@@ -51,7 +51,7 @@ namespace BeatSaberMultiplayer.UI.FlowCoordinators
         ModalKeyboard _searchKeyboard;
         SongSelectionViewController _songSelectionViewController;
         DifficultySelectionViewController _difficultySelectionViewController;
-        BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.ResultsViewController _resultsViewController;
+        BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.ResultsViewController _resultsViewController;
         PlayingNowViewController _playingNowViewController;
         LevelPacksUIViewController _levelPacksViewController;
 
@@ -1004,7 +1004,7 @@ namespace BeatSaberMultiplayer.UI.FlowCoordinators
         {
             if (_resultsViewController == null)
             {
-                _resultsViewController = BeatSaberUI.CreateViewController<BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.ResultsViewController>();
+                _resultsViewController = BeatSaberUI.CreateViewController<BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.ResultsViewController>();
             }
             if (_roomNavigationController.viewControllers.IndexOf(_resultsViewController) < 0)
             {

@@ -1,11 +1,11 @@
-﻿using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
+﻿using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Misc;
 using SongCore.Utilities;
 using TMPro;
 using UnityEngine;
 using Image = UnityEngine.UI.Image;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     public class PlayerInfoDisplay : MonoBehaviour
     {

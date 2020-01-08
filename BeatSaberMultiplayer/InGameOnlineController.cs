@@ -1,8 +1,8 @@
-﻿using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.OverriddenClasses;
-using BeatSaberMultiplayer.UI;
-using BeatSaberMultiplayer.VOIP;
+﻿using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.OverriddenClasses;
+using BeatSaberMultiplayerLite.UI;
+using BeatSaberMultiplayerLite.VOIP;
 using BS_Utils.Gameplay;
 //using CustomAvatar;
 using Lidgren.Network;
@@ -18,7 +18,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.XR;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     public enum MessagePosition : byte { Top, Bottom };
 
@@ -76,7 +76,7 @@ namespace BeatSaberMultiplayer
 
         SpeexCodex speexDec;
         private VoipListener voiceChatListener;
-        
+
         public static void OnLoad()
         {
             if (Instance != null)
@@ -94,7 +94,7 @@ namespace BeatSaberMultiplayer
                 Client.Instance.MessageReceived -= PacketReceived;
                 Client.Instance.MessageReceived += PacketReceived;
                 _currentScene = SceneManager.GetActiveScene().name;
-                
+
                 _messageDisplayText = CustomExtensions.CreateWorldText(transform, "");
                 transform.position = new Vector3(40f, -43.75f, 3.75f);
                 transform.rotation = Quaternion.Euler(-30f, 0f, 0f);
@@ -112,10 +112,10 @@ namespace BeatSaberMultiplayer
                     voiceChatListener.OnAudioGenerated += ProcesVoiceFragment;
 
                     DontDestroyOnLoad(voiceChatListener.gameObject);
-                    
+
                     isVoiceChatActive = true;
                 }
-                
+
             }
         }
 
@@ -140,7 +140,7 @@ namespace BeatSaberMultiplayer
                 isRecording = false;
                 voiceChatListener.isListening = isRecording;
             }
-            
+
             isVoiceChatActive = enabled;
         }
 
@@ -169,7 +169,8 @@ namespace BeatSaberMultiplayer
         {
             if (players != null)
             {
-                foreach (var player in players.Values.Where(x => x != null && !x.destroyed)) {
+                foreach (var player in players.Values.Where(x => x != null && !x.destroyed))
+                {
                     player.SetVoIPVolume(volume);
                 }
             }
@@ -188,64 +189,32 @@ namespace BeatSaberMultiplayer
 
         public bool VoiceChatIsTalking(ulong playerId)
         {
-            if(Config.Instance.EnableVoiceChat && players != null)
+            if (Config.Instance.EnableVoiceChat && players != null)
                 if (playerId == Client.Instance.playerInfo.playerId)
                     return isRecording;
                 else
                     if (players.TryGetValue(playerId, out OnlinePlayerController player))
-                        if (player != null && !player.destroyed)
-                            return player.IsTalking();
-                        else
-                            return false;
+                    if (player != null && !player.destroyed)
+                        return player.IsTalking();
                     else
                         return false;
+                else
+                    return false;
             else
                 return false;
         }
 
-        public void SetSeparatePublicAvatarState(bool enabled)
-        {
-            Config.Instance.SeparateAvatarForMultiplayer = enabled;
-
-            if (Client.Instance.connected)
-            {
-                if (enabled)
-                {
-                    Client.Instance.playerInfo.avatarHash = Config.Instance.PublicAvatarHash;
-
-                    if (string.IsNullOrEmpty(Client.Instance.playerInfo.avatarHash))
-                    {
-                        Client.Instance.playerInfo.avatarHash = PlayerInfo.avatarHashPlaceholder;
-                    }
-                }
-                else
-                {
-                    Client.Instance.playerInfo.avatarHash = null;// ModelSaberAPI.cachedAvatars.FirstOrDefault(x => x.Value == CustomAvatar.Plugin.Instance.PlayerAvatarManager.GetCurrentAvatar()).Key;
-
-                    if (Client.Instance.playerInfo.avatarHash == null)
-                    {
-                        Client.Instance.playerInfo.avatarHash = PlayerInfo.avatarHashPlaceholder;
-                    }
-                }
-            }
-        }
-
-        public void SetSeparatePublicAvatarHash(string hash)
-        {
-            Config.Instance.PublicAvatarHash = hash;
-            if (Client.Instance.connected && Config.Instance.SeparateAvatarForMultiplayer)
-            {
-                Client.Instance.playerInfo.avatarHash = Config.Instance.PublicAvatarHash;
-            }
-        }
 
         public bool IsPlayerVisible(ulong playerId)
         {
-            if(players.TryGetValue(playerId, out OnlinePlayerController player))
+            if (players.TryGetValue(playerId, out OnlinePlayerController player))
             {
+                return false;
+                /*
                 return  (player.playerInfo.updateInfo.playerState == PlayerState.Game && _currentScene == _gameSceneName && Config.Instance.ShowAvatarsInGame && !Config.Instance.SpectatorMode) ||
                         (player.playerInfo.updateInfo.playerState == PlayerState.Room && _currentScene == _menuSceneName && Config.Instance.ShowAvatarsInRoom) ||
                         (player.playerInfo.updateInfo.playerState == PlayerState.DownloadingSongs && _currentScene == _menuSceneName && Config.Instance.ShowAvatarsInRoom);
+                */
             }
             else
                 return false;
@@ -285,7 +254,7 @@ namespace BeatSaberMultiplayer
 
         public void PacketReceived(NetIncomingMessage msg)
         {
-            if(msg == null)
+            if (msg == null)
             {
                 if (_currentScene == _gameSceneName && _loaded)
                 {
@@ -348,7 +317,7 @@ namespace BeatSaberMultiplayer
 
                                     byte hitCount = msg.ReadByte();
 
-                                    if(player.playerInfo.hitsLastUpdate.Count > 0)
+                                    if (player.playerInfo.hitsLastUpdate.Count > 0)
                                         player.playerInfo.hitsLastUpdate.Clear();
 
                                     for (int j = 0; j < hitCount; j++)
@@ -375,14 +344,14 @@ namespace BeatSaberMultiplayer
                                     sendFullUpdate = true;
                                     new PlayerUpdate(msg);
                                     byte hitCount = msg.ReadByte();
-                                    msg.ReadBytes(hitCount*5);
+                                    msg.ReadBytes(hitCount * 5);
                                 }
                             }
 
                             if (player != null)
                             {
                                 //player.SetAvatarState(!Client.Instance.inRadioMode && IsPlayerVisible(player.playerInfo.playerId));
-                                player.SetBlocksState(!Client.Instance.inRadioMode &&  _currentScene == _gameSceneName && Config.Instance.ShowOtherPlayersBlocks && !Client.Instance.playerInfo.Equals(player.playerInfo) && !Config.Instance.SpectatorMode && player.playerInfo.updateInfo.playerState == PlayerState.Game);
+                                //player.SetBlocksState(!Client.Instance.inRadioMode && _currentScene == _gameSceneName && Config.Instance.ShowOtherPlayersBlocks && !Client.Instance.playerInfo.Equals(player.playerInfo) && !Config.Instance.SpectatorMode && player.playerInfo.updateInfo.playerState == PlayerState.Game);
                             }
                         }
 
@@ -391,7 +360,7 @@ namespace BeatSaberMultiplayer
                         int localPlayerIndex = _playerIds.IndexOf(Client.Instance.playerInfo.playerId);
                         bool needToRemovePlayer = false;
 
-                        for(int i = 0; i < playerScores.Count; i++)
+                        for (int i = 0; i < playerScores.Count; i++)
                         {
                             playerScores[i] = default;
                         }
@@ -430,7 +399,7 @@ namespace BeatSaberMultiplayer
                                     }
                                 }
 
-                            foreach(ulong key in removed)
+                            foreach (ulong key in removed)
                                 players.Remove(key);
                         }
 
@@ -449,7 +418,7 @@ namespace BeatSaberMultiplayer
 
                                     var rotator = GameObject.FindObjectOfType<FlyingGameHUDRotation>();
 
-                                    if(rotator != null)
+                                    if (rotator != null)
                                     {
                                         _scoreScreen.transform.SetParent(rotator.transform, true);
                                         _scoreScreen.transform.position = new Vector3(0f, 5f, 12f);
@@ -550,7 +519,7 @@ namespace BeatSaberMultiplayer
                                         Plugin.log.Debug("New Speex decoder created!");
                                     }
 
-                                    if(players.TryGetValue(data.playerId, out OnlinePlayerController player))
+                                    if (players.TryGetValue(data.playerId, out OnlinePlayerController player))
                                     {
                                         player?.PlayVoIPFragment(speexDec.Decode(data.data), data.index);
                                     }
@@ -604,7 +573,7 @@ namespace BeatSaberMultiplayer
                     }; break;
             }
         }
-        
+
         public void Update()
         {
             if (!Client.Instance.connected)
@@ -613,10 +582,10 @@ namespace BeatSaberMultiplayer
             if (_messageDisplayTime > 0f)
             {
                 _messageDisplayTime -= Time.deltaTime;
-                if(_messageDisplayTime <= 0f)
+                if (_messageDisplayTime <= 0f)
                 {
                     _messageDisplayTime = 0f;
-                    if(_messageDisplayText != null)
+                    if (_messageDisplayText != null)
                         _messageDisplayText.text = "";
                 }
             }
@@ -697,7 +666,7 @@ namespace BeatSaberMultiplayer
                     _PTTReleaseTime = Time.time;
                     _waitingForRecordingDelay = true;
                 }
-                else if(!isRecording && voiceChatListener.isListening && Time.time - _PTTReleaseTime < _PTTReleaseDelay)
+                else if (!isRecording && voiceChatListener.isListening && Time.time - _PTTReleaseTime < _PTTReleaseDelay)
                 {
                     //Do nothing
                 }
@@ -715,7 +684,7 @@ namespace BeatSaberMultiplayer
                     _fixedSendRate = 0;
                     Plugin.log.Info($"Variable send rate");
                 }
-                else if(Input.GetKeyDown(KeyCode.Keypad1))
+                else if (Input.GetKeyDown(KeyCode.Keypad1))
                 {
                     _fixedSendRate = 1;
                     Plugin.log.Info($"Forced full send rate");
@@ -725,7 +694,7 @@ namespace BeatSaberMultiplayer
                     _fixedSendRate = 2;
                     Plugin.log.Info($"Forced half send rate");
                 }
-                else if(Input.GetKeyDown(KeyCode.Keypad3))
+                else if (Input.GetKeyDown(KeyCode.Keypad3))
                 {
                     _fixedSendRate = 3;
                     Plugin.log.Info($"Forced one third send rate");
@@ -788,12 +757,13 @@ namespace BeatSaberMultiplayer
 
             if (Client.Instance.playerInfo.avatarHash == null || Client.Instance.playerInfo.avatarHash.Length == 0 || Client.Instance.playerInfo.avatarHash == PlayerInfo.avatarHashPlaceholder)
             {
+                /*
                 if (Config.Instance.SeparateAvatarForMultiplayer)
                 {
                     Client.Instance.playerInfo.avatarHash = Config.Instance.PublicAvatarHash;
                     sendFullUpdate = true;
                 }
-                else
+                else*/
                 {
                     Client.Instance.playerInfo.avatarHash = null; //ModelSaberAPI.cachedAvatars.FirstOrDefault(x => x.Value == CustomAvatar.Plugin.Instance.PlayerAvatarManager.GetCurrentAvatar()).Key;
                     sendFullUpdate = true;
@@ -806,7 +776,7 @@ namespace BeatSaberMultiplayer
 #endif
             }
 
-            if(_avatarInput == null)
+            if (_avatarInput == null)
             {
                 _avatarInput = PlayerAvatarInput.instance;//CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput;
             }
@@ -843,7 +813,7 @@ namespace BeatSaberMultiplayer
             //}
             //else
             //{
-                Client.Instance.playerInfo.updateInfo.fullBodyTracking = false;
+            Client.Instance.playerInfo.updateInfo.fullBodyTracking = false;
             //}
 
             if (_vrPlatformHelper == null)
@@ -870,7 +840,7 @@ namespace BeatSaberMultiplayer
             {
                 Client.Instance.playerInfo.updateInfo.playerProgress = audioTimeSync.songTime;
             }
-            else if(Client.Instance.playerInfo.updateInfo.playerState != PlayerState.DownloadingSongs && Client.Instance.playerInfo.updateInfo.playerState != PlayerState.Game)
+            else if (Client.Instance.playerInfo.updateInfo.playerState != PlayerState.DownloadingSongs && Client.Instance.playerInfo.updateInfo.playerState != PlayerState.Game)
             {
                 Client.Instance.playerInfo.updateInfo.playerProgress = 0;
             }
@@ -893,28 +863,19 @@ namespace BeatSaberMultiplayer
             sendFullUpdate = false;
         }
 
-        private bool ShowAvatarsInGame()
-        {
-            return Config.Instance.ShowAvatarsInGame && _currentScene == _gameSceneName;
-        }
-
-        private bool ShowAvatarsInRoom()
-        {
-            return Config.Instance.ShowAvatarsInRoom && _currentScene == _menuSceneName;
-        }
-
         public void DestroyPlayerControllers()
         {
             try
             {
-                foreach(var playerPair in players)
+                foreach (var playerPair in players)
                 {
                     if (playerPair.Value != null && !playerPair.Value.destroyed)
                         Destroy(playerPair.Value.gameObject);
                 }
                 players.Clear();
                 Plugin.log.Debug("Destroyed player controllers!");
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Plugin.log.Critical(e);
             }
@@ -966,11 +927,11 @@ namespace BeatSaberMultiplayer
 
                 if (Config.Instance.SpectatorMode) reasons.Add("Spectator mode");
                 if (Client.disableScoreSubmission) reasons.Add("Multiplayer score submission disabled by another mod");
-                if (ScoreSubmission.Disabled) reasons.Add("Score submission is disabled by "+ ScoreSubmission.ModString);
+                if (ScoreSubmission.Disabled) reasons.Add("Score submission is disabled by " + ScoreSubmission.ModString);
                 if (ScoreSubmission.ProlongedDisabled) reasons.Add("Score submission is disabled for a prolonged time by " + ScoreSubmission.ProlongedModString);
                 if (practice) reasons.Add("Practice mode");
 
-                Plugin.log.Warn("\nScore submission is disabled! Reason:\n" +string.Join(",\n", reasons));
+                Plugin.log.Warn("\nScore submission is disabled! Reason:\n" + string.Join(",\n", reasons));
                 return;
             }
 
@@ -1017,7 +978,7 @@ namespace BeatSaberMultiplayer
                     return;
                 }
             }
-            
+
             dataModel.playerData.playerAllOverallStatsData.UpdateSoloFreePlayOverallStatsData(levelCompletionResults, difficultyBeatmap);
             dataModel.Save();
 
@@ -1066,7 +1027,7 @@ namespace BeatSaberMultiplayer
             audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault(x => !(x is OnlineAudioTimeController));
 
             _pauseMenuManager = FindObjectsOfType<PauseMenuManager>().First();
-            
+
             if (_pauseMenuManager != null)
             {
                 _pauseMenuManager.GetPrivateField<Button>("_restartButton").interactable = false;
@@ -1076,16 +1037,16 @@ namespace BeatSaberMultiplayer
 
             _loaded = true;
         }
-        
+
         private void ShowMenu()
         {
             try
             {
                 _pauseMenuManager.ShowMenu();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Plugin.log.Error("Unable to show menu! Exception: " +e);
+                Plugin.log.Error("Unable to show menu! Exception: " + e);
             }
         }
 

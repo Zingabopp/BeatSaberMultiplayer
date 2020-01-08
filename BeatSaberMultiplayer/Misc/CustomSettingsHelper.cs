@@ -3,7 +3,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.Misc
+namespace BeatSaberMultiplayerLite.Misc
 {
     class CustomSettingsHelper
     {

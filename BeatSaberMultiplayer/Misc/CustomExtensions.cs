@@ -1,4 +1,4 @@
-﻿using BeatSaberMultiplayer.Data;
+﻿using BeatSaberMultiplayerLite.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BeatSaberMultiplayer.Misc
+namespace BeatSaberMultiplayerLite.Misc
 {
     public static class CustomExtensions
     {
@@ -20,7 +20,7 @@ namespace BeatSaberMultiplayer.Misc
                 if(_customTextShader == null)
                 {
                     Plugin.log.Debug("Loading text shader asset bundle...");
-                    AssetBundle assetBundle = AssetBundle.LoadFromStream(Assembly.GetCallingAssembly().GetManifestResourceStream("BeatSaberMultiplayer.Assets.Shader.asset"));
+                    AssetBundle assetBundle = AssetBundle.LoadFromStream(Assembly.GetCallingAssembly().GetManifestResourceStream("BeatSaberMultiplayerLite.Assets.Shader.asset"));
                     _customTextShader = assetBundle.LoadAsset<Shader>("Assets/TextMesh Pro/Resources/Shaders/TMP_SDF_ZeroAlphaWrite_ZWrite.shader");
                 }
                 return _customTextShader;

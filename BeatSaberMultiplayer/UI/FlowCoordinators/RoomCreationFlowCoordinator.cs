@@ -1,14 +1,14 @@
 ﻿using BeatSaberMarkupLanguage;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.UI.ViewControllers.CreateRoomScreen;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen;
 using HMUI;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.UI.FlowCoordinators
+namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 {
     class RoomCreationFlowCoordinator : FlowCoordinator
     {

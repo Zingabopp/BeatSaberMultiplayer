@@ -1,4 +1,4 @@
-﻿using BeatSaberMultiplayer.Misc;
+﻿using BeatSaberMultiplayerLite.Misc;
 using Lidgren.Network;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.Data
+namespace BeatSaberMultiplayerLite.Data
 {
     public class SongInfo
     {

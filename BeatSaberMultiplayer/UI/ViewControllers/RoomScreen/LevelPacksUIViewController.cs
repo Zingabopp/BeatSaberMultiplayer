@@ -8,11 +8,11 @@ using UnityEngine;
 using System.Collections.Generic;
 using BS_Utils.Utilities;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     class LevelPacksUIViewController : BSMLViewController
     {
-        public string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.LevelPacksUIViewController";
+        public string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.LevelPacksUIViewController";
         public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(LevelPacksUIViewController));
 
         public event Action<IAnnotatedBeatmapLevelCollection> packSelected;

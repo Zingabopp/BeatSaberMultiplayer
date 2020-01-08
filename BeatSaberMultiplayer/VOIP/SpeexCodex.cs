@@ -1,7 +1,7 @@
 ﻿using NSpeex;
 using System;
 
-namespace BeatSaberMultiplayer.VOIP
+namespace BeatSaberMultiplayerLite.VOIP
 {
     //https://github.com/DwayneBull/UnityVOIP/blob/master/SpeexCodex.cs
     public class SpeexCodex

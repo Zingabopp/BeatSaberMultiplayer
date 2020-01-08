@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.Misc
+namespace BeatSaberMultiplayerLite.Misc
 {
     static class ControllersHelper
     {

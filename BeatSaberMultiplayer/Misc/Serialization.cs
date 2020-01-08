@@ -1,7 +1,7 @@
 ﻿using Lidgren.Network;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.Misc
+namespace BeatSaberMultiplayerLite.Misc
 {
     static class Serialization
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.VOIP
+namespace BeatSaberMultiplayerLite.VOIP
 {
     //https://github.com/DwayneBull/UnityVOIP/blob/master/AudioUtils.cs
     public static class AudioUtils

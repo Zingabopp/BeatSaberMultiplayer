@@ -1,4 +1,4 @@
-﻿using BeatSaberMultiplayer.Misc;
+﻿using BeatSaberMultiplayerLite.Misc;
 using Lidgren.Network;
 using System;
 using System.Collections;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.Data
+namespace BeatSaberMultiplayerLite.Data
 {
     public enum PlayerState: byte { Disconnected, Lobby, Room, Game, Spectating, DownloadingSongs }
 

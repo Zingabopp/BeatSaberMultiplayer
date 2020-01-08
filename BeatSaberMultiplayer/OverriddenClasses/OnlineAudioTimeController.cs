@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BeatSaberMultiplayer.OverriddenClasses
+namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
     public class OnlineAudioTimeController : AudioTimeSyncController
     {

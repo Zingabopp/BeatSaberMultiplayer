@@ -1,5 +1,5 @@
-﻿//using BeatSaberMultiplayer.Data;
-//using BeatSaberMultiplayer.Misc;
+﻿//using BeatSaberMultiplayerLite.Data;
+//using BeatSaberMultiplayerLite.Misc;
 //using CustomAvatar;
 //using SongCore.Utilities;
 //using System;

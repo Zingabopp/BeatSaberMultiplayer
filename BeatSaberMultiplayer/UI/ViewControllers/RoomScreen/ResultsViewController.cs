@@ -1,8 +1,8 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.UI;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Utilities;
 using HMUI;
 using System;
@@ -14,11 +14,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     class ResultsViewController : BSMLResourceViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.ResultsViewController";
+        public override string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.ResultsViewController";
 
         public IPreviewBeatmapLevel _selectedLevel;
 

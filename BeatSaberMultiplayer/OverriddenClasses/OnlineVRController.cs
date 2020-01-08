@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.XR;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     public class OnlineVRController : VRController
     {

@@ -1,4 +1,4 @@
-﻿using BeatSaberMultiplayer.Data;
+﻿using BeatSaberMultiplayerLite.Data;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +6,7 @@ using Zenject;
 using System.Linq;
 using System.Reflection;
 
-namespace BeatSaberMultiplayer.OverriddenClasses
+namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
     public class OnlineBeatmapCallbackController : BeatmapObjectCallbackController
     {

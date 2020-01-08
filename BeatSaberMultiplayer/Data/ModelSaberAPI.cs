@@ -8,7 +8,7 @@
 //using UnityEngine;
 //using UnityEngine.Networking;
 
-//namespace BeatSaberMultiplayer.Misc
+//namespace BeatSaberMultiplayerLite.Misc
 //{
 //    public static class ModelSaberAPI
 //    {

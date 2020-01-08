@@ -3,7 +3,7 @@ using SimpleJSON;
 using System;
 using System.Collections.Generic;
 
-namespace BeatSaberMultiplayer.Data
+namespace BeatSaberMultiplayerLite.Data
 {
     [Serializable]
     public class RoomSettings

@@ -7,8 +7,8 @@
     <ProjectGuid>{19E76954-2EBA-4761-8AD4-1425CC29EC0E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BeatSaberMultiplayer</RootNamespace>
-    <AssemblyName>BeatSaberMultiplayer</AssemblyName>
+    <RootNamespace>BeatSaberMultiplayerLite</RootNamespace>
+    <AssemblyName>BeatSaberMultiplayerLite</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

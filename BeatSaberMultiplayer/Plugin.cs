@@ -1,5 +1,5 @@
-﻿using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.UI;
+﻿using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
 using Discord;
 using Harmony;
@@ -10,7 +10,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     public class Plugin : IBeatSaberPlugin
     {

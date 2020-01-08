@@ -1,7 +1,7 @@
 ﻿using Lidgren.Network;
 using System.Collections.Generic;
 
-namespace BeatSaberMultiplayer.Data
+namespace BeatSaberMultiplayerLite.Data
 {
     public enum RoomState: byte {SelectingSong, Preparing, InGame, Results }
     public enum SongSelectionType : byte { Manual,  Random }

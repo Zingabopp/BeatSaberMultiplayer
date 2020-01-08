@@ -5,11 +5,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.DiscordScreens
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
 {
     class DiscordInviteResponseView : BSMLResourceViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.DiscordScreens.DiscordInviteResponseView";
+        public override string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens.DiscordInviteResponseView";
 
         public User user;
         public Activity activity;

@@ -1,9 +1,9 @@
-﻿using BeatSaberMultiplayer.Misc;
+﻿using BeatSaberMultiplayerLite.Misc;
 using Lidgren.Network;
 using System;
 using System.Collections;
 
-namespace BeatSaberMultiplayer.Data
+namespace BeatSaberMultiplayerLite.Data
 {
     public struct ExtraPlayerFlags : IEquatable<ExtraPlayerFlags>
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     public static class Sprites
     {
@@ -68,45 +68,45 @@ namespace BeatSaberMultiplayer
 
         public static void ConvertSprites()
         {
-            onlineIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.OnlineIcon.png");
+            onlineIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.OnlineIcon.png");
             onlineIcon.texture.wrapMode = TextureWrapMode.Clamp;
 
-            lockedRoomIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.LockedRoom.png");
+            lockedRoomIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.LockedRoom.png");
             lockedRoomIcon.texture.wrapMode = TextureWrapMode.Clamp;
 
-            roomsIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.RoomsIcon.png");
+            roomsIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.RoomsIcon.png");
             roomsIcon.texture.wrapMode = TextureWrapMode.Clamp;
 
-            radioIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.RadioIcon.png");
+            radioIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.RadioIcon.png");
             radioIcon.texture.wrapMode = TextureWrapMode.Clamp;
 
-            whitePixel = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.WhitePixel.png");
+            whitePixel = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.WhitePixel.png");
 
-            doubleArrow = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.DoubleArrowIcon.png");
+            doubleArrow = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.DoubleArrowIcon.png");
             doubleArrow.texture.wrapMode = TextureWrapMode.Clamp;
 
-            addToFavorites = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.AddToFavorites.png");
+            addToFavorites = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.AddToFavorites.png");
             addToFavorites.texture.wrapMode = TextureWrapMode.Clamp;
 
-            removeFromFavorites = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.RemoveFromFavorites.png");
+            removeFromFavorites = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.RemoveFromFavorites.png");
             removeFromFavorites.texture.wrapMode = TextureWrapMode.Clamp;
 
-            thumbUp = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.ThumbUp.png");
+            thumbUp = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.ThumbUp.png");
             thumbUp.texture.wrapMode = TextureWrapMode.Clamp;
 
-            thumbDown = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.ThumbDown.png");
+            thumbDown = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.ThumbDown.png");
             thumbDown.texture.wrapMode = TextureWrapMode.Clamp;
 
-            speakerIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.SpeakerIcon.png");
+            speakerIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.SpeakerIcon.png");
             speakerIcon.texture.wrapMode = TextureWrapMode.Clamp;
 
-            refreshIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.RefreshIcon.png");
+            refreshIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.RefreshIcon.png");
             refreshIcon.texture.wrapMode = TextureWrapMode.Clamp;
 
-            starIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.StarIcon.png");
+            starIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.StarIcon.png");
             starIcon.texture.wrapMode = TextureWrapMode.Clamp;
 
-            ratingIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayer.Assets.RatingIcon.png");
+            ratingIcon = Utilities.FindSpriteInAssembly("BeatSaberMultiplayerLite.Assets.RatingIcon.png");
             ratingIcon.texture.wrapMode = TextureWrapMode.Clamp;
         }
     }

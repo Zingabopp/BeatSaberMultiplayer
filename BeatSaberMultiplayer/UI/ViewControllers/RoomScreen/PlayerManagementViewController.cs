@@ -2,7 +2,7 @@
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayer.Data;
+using BeatSaberMultiplayerLite.Data;
 using BS_Utils.Utilities;
 using HMUI;
 using System;
@@ -13,7 +13,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     public interface IPlayerManagementButtons
     {
@@ -23,7 +23,7 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
 
     class PlayerManagementViewController : BSMLViewController, IPlayerManagementButtons
     {
-        public string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.RoomScreen.PlayerManagementViewController";
+        public string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen.PlayerManagementViewController";
         public override string Content => ResourcesStorage.RoomScreenResources.GetRoomScreenResource(nameof(PlayerManagementViewController));
 
         public event Action gameplayModifiersChanged;

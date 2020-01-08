@@ -2,18 +2,18 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using BeatSaberMultiplayer.Data;
+using BeatSaberMultiplayerLite.Data;
 using UnityEngine;
 using TMPro;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.CreateRoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
 {
     class PresetsListViewController : BSMLResourceViewController
     {
-        public override string ResourceName => "BeatSaberMultiplayer.UI.ViewControllers.CreateRoomScreen.PresetsListViewController";
+        public override string ResourceName => "BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen.PresetsListViewController";
 
         public event Action<RoomPreset> didFinishEvent;
 
