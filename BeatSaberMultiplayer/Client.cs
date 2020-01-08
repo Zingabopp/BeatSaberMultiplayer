@@ -185,7 +185,7 @@ namespace BeatSaberMultiplayerLite
             Plugin.log.Debug($"Creating message...");
             NetOutgoingMessage outMsg = networkClient.CreateMessage();
 
-            Version assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            Version assemblyVersion = Plugin.ClientCompatibilityVersion;
             byte[] version = new byte[4] { (byte)assemblyVersion.Major, (byte)assemblyVersion.Minor, (byte)assemblyVersion.Build, (byte)assemblyVersion.Revision };
 
             outMsg.Write(version);

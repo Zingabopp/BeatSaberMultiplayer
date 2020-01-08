@@ -1,6 +1,6 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
-using Discord;
+// using Discord;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

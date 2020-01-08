@@ -1,7 +1,7 @@
 ﻿using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
-using Discord;
+// using Discord;
 using Harmony;
 using IPA;
 using System;
@@ -14,10 +14,11 @@ namespace BeatSaberMultiplayerLite
 {
     public class Plugin : IBeatSaberPlugin
     {
+        public static Version ClientCompatibilityVersion = new Version(0,7,0,0);
         public static Plugin instance;
         public static IPA.Logging.Logger log;
-        public static Discord.Discord discord;
-        public static Discord.Activity discordActivity;
+        // public static Discord.Discord discord;
+        // public static Discord.Activity discordActivity;
         public static bool overrideDiscordActivity;
         private static PlayerAvatarInput _playerAvatarInput;
         private static bool joinAfterRestart;
@@ -65,6 +66,7 @@ namespace BeatSaberMultiplayerLite
             {
                 Plugin.log.Error("Unable to patch assembly! Exception: " + e);
             }
+            /*
             try
             {
                 discord = new Discord.Discord(661577830919962645, (UInt64)Discord.CreateFlags.NoRequireDiscord);
@@ -82,6 +84,7 @@ namespace BeatSaberMultiplayerLite
                 log.Error($"Error initializing Discord hook: {ex.Message}");
                 log.Debug(ex);
             }
+            */
             try
             {
                 ResourcesStorage.RoomScreenResources.Load();
@@ -91,7 +94,7 @@ namespace BeatSaberMultiplayerLite
                 Plugin.log.Error(ex);
             }
         }
-
+        /*
         private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)
         {
             if (SceneManager.GetActiveScene().name.Contains("Menu") && type == ActivityActionType.Join && !Client.Instance.inRoom && !Client.Instance.inRadioMode)
@@ -117,6 +120,7 @@ namespace BeatSaberMultiplayerLite
                 Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().First().RestartGame();
             }
         }
+        */
 
         private void MenuSceneLoadedFresh()
         {
@@ -154,7 +158,7 @@ namespace BeatSaberMultiplayerLite
 
         public void OnUpdate()
         {
-            discord?.RunCallbacks();
+            //discord?.RunCallbacks();
         }
 
         public void OnFixedUpdate()
@@ -172,7 +176,7 @@ namespace BeatSaberMultiplayerLite
         public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
         {
         }
-
+        /*
         private void DiscordLogCallback(LogLevel level, string message)
         {
             switch (level)
@@ -199,5 +203,6 @@ namespace BeatSaberMultiplayerLite
                     break;
             }
         }
+        */
     }
 }

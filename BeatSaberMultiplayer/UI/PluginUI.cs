@@ -3,10 +3,10 @@ using BeatSaberMarkupLanguage.FloatingScreen;
 using BeatSaberMarkupLanguage.Settings;
 using BeatSaberMultiplayerLite.Data;
 using BeatSaberMultiplayerLite.UI.FlowCoordinators;
-using BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens;
+//using BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens;
 using BS_Utils.Gameplay;
 using BS_Utils.Utilities;
-using Discord;
+// using Discord;
 using HMUI;
 using Polyglot;
 using SimpleJSON;
@@ -97,9 +97,11 @@ namespace BeatSaberMultiplayerLite.UI
                     modeSelectionFlowCoordinator.didFinishEvent += () =>
                     {
                         Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First().InvokeMethod("DismissFlowCoordinator", modeSelectionFlowCoordinator, null, false);
+                       /*
                         Plugin.discordActivity = default;
                         Plugin.overrideDiscordActivity = false;
                         Plugin.discord?.GetActivityManager().ClearActivity((result) => { Plugin.log.Debug("Clear Discord activity result: " + result); });
+                        */
                     };
 
                 }
@@ -158,7 +160,7 @@ namespace BeatSaberMultiplayerLite.UI
                 try
                 {
                     Plugin.overrideDiscordActivity = true;
-                    SetLobbyDiscordActivity();
+                    //SetLobbyDiscordActivity();
 
                     MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
 
@@ -194,7 +196,7 @@ namespace BeatSaberMultiplayerLite.UI
                 }
             });
         }
-
+        /*
         public void ShowJoinRequest(User user)
         {
             FloatingScreen screen = FloatingScreen.CreateFloatingScreen(new Vector2(100, 50), true, new Vector3(0f, 0.9f, 2.4f), Quaternion.Euler(30f, 0f, 0f));
@@ -216,16 +218,6 @@ namespace BeatSaberMultiplayerLite.UI
             screen.SetRootViewController(discordView, false);
         }
 
-        public IEnumerator JoinGameWithSecret(string secret)
-        {
-            yield return null;
-
-            MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
-            mainFlow.InvokeMethod("PresentFlowCoordinator", modeSelectionFlowCoordinator, null, true, false);
-
-            modeSelectionFlowCoordinator.JoinGameWithSecret(secret);
-        }
-
         public void SetLobbyDiscordActivity()
         {
             Plugin.discordActivity = new Discord.Activity
@@ -239,6 +231,17 @@ namespace BeatSaberMultiplayerLite.UI
                 Instance = false,
             };
             Plugin.discord.GetActivityManager().UpdateActivity(Plugin.discordActivity, (result) => { Plugin.log.Debug("Update Discord activity result: " + result); });
+        }
+        */
+
+        public IEnumerator JoinGameWithSecret(string secret)
+        {
+            yield return null;
+
+            MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
+            mainFlow.InvokeMethod("PresentFlowCoordinator", modeSelectionFlowCoordinator, null, true, false);
+
+            modeSelectionFlowCoordinator.JoinGameWithSecret(secret);
         }
 
         IEnumerator CheckVersion()

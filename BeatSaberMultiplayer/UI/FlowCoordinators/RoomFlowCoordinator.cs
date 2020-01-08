@@ -4,7 +4,7 @@ using BeatSaberMultiplayerLite.Data;
 using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen;
 using BS_Utils.Utilities;
-using Discord;
+// using Discord;
 using HMUI;
 using Lidgren.Network;
 using System;
@@ -213,7 +213,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             Client.Instance.inRoom = false;
             PopAllViewControllers();
             SetLeftScreenViewController(_playerManagementViewController);
-            PluginUI.instance.SetLobbyDiscordActivity();
+            //PluginUI.instance.SetLobbyDiscordActivity();
             didFinishEvent?.Invoke();
         }
 
@@ -545,7 +545,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
             _playerManagementViewController.UpdateViewController(Client.Instance.isHost, (int)state <= 1);
 
-            UpdateDiscordActivity(roomInfo);
+            //UpdateDiscordActivity(roomInfo);
         }
 
         private void UpdateLevelOptions()
@@ -583,7 +583,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                         }
                     }
 
-                    UpdateDiscordActivity(roomInfo);
+                    //UpdateDiscordActivity(roomInfo);
                 }
             }
             catch (Exception e)
@@ -656,7 +656,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings.GetColorSchemeForId(colorSchemesSettings.selectedColorSchemeId), modifiers, playerSettings, startTime > 1f ? practiceSettings : null, "Lobby", false, () => { }, (StandardLevelScenesTransitionSetupDataSO sender, LevelCompletionResults levelCompletionResults) => { InGameOnlineController.Instance.SongFinished(levelCompletionResults, difficultyBeatmap, modifiers, startTime > 1f); });
 
-                UpdateDiscordActivity(roomInfo);
+                //UpdateDiscordActivity(roomInfo);
             }
             else
             {
@@ -1214,7 +1214,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     });
             }
         }
-
+        /*
         #region Discord rich presence stuff
         public void UpdateDiscordActivity(RoomInfo roomInfo)
         {
@@ -1306,6 +1306,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             return "empty";
         }
         #endregion
-
+        */
     }
 }
