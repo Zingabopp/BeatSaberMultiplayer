@@ -36,7 +36,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         }
 
-        public IAnnotatedBeatmapLevelCollection[] GetAllPlaylists()
+        public IAnnotatedBeatmapLevelCollection[] GetPlaylists()
         {
             //try
             //{
@@ -64,23 +64,11 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             //{
             //    Plugin.log.Error(ex);
             //}
-            return null;
-        }
 
-        public void Initialize()
-        {
-            if (_initialized)
-            {
-                return;
-            }
-
-            if (_beatmapLevelsModel == null)
-                _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
-            GetAllPlaylists();
+            _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
             List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
             levelPacksAndPlaylists.AddRange(_beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks);
             var playlistViewControllers = Resources.FindObjectsOfTypeAll<PlaylistsViewController>();
-            Plugin.log.Info($"Found {playlistViewControllers?.Length ?? 0} PlaylistsViewControllers");
             var playlistController = playlistViewControllers?.FirstOrDefault();
             if (playlistController != null)
             {
@@ -96,15 +84,69 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             }
             else
                 Plugin.log.Warn("Couldn't find the PlaylistsViewController.");
-            _visiblePacks = levelPacksAndPlaylists.ToArray();
+            return levelPacksAndPlaylists.ToArray();
+        }
 
+        public void Initialize()
+        {
+
+            //if (_initialized)
+            //{
+            //    return;
+            //}
+
+            if (_beatmapLevelsModel == null)
+                _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
+            //GetPlaylists();
+            //List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
+            //levelPacksAndPlaylists.AddRange(_beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks);
+            //var playlistViewControllers = Resources.FindObjectsOfTypeAll<PlaylistsViewController>();
+            //Plugin.log.Info($"Found {playlistViewControllers?.Length ?? 0} PlaylistsViewControllers");
+            //var playlistController = playlistViewControllers?.FirstOrDefault();
+            //if (playlistController != null)
+            //{
+            //    IAnnotatedBeatmapLevelCollection[] playlists = playlistController.GetPrivateField<IAnnotatedBeatmapLevelCollection[]>("_playlists");
+            //    if (playlists == null)
+            //        Plugin.log.Info($"Found _playlists is null.");
+            //    else
+            //    {
+            //        Plugin.log.Info($"Found {playlists.Length} playlists.");
+            //        if (playlists.Length > 0)
+            //            levelPacksAndPlaylists.AddRange(playlists);
+            //    }
+            //}
+            //else
+            //    Plugin.log.Warn("Couldn't find the PlaylistsViewController.");
+            //_visiblePacks = levelPacksAndPlaylists.ToArray();
+            _visiblePacks = GetPlaylists();
             SetPacks(_visiblePacks);
+            bool packWasSelected = false;
+            if(_visiblePacks.Length > lastSelectedPackIndex)
+            {
+                if (_visiblePacks[lastSelectedPackIndex].collectionName == lastSelectedPackName)
+                {
+                    SelectPack(lastSelectedPackIndex);
+                    packWasSelected = true;
+                }
+                else
+                {
+                    for (int i = 0; i < _visiblePacks.Length; i++)
+                        if (_visiblePacks[i].collectionName == lastSelectedPackName)
+                        {
+                            SelectPack(i);
+                            packWasSelected = true;
+                        }
+                }
 
-            if (_visiblePacks.Length > 0)
-                packSelected?.Invoke(_visiblePacks[0]);
+            }
+            if (!packWasSelected && _visiblePacks.Length > 0)
+                SelectPack(0);
 
             this._initialized = true;
         }
+
+        string lastSelectedPackName = string.Empty;
+        int lastSelectedPackIndex = 0;
 
         public void SetPacks(IAnnotatedBeatmapLevelCollection[] packs)
         {
@@ -114,14 +156,25 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             {
                 levelPacksTableData.data.Add(new CustomListTableData.CustomCellInfo(pack.collectionName, $"{pack.beatmapLevelCollection.beatmapLevels.Length} levels", pack.coverImage.texture));
             }
-
+       
             levelPacksTableData.tableView.ReloadData();
+        }
+
+        public void SelectPack(int index)
+        {
+
+            PackSelected(levelPacksTableData.tableView, index);
+            levelPacksTableData.tableView.SelectCellWithIdx(index);
+            lastSelectedPackIndex = index;
+            lastSelectedPackName = _visiblePacks[index].collectionName;
         }
 
         [UIAction("pack-selected")]
         public void PackSelected(TableView sender, int index)
         {
             packSelected?.Invoke(_visiblePacks[index]);
+            lastSelectedPackIndex = index;
+            lastSelectedPackName = _visiblePacks[index].collectionName;
         }
     }
 }
