@@ -59,50 +59,50 @@ namespace BeatSaberMultiplayer.UI
         //    }
         //}
 
-        [UIComponent("public-avatar-setting")]
-        public DropDownListSetting publicAvatarSetting;
+        //[UIComponent("public-avatar-setting")]
+        //public DropDownListSetting publicAvatarSetting;
 
-        [UIAction("public-avatar-formatter")]
-        public string PublicAvatarFormatter(object avatar)
-        {
-            string name = null;// (avatar as CustomAvatar.CustomAvatar)?.Name;
-            return (avatar == null) ? "LOADING AVATARS..." : (string.IsNullOrEmpty(name) ? "NO NAME" : name);
-        }
+        //[UIAction("public-avatar-formatter")]
+        //public string PublicAvatarFormatter(object avatar)
+        //{
+        //    string name = null;// (avatar as CustomAvatar.CustomAvatar)?.Name;
+        //    return (avatar == null) ? "LOADING AVATARS..." : (string.IsNullOrEmpty(name) ? "NO NAME" : name);
+        //}
 
-        [UIValue("avatars-in-game")]
-        public bool avatarsInGame
-        { 
-            get { return Config.Instance.ShowAvatarsInGame; }
-            set { Config.Instance.ShowAvatarsInGame = value; }
-        }
+        //[UIValue("avatars-in-game")]
+        //public bool avatarsInGame
+        //{ 
+        //    get { return Config.Instance.ShowAvatarsInGame; }
+        //    set { Config.Instance.ShowAvatarsInGame = value; }
+        //}
 
-        [UIValue("blocks-in-game")]
-        public bool blocksInGame
-        {
-            get { return Config.Instance.ShowOtherPlayersBlocks; }
-            set { Config.Instance.ShowOtherPlayersBlocks = value; }
-        }
+        //[UIValue("blocks-in-game")]
+        //public bool blocksInGame
+        //{
+        //    get { return Config.Instance.ShowOtherPlayersBlocks; }
+        //    set { Config.Instance.ShowOtherPlayersBlocks = value; }
+        //}
 
-        [UIValue("avatars-in-room")]
-        public bool avatarsInRoom
-        {
-            get { return Config.Instance.ShowAvatarsInRoom; }
-            set { Config.Instance.ShowAvatarsInRoom = value; }
-        }
+        //[UIValue("avatars-in-room")]
+        //public bool avatarsInRoom
+        //{
+        //    get { return Config.Instance.ShowAvatarsInRoom; }
+        //    set { Config.Instance.ShowAvatarsInRoom = value; }
+        //}
 
-        [UIValue("download-avatars")]
-        public bool downloadAvatars
-        {
-            get { return Config.Instance.DownloadAvatars; }
-            set { Config.Instance.DownloadAvatars = value; }
-        }
+        //[UIValue("download-avatars")]
+        //public bool downloadAvatars
+        //{
+        //    get { return Config.Instance.DownloadAvatars; }
+        //    set { Config.Instance.DownloadAvatars = value; }
+        //}
 
-        [UIValue("separate-avatar")]
-        public bool separateAvatar
-        {
-            get { return Config.Instance.SeparateAvatarForMultiplayer; }
-            set { InGameOnlineController.Instance.SetSeparatePublicAvatarState(value); }
-        }
+        //[UIValue("separate-avatar")]
+        //public bool separateAvatar
+        //{
+        //    get { return Config.Instance.SeparateAvatarForMultiplayer; }
+        //    set { InGameOnlineController.Instance.SetSeparatePublicAvatarState(value); }
+        //}
 
         //[UIValue("public-avatar-value")]
         //public object publicAvater
@@ -111,8 +111,8 @@ namespace BeatSaberMultiplayer.UI
         //    set { InGameOnlineController.Instance.SetSeparatePublicAvatarHash(ModelSaberAPI.cachedAvatars.FirstOrDefault(x => x.Value == (value as CustomAvatar.CustomAvatar)).Key); }
         //}
 
-        [UIValue("public-avatar-options")]
-        public List<object> publicAvatars = new List<object>() { null };
+        //[UIValue("public-avatar-options")]
+        //public List<object> publicAvatars = new List<object>() { null };
 
         [UIValue("spectator-mode")]
         public bool spectatorMode
