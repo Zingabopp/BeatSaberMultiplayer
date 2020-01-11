@@ -1,4 +1,4 @@
-﻿<stack>
+﻿<stack xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   <horizontal id="diff-selection-view" spacing="-15" pad-right="6">
     <vertical horizontal-fit="PreferredSize" pad-left="6" pref-width="100" spacing="2">
       <stack id="level-details-rect">
@@ -68,7 +68,7 @@
         <button id="play-button" text="PLAY" on-click="play-pressed"/>
       </horizontal>
 
-      <text text="0/0 players ready" font-size="5" align="Center"/>
+      <text text="~PlayersReadyStr" font-size="5" align="Center"/>
     </vertical>
 
     <stack pad="2" pad-bottom="6">

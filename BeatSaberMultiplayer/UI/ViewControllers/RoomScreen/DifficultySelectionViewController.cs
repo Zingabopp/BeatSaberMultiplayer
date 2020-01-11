@@ -14,6 +14,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
+using BS_Utils.Utilities;
+using Zenject;
 
 namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
@@ -171,10 +173,23 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             }
         }
 
+        private string _playersReadyStr;
+        [UIValue("PlayersReadyStr")]
+        public string PlayersReadyStr
+        {
+            get => _playersReadyStr;
+            set
+            {
+                if (_playersReadyStr == value)
+                    return;
+                _playersReadyStr = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public void SetPlayersReady(int playersReady, int playersTotal)
         {
-            if (playersReadyText != null)
-                playersReadyText.text = $"{playersReady}/{playersTotal} players ready";
+                PlayersReadyStr = $"{playersReady}/{playersTotal} players ready";
         }
 
         public void SetLoadingState(bool loading)
@@ -265,7 +280,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 _selectedDifficultyBeatmap = level.GetDifficultyBeatmap(_playerDataModel.playerData.lastSelectedBeatmapCharacteristic, _playerDataModel.playerData.lastSelectedBeatmapDifficulty);
             }
             // else if (level.beatmapCharacteristics.Length > 0)
-            else if(level.beatmapLevelData.difficultyBeatmapSets.Length > 0)
+            else if (level.beatmapLevelData.difficultyBeatmapSets.Length > 0)
             {
                 _selectedDifficultyBeatmap = level.GetDifficultyBeatmap(level.beatmapLevelData.difficultyBeatmapSets[0].beatmapCharacteristic, _playerDataModel.playerData.lastSelectedBeatmapDifficulty);
             }
@@ -378,9 +393,20 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                     num = i;
                 }
             }
-            characteristicControl.SetData(array);
-            characteristicControl.SelectCellWithNumber(num);
-            SetSelectedCharateristic(null, num);
+            try
+            {
+                characteristicControl.SetData(array);
+                characteristicControl.SelectCellWithNumber(num);
+                SetSelectedCharateristic(null, num);
+            }
+            catch (Exception ex)
+            {
+                if (characteristicControl.GetPrivateField<DiContainer>("_container") == null)
+                    Plugin.log.Error($"Error setting difficulty characterstics - DiContainer is null: {ex.Message}");
+                else
+                    Plugin.log.Error($"Error setting difficulty characteristics: {ex.Message}");
+                Plugin.log.Debug(ex);
+            }
         }
 
         private async void SetContent(IPreviewBeatmapLevel level)
