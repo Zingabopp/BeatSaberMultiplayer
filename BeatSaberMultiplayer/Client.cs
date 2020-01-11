@@ -100,11 +100,15 @@ namespace BeatSaberMultiplayerLite
             return filters.Split('|').SelectMany(filter => System.IO.Directory.GetFiles(sourceFolder, filter, searchOption)).ToArray();
         }
 #endif
-
-        public static event Action<string, string> EventMessageReceived;
-        public static event Action ClientJoinedRoom;
-        public static event Action ClientLevelStarted;
-        public static event Action ClientLeftRoom;
+        public event EventHandler<ConnectionStatusChangedEventArgs> ConnectionStatusChanged;
+        public event EventHandler<EventMessageReceivedEventArgs> EventMessageReceived;
+        public event EventHandler<ClientJoinedRoomEventArgs> ClientJoinedRoom;
+        public event EventHandler<StartLevelEventArgs> StartLevelRequested;
+        public event EventHandler<PlayerInfoUpdatedEventArgs> PlayerInfoUpdated;
+        //public static event Action<string, string> EventMessageReceived;
+        //public static event Action ClientJoinedRoom;
+        public event EventHandler ClientLevelStarted;
+        public event EventHandler ClientLeftRoom;
         public static bool disableScoreSubmission;
         
         public event Action ConnectedToServerHub;
@@ -259,7 +263,7 @@ namespace BeatSaberMultiplayerLite
                 {
                     switch (msg.MessageType)
                     {
-                        case NetIncomingMessageType.StatusChanged:
+                        case NetIncomingMessageType.StatusChanged: // EventArgs made
                             {
                                 NetConnectionStatus status = (NetConnectionStatus)msg.ReadByte();
 
@@ -284,18 +288,17 @@ namespace BeatSaberMultiplayerLite
                         case NetIncomingMessageType.Data:
                             {
                                 CommandType commandType = (CommandType)msg.PeekByte();
-
+                                
                                 switch (commandType)
                                 {
                                     case CommandType.Disconnect:
                                         {
                                             Plugin.log.Debug("Disconnecting...");
                                             Disconnect();
-
                                             MessageReceived?.Invoke(msg);
                                         }
                                         break;
-                                    case CommandType.SendEventMessage:
+                                    case CommandType.SendEventMessage: // EventArgs made
                                         {
                                             string header = msg.ReadString();
                                             string data = msg.ReadString();
@@ -519,7 +522,7 @@ namespace BeatSaberMultiplayerLite
                 networkClient.SendMessage(outMsg, NetDeliveryMethod.ReliableOrdered, 0);
 
                 Plugin.log.Debug("Leaving room...");
-                HMMainThreadDispatcher.instance.Enqueue(() => { ClientLeftRoom?.Invoke(); });
+                HMMainThreadDispatcher.instance.Enqueue(() => { ClientLeftRoom?.Invoke(this, EventArgs.Empty); });
                 
             }
             isHost = false;

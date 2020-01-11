@@ -34,6 +34,7 @@
   <ItemGroup>
     <Compile Include="AvatarController.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="ClientEventArgs.cs" />
     <Compile Include="Data\BeatSaverAPIResult.cs" />
     <Compile Include="Data\ChannelInfo.cs" />
     <Compile Include="Data\ExtraPlayerFlags.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="VOIP\SpeexCodex.cs" />
     <Compile Include="Data\VoipFragment.cs" />
     <Compile Include="VOIP\VoipListener.cs" />
+    <None Include="UI\ViewControllers\RoomScreen\View1.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Shader.asset" />
@@ -196,6 +198,7 @@
     <Reference Include="BSML, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="BS_Utils, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
