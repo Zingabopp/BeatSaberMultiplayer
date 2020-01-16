@@ -39,7 +39,8 @@ namespace BeatSaberMultiplayerLite.Misc
             {
                 Init();
             }
-
+            // TODO: Spams error messages (at least for some setups)
+            return false;
             switch (platform)
             {
                 case 0:
@@ -59,7 +60,8 @@ namespace BeatSaberMultiplayerLite.Misc
             {
                 Init();
             }
-
+            // TODO: Spams error messages (at least for some setups)
+            return false;
             switch (platform)
             {
                 case 0:

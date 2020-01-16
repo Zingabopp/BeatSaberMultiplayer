@@ -184,12 +184,19 @@ namespace BeatSaberMultiplayerLite.UI
         }
 
         [UIValue("ptt-button-options")]
-        public List<object> pttButtonOptions = new List<object>() { "L Grip", "R Grip", "L Trigger", "R Trigger", "L+R Grip", "L+R Trigger", "Any Grip", "Any Trigger" };
+        public List<object> pttButtonOptions = new List<object>() { "L Trigger", "R Trigger", "L+R Trigger", "Any Trigger" }; // "L Grip", "R Grip", "L+R Grip", "Any Grip", 
 
         [UIValue("ptt-button-value")]
         public object pttButton
         {
-            get { return pttButtonOptions[Config.Instance.PushToTalkButton]; }
+            get 
+            { 
+                if(Config.Instance.PushToTalkButton >= pttButtonOptions.Count)
+                {
+                    Config.Instance.PushToTalkButton = 0;
+                }
+                return pttButtonOptions[Config.Instance.PushToTalkButton]; 
+            }
             set { Config.Instance.PushToTalkButton = pttButtonOptions.IndexOf(value); }
         }
 

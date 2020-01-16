@@ -106,7 +106,6 @@
     <Compile Include="VOIP\SpeexCodex.cs" />
     <Compile Include="Data\VoipFragment.cs" />
     <Compile Include="VOIP\VoipListener.cs" />
-    <None Include="UI\ViewControllers\RoomScreen\View1.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Shader.asset" />
