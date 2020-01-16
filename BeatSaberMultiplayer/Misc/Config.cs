@@ -272,12 +272,12 @@ namespace BeatSaberMultiplayerLite
             _submitScores = 2;
             _beatSaverURL = "https://beatsaver.com";
 
-            _enableVoiceChat = true;
+            _enableVoiceChat = false;
             _voiceChatVolume = 0.8f;
             _micEnabled = true;
             _spatialAudio = false;
             _pushToTalk = true;
-            _pushToTalkButton = 6;
+            _pushToTalkButton = 0;
             _voiceChatMicrophone = null;
 
             IsDirty = true;
