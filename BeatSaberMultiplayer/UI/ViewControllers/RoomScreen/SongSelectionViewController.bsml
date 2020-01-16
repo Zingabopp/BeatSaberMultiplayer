@@ -1,4 +1,5 @@
-﻿<stack vertical-fit='Unconstrained'>
+﻿<stack xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+  vertical-fit='Unconstrained'>
   <vertical id='song-list-rect' vertical-fit='Unconstrained'>
     <stack>
       <horizontal id='select-btns-rect' horizontal-fit='PreferredSize'>

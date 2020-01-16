@@ -1,4 +1,4 @@
-﻿<bg>
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   <tab-selector tab-tag='settings-tag' anchor-pos-y='-3' />
 
   <tab tags='settings-tag' tab-name='General'>
@@ -16,7 +16,7 @@
 
   <tab tags='settings-tag' tab-name='Voice'>
     <vertical pad-top='10' vertical-fit='PreferredSize'>
-      <checkbox text='Enable voice chat' value='enable-voice-chat' apply-on-change='true' />
+      <checkbox text='Enable voice chat' value='enable-voice-chat' hover-hint='Likely does NOT work, use an external voice chat program.' apply-on-change='true' />
       <slider-setting text='Voice chat volume' value='voice-chat-volume' min='0' max='100' increment='1' integer-only='true' apply-on-change='true' />
       <checkbox text='Enable microphone' value='mic-enabled' apply-on-change='true' />
       <checkbox text='Use push to talk' value='push-to-talk' apply-on-change='true' />

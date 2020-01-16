@@ -1,4 +1,5 @@
-﻿<stack vertical-fit='Unconstrained'>
+﻿<stack xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+  vertical-fit='Unconstrained'>
   <horizontal id='buttons-rect' horizontal-fit='PreferredSize' spacing='15'>
     <big-button id='rooms-button' text='Rooms' on-click='rooms-btn-pressed' icon='BeatSaberMultiplayerLite.Assets.RoomsIcon.png' />
     <big-button id='radio-button' text='Radio' on-click='radio-btn-pressed' icon='BeatSaberMultiplayerLite.Assets.RadioIcon.png'/>

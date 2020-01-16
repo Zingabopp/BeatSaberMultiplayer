@@ -1,4 +1,4 @@
-﻿<vertical pad-top='10' vertical-fit='PreferredSize'>
+﻿<vertical pad-top='10' vertical-fit='PreferredSize' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
     <string-setting text='Room name' value='room-name' on-change='room-name-changed'/>
     <string-setting text='Password' value ='room-password' on-change='room-password-changed'/>
     <checkbox text='Use password' value='use-password' apply-on-change='true'/>

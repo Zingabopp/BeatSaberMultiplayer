@@ -1,4 +1,4 @@
-﻿<bg>
+﻿<bg xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
   <img src="#ClockIcon" preserve-aspect="true" anchor-pos-y="33.25" anchor-pos-x="-50" size-delta-x="8"/>
   <text id="timer-text" text="0:15" font-size="6.5" align="Left" anchor-pos-y="33" anchor-pos-x="-35" size-delta-x="20"/>
   <tab-selector tab-tag='leaderboard-tags' anchor-pos-y="-3"/>
