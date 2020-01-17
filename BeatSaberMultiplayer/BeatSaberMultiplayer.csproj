@@ -55,9 +55,11 @@
     <Compile Include="InGameOnlineController.cs" />
     <Compile Include="IPlayerInfoReceiver.cs" />
     <Compile Include="Misc\ControllersHelper.cs" />
+    <Compile Include="Misc\ISongDownloader.cs" />
     <Compile Include="Misc\ScrappedData.cs" />
     <Compile Include="Misc\ScrappedSong.cs" />
     <Compile Include="Misc\SimpleJSON.cs" />
+    <Compile Include="Misc\SongDownloaderInterop.cs" />
     <Compile Include="Misc\Sprites.cs" />
     <Compile Include="Misc\Config.cs" />
     <Compile Include="Misc\CustomExtensions.cs" />
@@ -195,7 +197,12 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BSML, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="BeatSaverDownloader, Version=5.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Plugins\BeatSaverDownloader.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="BSML, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>

@@ -23,6 +23,7 @@ namespace BeatSaberMultiplayerLite
         private static PlayerAvatarInput _playerAvatarInput;
         private static bool joinAfterRestart;
         private static string joinSecret;
+        public static bool DownloaderExists { get; private set; }
 
         public void Init(object nullObject, IPA.Logging.Logger logger)
         {
@@ -56,7 +57,8 @@ namespace BeatSaberMultiplayerLite
             Sprites.ConvertSprites();
 
             ScrappedData.Instance.DownloadScrappedData(null);
-
+            if (IPA.Loader.PluginManager.GetPluginFromId("BeatSaverDownloader") != null)
+                DownloaderExists = true;
             try
             {
                 var harmony = HarmonyInstance.Create("com.andruzzzhka.BeatSaberMultiplayer");
