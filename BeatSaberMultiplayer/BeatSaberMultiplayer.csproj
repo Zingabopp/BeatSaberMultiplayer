@@ -43,6 +43,7 @@
     <Compile Include="Data\RoomInfo.cs" />
     <Compile Include="Data\RoomPreset.cs" />
     <Compile Include="Data\RoomSettings.cs" />
+    <Compile Include="Data\ServerRepository.cs" />
     <Compile Include="Data\SongInfo.cs" />
     <Compile Include="Data\LevelOptionsInfo.cs" />
     <None Include="DIscordSDK\ActivityManager.cs" />
