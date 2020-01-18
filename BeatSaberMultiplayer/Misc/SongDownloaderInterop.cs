@@ -7,12 +7,14 @@ using BeatSaverDownloader;
 using BeatSaberMarkupLanguage;
 using HMUI;
 using BeatSaverDownloader.UI;
+using BeatSaberMultiplayerLite.OverriddenClasses;
 
 namespace BeatSaberMultiplayerLite.Misc
 {
     internal class SongDownloaderInterop : ISongDownloader
     {
         private FlowCoordinator _coordinator;
+        public bool CanCreate { get { return CustomMoreSongsFlowCoordinator.CanCreate; } }
 
         public FlowCoordinator PresentDownloaderFlowCoordinator(FlowCoordinator parent, Action dismissedCallback)
         {
@@ -20,12 +22,12 @@ namespace BeatSaberMultiplayerLite.Misc
             {
                 if (_coordinator == null)
                 {
-                    MoreSongsFlowCoordinator moreSongsFlow = BeatSaberUI.CreateFlowCoordinator<MoreSongsFlowCoordinator>();
+                    CustomMoreSongsFlowCoordinator moreSongsFlow = BeatSaberUI.CreateFlowCoordinator<CustomMoreSongsFlowCoordinator>();
 
                     moreSongsFlow.ParentFlowCoordinator = parent;
                     _coordinator = moreSongsFlow;
                 }
-
+                
                 parent.PresentFlowCoordinator(_coordinator, dismissedCallback);
                 return _coordinator;
             }catch(Exception ex)

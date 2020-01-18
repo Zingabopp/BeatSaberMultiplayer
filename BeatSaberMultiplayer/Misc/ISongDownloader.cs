@@ -9,6 +9,7 @@ namespace BeatSaberMultiplayerLite.Misc
 {
     public interface ISongDownloader
     {
+        bool CanCreate { get; }
         FlowCoordinator PresentDownloaderFlowCoordinator(FlowCoordinator parent, Action dismissedCallback);
     }
 }

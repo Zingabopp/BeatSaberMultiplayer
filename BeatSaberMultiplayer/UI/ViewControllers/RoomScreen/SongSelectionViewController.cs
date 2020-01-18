@@ -75,10 +75,19 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 if (Plugin.DownloaderExists)
                 {
                     downloader = new SongDownloaderInterop();
-                    MoreSongsAvailable = true;
+                    if (downloader == null)
+                        Plugin.log.Warn($"{nameof(SongDownloaderInterop)} could not be created.");
+                    else
+                    {
+                        MoreSongsAvailable = downloader.CanCreate;
+                        Plugin.log.Info($"{nameof(MoreSongsAvailable)} is {MoreSongsAvailable}");
+                    }
                 }
                 else
+                {
+                    Plugin.log.Warn($"SongDownloader not found, More Songs button won't be created.");
                     MoreSongsAvailable = false;
+                }
                 _songsTableView.tableView.didSelectCellWithIdxEvent += SongsTableView_DidSelectRow;
                 _songsTableView.tableView.dataSource = this;
 
@@ -253,7 +262,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         private void FastScrollUp()
         {
             TableViewScroller scroller = _songsTableView.tableView.GetPrivateField<TableViewScroller>("_scroller");
-            
+
             float targetPosition = scroller.position - Mathf.Max(1f, GetNumberOfVisibleCells(_songsTableView.tableView) - 1f) * _songsTableView.tableView.cellSize * 5;
 
             if (targetPosition < 0f)
