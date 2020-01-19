@@ -16,10 +16,15 @@ namespace BeatSaberMultiplayerLite.Data
         public string RepositoryDescription { get; set; }
 
         [JsonProperty("Servers")]
-        public List<Server> Servers { get; set; }
+        public List<RepositoryServer> Servers { get; set; }
+
+        public override string ToString()
+        {
+            return $"{RepositoryName}: {Servers.Count} servers";
+        }
     }
 
-    public partial class Server
+    public partial class RepositoryServer
     {
         [JsonProperty("ServerName", NullValueHandling = NullValueHandling.Ignore)]
         public string ServerName { get; set; }
@@ -28,7 +33,31 @@ namespace BeatSaberMultiplayerLite.Data
         public string ServerAddress { get; set; }
 
         [JsonProperty("ServerPort")]
-        public long ServerPort { get; set; }
+        public int ServerPort { get; set; }
+
+        public bool IsValid
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(ServerAddress))
+                    return false;
+                if (ServerPort < 1 || ServerPort > 65535)
+                    return false;
+                return true;
+            }
+        }
+
+        public override string ToString()
+        {
+            string retStr = string.Empty;
+            if (!string.IsNullOrEmpty(ServerName))
+                retStr = ServerName + " | ";
+            if (!string.IsNullOrEmpty(ServerAddress))
+                retStr = retStr + ServerAddress + ":" + ServerPort;
+            else
+                retStr = retStr + "<NULL>:" + ServerPort;
+            return retStr;
+        }
     }
 
     public partial class ServerRepository
