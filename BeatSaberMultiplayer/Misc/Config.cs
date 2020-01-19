@@ -35,12 +35,8 @@ namespace BeatSaberMultiplayerLite
         private static readonly Dictionary<string, string[]> newServerHubs = new Dictionary<string, string[]>()
         {
             {
-                "0.6.4.3",
-                new string[] { "127.0.0.1", "hub.assistant.moe", "hub.auros.red", "treasurehunters.nz", "beatsaber.networkauditor.org", "hub.just-skill.ru", "hub.tgcfabian.tk", "hub.traber-info.de" }
-            },
-            {
                 "0.7.0.0",
-                new string[] { "bs.tigersserver.xyz", "bbbear-wgzeyu.gtxcn.com", "bs-zhm.tk" }
+                new string[] { "127.0.0.1", "bs.tigersserver.xyz", "treasurehunters.nz", "www.questboard.xyz", "bbbear-wgzeyu.gtxcn.com", "pantie.xicp.net"}
             }
         };
 
