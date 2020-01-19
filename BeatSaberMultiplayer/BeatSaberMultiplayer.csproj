@@ -93,7 +93,6 @@
     <Compile Include="UI\ViewControllers\CreateRoomScreen\PresetsListViewController.cs" />
     <Compile Include="UI\ViewControllers\CreateRoomScreen\RoomCreationServerHubsListViewController.cs" />
     <Compile Include="UI\ViewControllers\CreateRoomScreen\MainRoomCreationViewController.cs" />
-    <EmbeddedResource Include="UI\View1.bsml" />
     <None Include="UI\ViewControllers\DiscordScreens\DiscordInviteResponseView.cs" />
     <None Include="UI\ViewControllers\DiscordScreens\DiscordAskToJoinView.cs" />
     <Compile Include="UI\ViewControllers\ModeSelectionScreen\ModeSelectionViewController.cs" />
