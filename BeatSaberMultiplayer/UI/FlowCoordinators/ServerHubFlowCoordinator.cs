@@ -129,7 +129,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         protected IEnumerator GetServersFromRepositories()
         {
-            Plugin.log.Warn("Starting GetServersFromRepositories");
+            Plugin.log.Debug("Getting servers from repositories...");
             if (Config.Instance?.ServerRepositories == null)
                 yield break;
             List<RepositoryServer> repoServers = new List<RepositoryServer>();
@@ -164,7 +164,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                         bool repositoryUsed = false;
                         foreach (var server in repo.Servers)
                         {
-                            Plugin.log.Critical($"Server: {server.ToString()}");
                             if (server.IsValid)
                             {
                                 repoServers.Add(server);

@@ -120,7 +120,7 @@ namespace BeatSaberMultiplayerLite
                     }
                     foreach (var newRepo in newServerRepositories)
                     {
-                        Plugin.log.Warn($"Adding repo: {newRepo}");
+                        Plugin.log.Debug($"Adding repo: {newRepo}");
                         repos.Add(newRepo);
                     }
                     _instance.ServerRepositories = repos.ToArray();
