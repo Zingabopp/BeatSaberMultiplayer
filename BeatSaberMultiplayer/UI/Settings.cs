@@ -127,7 +127,9 @@ namespace BeatSaberMultiplayerLite.UI
         [UIValue("submit-scores-value")]
         public object submitScores
         {
-            get { return submitScoresOptions[Config.Instance.SubmitScores]; }
+            // TODO: Change back once score submission works properly
+            get { return 0; }
+            //get { return submitScoresOptions[Config.Instance.SubmitScores]; }
             set { Config.Instance.SubmitScores = submitScoresOptions.IndexOf(value); }
         }
         #endregion
@@ -183,21 +185,24 @@ namespace BeatSaberMultiplayerLite.UI
             set { Config.Instance.PushToTalk = value; }
         }
 
+
+        internal PTTOption[] IndexedPTTOptions = new PTTOption[] {PTTOption.LeftTrigger, PTTOption.RightTrigger, PTTOption.LeftAndRightTrigger, PTTOption.AnyTrigger };
         [UIValue("ptt-button-options")]
-        public List<object> pttButtonOptions = new List<object>() { "L Trigger", "R Trigger", "L+R Trigger", "Any Trigger" }; // "L Grip", "R Grip", "L+R Grip", "Any Grip", 
+        internal List<object> pttButtonOptions = new List<object>() { "L Trigger", "R Trigger", "L+R Trigger", "Any Trigger" }; // "L Grip", "R Grip", "L+R Grip", "Any Grip", 
 
         [UIValue("ptt-button-value")]
         public object pttButton
         {
             get 
-            { 
-                if(Config.Instance.PushToTalkButton >= pttButtonOptions.Count)
+            {
+                int currentIndex = Config.Instance.PushToTalkButton.OptionIndex() - 1;
+                if (currentIndex >= pttButtonOptions.Count || currentIndex < 0)
                 {
-                    Config.Instance.PushToTalkButton = 0;
+                    Config.Instance.PushToTalkButton = PTTOption.LeftTrigger;
                 }
-                return pttButtonOptions[Config.Instance.PushToTalkButton]; 
+                return pttButtonOptions[currentIndex]; 
             }
-            set { Config.Instance.PushToTalkButton = pttButtonOptions.IndexOf(value); }
+            set { Config.Instance.PushToTalkButton = IndexedPTTOptions[pttButtonOptions.IndexOf(value)]; }
         }
 
         [UIValue("mic-select-options")]

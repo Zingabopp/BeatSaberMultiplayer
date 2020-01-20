@@ -471,7 +471,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                                     if (roomInfo.roomState == RoomState.InGame)
                                         UpdateInGameLeaderboard(currentTime, totalTime);
-                                    else if(roomInfo.roomState == RoomState.Results)
+                                    else if (roomInfo.roomState == RoomState.Results)
                                         UpdateResultsLeaderboard(currentTime, totalTime);
 
                                     _playerManagementViewController.UpdatePlayerList(roomInfo.roomState);
@@ -637,7 +637,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 IDifficultyBeatmap difficultyBeatmap = level.GetDifficultyBeatmap(characteristic, difficulty, false);
 
                 Plugin.log.Debug($"Starting song: name={level.songName}, levelId={level.levelID}, difficulty={difficulty}");
-
+                
                 Client.Instance.MessageReceived -= PacketReceived;
 
                 try
@@ -721,7 +721,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         {
 
             if (_songSelectionViewController != null)
-            {                
+            {
                 if (_roomNavigationController.viewControllers.IndexOf(_songSelectionViewController) >= 0)
                 {
                     PopViewControllerFromNavigationController(_roomNavigationController, null, true);
@@ -825,7 +825,10 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             {
                 _difficultySelectionViewController = BeatSaberUI.CreateViewController<DifficultySelectionViewController>();
                 _difficultySelectionViewController.discardPressed += DiscardPressed;
-                _difficultySelectionViewController.playPressed += (level, characteristic, difficulty) => { PlayPressed(level, characteristic, difficulty, _playerManagementViewController.modifiers); };
+                _difficultySelectionViewController.playPressed += (level, characteristic, difficulty) =>
+                {
+                    PlayPressed(level, characteristic, difficulty, _playerManagementViewController.modifiers);
+                };
                 _difficultySelectionViewController.levelOptionsChanged += UpdateLevelOptions;
             }
 
