@@ -215,6 +215,13 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             SetLeftScreenViewController(_playerManagementViewController);
             //PluginUI.instance.SetLobbyDiscordActivity();
             didFinishEvent?.Invoke();
+
+#if UMBRA_FIX_SCORESABER
+            if (IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber") != null)
+            {
+                Resources.FindObjectsOfTypeAll<LevelSelectionNavigationController>().First().GetPrivateField<StandardLevelDetailViewController>("_levelDetailViewController").GetPrivateField<StandardLevelDetailView>("_standardLevelDetailView").SetPrivateField("_selectedDifficultyBeatmap", null);
+            }
+#endif
         }
 
         private void ConnectedToServerHub()
@@ -656,9 +663,20 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 practiceSettings.songSpeedMul = modifiers.songSpeedMul;
                 practiceSettings.startInAdvanceAndClearNotes = true;
 
-                menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, startTime > 1f ? practiceSettings : null, "Lobby", false, () => { }, (StandardLevelScenesTransitionSetupDataSO sender, LevelCompletionResults levelCompletionResults) => { InGameOnlineController.Instance.SongFinished(levelCompletionResults, difficultyBeatmap, modifiers, startTime > 1f); });
+#if UMBRA_FIX_SCORESABER
+                
+                if (IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber") != null)
+                {
+                    ScoreSaberInteraction.FixScoreSaber(difficultyBeatmap);
+                    ScoreSaberInteraction.InitAndSignIn();
 
-                //UpdateDiscordActivity(roomInfo);
+                    Plugin.log.Info("Hopefully ScoreSaber fix doesn't break anything :)");
+                }
+#endif
+
+                menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, startTime > 1f ? practiceSettings : null, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
+
+                UpdateDiscordActivity(roomInfo);
             }
             else
             {
@@ -1220,8 +1238,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     });
             }
         }
-        /*
-        #region Discord rich presence stuff
+
+#region Discord rich presence stuff
         public void UpdateDiscordActivity(RoomInfo roomInfo)
         {
             ActivityParty partyInfo = new ActivityParty()
@@ -1311,7 +1329,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
             return "empty";
         }
-        #endregion
-        */
+#endregion
+
     }
 }

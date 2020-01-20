@@ -87,6 +87,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             if (scores == null)
                 return;
 
+            scores.Sort();
+
             if (scores.Count < _scoreData.Count)
             {
                 _scoreData.RemoveRange(scores.Count, _scoreData.Count - scores.Count);

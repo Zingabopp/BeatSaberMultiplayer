@@ -5,7 +5,7 @@ using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace BeatSaberMultiplayerLite.Data
+namespace BeatSaberMultiplayer.Data
 {
     public partial class ServerRepository
     {
@@ -62,12 +62,12 @@ namespace BeatSaberMultiplayerLite.Data
 
     public partial class ServerRepository
     {
-        public static ServerRepository FromJson(string json) => JsonConvert.DeserializeObject<ServerRepository>(json, BeatSaberMultiplayerLite.Data.Converter.Settings);
+        public static ServerRepository FromJson(string json) => JsonConvert.DeserializeObject<ServerRepository>(json, BeatSaberMultiplayer.Data.Converter.Settings);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this ServerRepository self) => JsonConvert.SerializeObject(self, BeatSaberMultiplayerLite.Data.Converter.Settings);
+        public static string ToJson(this ServerRepository self) => JsonConvert.SerializeObject(self, BeatSaberMultiplayer.Data.Converter.Settings);
     }
 
     internal static class Converter

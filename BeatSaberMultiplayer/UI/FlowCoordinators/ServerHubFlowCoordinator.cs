@@ -57,6 +57,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             showBackButton = true;
 
             ProvideInitialViewControllers(_roomListViewController, null, null);
+
             StartCoroutine(GetServersFromRepositories());
             StartCoroutine(UpdateRoomsListCoroutine());
         }
@@ -126,10 +127,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             UpdateRoomsList();
         }
 
-
         protected IEnumerator GetServersFromRepositories()
         {
-            Plugin.log.Debug("Getting servers from repositories...");
+            Plugin.log.Warn("Starting GetServersFromRepositories");
             if (Config.Instance?.ServerRepositories == null)
                 yield break;
             List<RepositoryServer> repoServers = new List<RepositoryServer>();
@@ -164,6 +164,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                         bool repositoryUsed = false;
                         foreach (var server in repo.Servers)
                         {
+                            Plugin.log.Critical($"Server: {server.ToString()}");
                             if (server.IsValid)
                             {
                                 repoServers.Add(server);
@@ -194,7 +195,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         public RepositoryServer[] RepositoryServers { get; private set; }
 
-
         public void UpdateRoomsList()
         {
             Plugin.log.Info("Updating rooms list...");
@@ -209,10 +209,12 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             });
             _serverHubClients.Clear();
             _roomsList.Clear();
+
+            // Store server addresses so duplicates aren't added.
             HashSet<string> serverAddresses = new HashSet<string>();
-            if((RepositoryServers?.Length ?? 0) > 0)
+            if ((RepositoryServers?.Length ?? 0) > 0)
             {
-                for(int i = 0; i < RepositoryServers.Length; i++)
+                for (int i = 0; i < RepositoryServers.Length; i++)
                 {
                     RepositoryServer repositoryServer = RepositoryServers[i];
                     string fullAddress = repositoryServer.ServerAddress + ":" + repositoryServer.ServerPort.ToString();
@@ -222,7 +224,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                         continue;
                     serverAddresses.Add(fullAddress);
                     ServerHubClient client = repositoryServer.ToServerHubClient();
-                    if(client != null)
+                    if (client != null)
                     {
                         client.ReceivedRoomsList += ReceivedRoomsList;
                         client.ServerHubException += ServerHubException;
@@ -230,6 +232,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     }
                 }
             }
+
             for (int i = 0; i < Config.Instance.ServerHubIPs.Length ; i++)
             {
                 string ip = Config.Instance.ServerHubIPs[i];
