@@ -258,7 +258,4 @@ __pycache__/
 /Output/NewAPI
 /Output
 /BeatSaberMultiplayer.plog
-/BeatSaberMultiplayer/bin/*
-/Refs
-/MultiplayerServerHub.zip
-/bsinstalldir.txt
+/BeatSaberMultiplayer/bin/Debug/MainAssembly.dll

@@ -1,11 +1,10 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayerLite.Data;
-using BeatSaberMultiplayerLite.Misc;
-using BeatSaberMultiplayerLite.UI;
+using BeatSaberMultiplayer.Data;
+using BeatSaberMultiplayer.Misc;
+using BeatSaberMultiplayer.UI;
 using BS_Utils.Utilities;
 using HMUI;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,9 +13,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
-namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
+namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
 {
-    class ResultsViewController : BSMLResourceViewController
+    class MultiplayerResultsViewController : BSMLResourceViewController
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
@@ -107,15 +106,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                     _scoreData[i].SetProperty("rank", i + 1);
                 }
             }
-            try
-            {
-                leaderboardTableView.SetScores(_scoreData, -1);
-            }
-            catch (Exception ex)
-            {
-                Plugin.log.Error($"Error setting leaderboard scores: {ex.Message}");
-                Plugin.log.Debug(ex);
-            }
+
+            leaderboardTableView.SetScores(_scoreData, -1);
 
         }
 
@@ -175,7 +167,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 }
                 else
                 {
-                    if (PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel > levelResults.modifiedScore)
+                    if(PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel > levelResults.modifiedScore)
                     {
                         scoreChangeValue.text = (levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
                         scoreChangeValue.color = new Color32(240, 38, 31, 255);
@@ -185,7 +177,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                     }
                     else
                     {
-                        scoreChangeValue.text = "+" + (levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
+                        scoreChangeValue.text = "+"+(levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
                         scoreChangeValue.color = new Color32(55, 235, 43, 255);
                         scoreChangeIcon.gameObject.SetActive(true);
                         scoreChangeIcon.rectTransform.localRotation = Quaternion.Euler(180f, 0f, 0f);

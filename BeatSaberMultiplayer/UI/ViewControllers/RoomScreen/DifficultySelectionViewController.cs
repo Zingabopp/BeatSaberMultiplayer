@@ -22,6 +22,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
     class DifficultySelectionViewController : BSMLResourceViewController
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
+
         public event Action discardPressed;
         public event Action levelOptionsChanged;
         public event Action<IBeatmapLevel, BeatmapCharacteristicSO, BeatmapDifficulty> playPressed;
@@ -67,11 +68,11 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         [UIComponent("controls-rect")]
         public RectTransform controlsRect;
         [UIComponent("characteristic-control-blocker")]
-        public RectTransform charactertisticControlBlocker;
+        public RawImage charactertisticControlBlocker;
         [UIComponent("characteristic-control")]
         public IconSegmentedControl characteristicControl;
         [UIComponent("difficulty-control-blocker")]
-        public RectTransform difficultyControlBlocker;
+        public RawImage difficultyControlBlocker;
         [UIComponent("difficulty-control")]
         public TextSegmentedControl difficultyControl;
 
@@ -137,6 +138,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
             progressBarBG.color = new Color(1f, 1f, 1f, 0.2f);
             progressBarTop.color = new Color(1f, 1f, 1f, 1f);
+
+            charactertisticControlBlocker.color = new Color(1f, 1f, 1f, 0f);
+            difficultyControlBlocker.color = new Color(1f, 1f, 1f, 0f);
 
             cancellationToken = new CancellationTokenSource();
 
@@ -275,11 +279,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         private async void SetContent(IBeatmapLevel level)
         {
-            if (level.beatmapLevelData.difficultyBeatmapSets.Where(s => s.beatmapCharacteristic == _playerDataModel.playerData.lastSelectedBeatmapCharacteristic).Count() > 0)
+            if (level.beatmapLevelData.difficultyBeatmapSets.Any(x => x.beatmapCharacteristic == _playerDataModel.playerData.lastSelectedBeatmapCharacteristic))
             {
                 _selectedDifficultyBeatmap = level.GetDifficultyBeatmap(_playerDataModel.playerData.lastSelectedBeatmapCharacteristic, _playerDataModel.playerData.lastSelectedBeatmapDifficulty);
             }
-            // else if (level.beatmapCharacteristics.Length > 0)
             else if (level.beatmapLevelData.difficultyBeatmapSets.Length > 0)
             {
                 _selectedDifficultyBeatmap = level.GetDifficultyBeatmap(level.beatmapLevelData.difficultyBeatmapSets[0].beatmapCharacteristic, _playerDataModel.playerData.lastSelectedBeatmapDifficulty);

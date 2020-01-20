@@ -1,7 +1,8 @@
 ﻿using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
-// using Discord;
+using Discord;
+using DiscordCore;
 using Harmony;
 using IPA;
 using System;
@@ -21,10 +22,11 @@ namespace BeatSaberMultiplayerLite
         public static Version ClientCompatibilityVersion = new Version(0,7,0,0);
         public static Plugin instance;
         public static IPA.Logging.Logger log;
-        // public static Discord.Discord discord;
-        // public static Discord.Activity discordActivity;
-        public static bool overrideDiscordActivity;
+        public static DiscordInstance discord;
+        public static Discord.Activity discordActivity;
+
         private static PlayerAvatarInput _playerAvatarInput;
+        public static bool overrideDiscordActivity;
         private static bool joinAfterRestart;
         private static string joinSecret;
         public static bool DownloaderExists { get; private set; }
@@ -54,7 +56,7 @@ namespace BeatSaberMultiplayerLite
             }
 #endif
         }
-        public void Init(object nullObject, IPA.Logging.Logger logger)
+        public void Init(IPA.Logging.Logger logger)
         {
             log = logger;
             _playerAvatarInput = new PlayerAvatarInput();
@@ -102,20 +104,11 @@ namespace BeatSaberMultiplayerLite
             {
                 discord = new Discord.Discord(661577830919962645, (UInt64)Discord.CreateFlags.NoRequireDiscord);
 
-                discord.SetLogHook(Discord.LogLevel.Debug, DiscordLogCallback);
-                var activityManager = discord.GetActivityManager();
+            discord = DiscordManager.Instance.CreateInstance(new DiscordSettings() { modId = "BeatSaberMultiplayer", modName = "Beat Saber Multiplayer", modIcon = Sprites.onlineIcon, handleInvites = true, appId = 661577830919962645 });
 
-                activityManager.RegisterSteam(620980);
-                activityManager.OnActivityJoin += OnActivityJoin;
-                activityManager.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
-                activityManager.OnActivityInvite += ActivityManager_OnActivityInvite;
-            }
-            catch(Exception ex)
-            {
-                log.Error($"Error initializing Discord hook: {ex.Message}");
-                log.Debug(ex);
-            }
-            */
+            discord.OnActivityJoin += OnActivityJoin;
+            discord.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
+            discord.OnActivityInvite += ActivityManager_OnActivityInvite;
         }
         /*
         private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)
@@ -181,7 +174,6 @@ namespace BeatSaberMultiplayerLite
 
         public void OnUpdate()
         {
-            //discord?.RunCallbacks();
         }
 
         public void OnFixedUpdate()

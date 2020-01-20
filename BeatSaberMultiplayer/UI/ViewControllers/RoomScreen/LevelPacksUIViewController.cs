@@ -14,7 +14,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
-        public event Action<IAnnotatedBeatmapLevelCollection> packSelected;
+        public event Action<IAnnotatedBeatmapLevelCollection> packSelected; 
 
         [UIComponent("packs-list-table")]
         CustomListTableData levelPacksTableData;

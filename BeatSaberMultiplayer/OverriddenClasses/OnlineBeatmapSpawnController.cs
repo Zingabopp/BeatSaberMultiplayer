@@ -29,9 +29,22 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                 info.SetValue(this, info.GetValue(original));
             }
 
+            _beatmapCallbackItemDataList = new List<BeatmapObjectSpawnController.BeatmapCallbackItemData>(10);
+
             owner = newOwner;
 
+            _beatmapObjectCallbackController = callbackController;
+            onlineSyncController = syncController;
 
+            _localPlayer = FindObjectsOfType<PlayerController>().First(x => !(x is OnlinePlayerController));
+            _localSyncController = FindObjectsOfType<AudioTimeSyncController>().First(x => !(x is OnlineAudioTimeController));
+
+            _activeNotes = new List<NoteController>();
+            _activeObstacles = new List<ObstacleController>();
+        }
+
+        public override void Start()
+        {
             try
             {
                 if (BS_Utils.Plugin.LevelData.IsSet)
@@ -40,7 +53,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                     IDifficultyBeatmap diffBeatmap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.beatmapLevelData.difficultyBeatmapSets.First(x => x.beatmapCharacteristic.serializedName == owner.playerInfo.updateInfo.playerLevelOptions.characteristicName).difficultyBeatmaps.First(x => x.difficulty == owner.playerInfo.updateInfo.playerLevelOptions.difficulty);
 
                     _beatsPerMinute = diffBeatmap.level.beatsPerMinute;
-                    _noteLinesCount = (float)diffBeatmap.beatmapData.beatmapLinesData.Length;
+                    _noteLinesCount = diffBeatmap.beatmapData.beatmapLinesData.Length;
                     _noteJumpMovementSpeed = diffBeatmap.noteJumpMovementSpeed;
                     _disappearingArrows = levelInfo.modifiers.disappearingArrows;
                     _ghostNotes = levelInfo.modifiers.ghostNotes;
@@ -63,29 +76,29 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             {
                 Plugin.log.Warn("Unable to update beatmap data! Exception: " + e);
             }
-
-            _beatmapObjectCallbackController = callbackController;
-            onlineSyncController = syncController;
-
-            if (_beatmapObjectCallbackId != -1)
+            catch (Exception e)
             {
-                _beatmapObjectCallbackController.RemoveBeatmapObjectCallback(_beatmapObjectCallbackId);
+                Plugin.log.Warn("Unable to update beatmap data! Exception: " + e);
             }
 
             if (_beatmapObjectCallbackController != null)
             {
-                _beatmapObjectCallbackId = _beatmapObjectCallbackController.AddBeatmapObjectCallback(new BeatmapObjectCallbackController.BeatmapObjectCallback(this.HandleBeatmapObjectCallback), _spawnAheadTime);
-            }
+                if (_beatmapObjectCallbackId != -1)
+                {
+                    _beatmapObjectCallbackController.RemoveBeatmapObjectCallback(_beatmapObjectCallbackId);
+                }
+                _beatmapObjectCallbackId = _beatmapObjectCallbackController.AddBeatmapObjectCallback(new BeatmapObjectCallbackController.BeatmapObjectCallback(HandleBeatmapObjectCallback), _spawnAheadTime);
 
-            _localPlayer = FindObjectsOfType<PlayerController>().First(x => !(x is OnlinePlayerController));
-            _localSyncController = FindObjectsOfType<AudioTimeSyncController>().First(x => !(x is OnlineAudioTimeController));
+                if (_eventCallbackId != -1)
+                {
+                    _beatmapObjectCallbackController.RemoveBeatmapEventCallback(_eventCallbackId);
+                }
+                _beatmapObjectCallbackController.callbacksForThisFrameWereProcessedEvent += HandleCallbacksForThisFrameWereProcessed;
+            }
 
             NoteCutEffectSpawner cutEffectSpawner = FindObjectOfType<NoteCutEffectSpawner>();
 
-            (this as BeatmapObjectSpawnController).noteWasCutEvent += (sender, controller, cutInfo) => { if (cutInfo.allIsOK) cutEffectSpawner.HandleNoteWasCutEvent(sender, controller, cutInfo); };
-
-            _activeNotes = new List<NoteController>();
-            _activeObstacles = new List<ObstacleController>();
+            (this as BeatmapObjectSpawnController).noteWasCutEvent += (sender, controller, cutInfo) => { if(cutInfo.allIsOK) cutEffectSpawner.HandleNoteWasCutEvent(sender, controller, cutInfo); };
         }
 
         public override void SpawnBeatmapObject(BeatmapObjectData beatmapObjectData)
@@ -94,24 +107,24 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             {
                 return;
             }
+
             float num = _moveDistance / _moveSpeed;
             float num2 = _jumpDistance / _noteJumpMovementSpeed;
             if (beatmapObjectData.beatmapObjectType == BeatmapObjectType.Obstacle)
             {
                 ObstacleData obstacleData = (ObstacleData)beatmapObjectData;
-                Vector3 forward = base.transform.forward;
-                Vector3 a = base.transform.position;
-                a += forward * (this._moveDistance + this._jumpDistance * 0.5f);
-                Vector3 a2 = a - forward * this._moveDistance;
-                Vector3 a3 = a - forward * (this._moveDistance + this._jumpDistance);
-                Vector3 noteOffset = this.GetNoteOffset(beatmapObjectData.lineIndex, NoteLineLayer.Base);
-                noteOffset.y = ((obstacleData.obstacleType == ObstacleType.Top) ? (this._topObstaclePosY + this._globalJumpOffsetY) : this._verticalObstaclePosY);
-                float height = (obstacleData.obstacleType == ObstacleType.Top) ? this._topObstacleHeight : this._verticalObstacleHeight;
-                ObstacleController obstacleController = this._obstaclePool.Spawn();
-                this.SetObstacleEventCallbacks(obstacleController);
+                Vector3 forward = transform.forward;
+                Vector3 a = transform.position;
+                a += forward * (_moveDistance + _jumpDistance * 0.5f);
+                Vector3 a2 = a - forward * _moveDistance;
+                Vector3 a3 = a - forward * (_moveDistance + _jumpDistance);
+                Vector3 noteOffset = GetNoteOffset(beatmapObjectData.lineIndex, NoteLineLayer.Base);
+                noteOffset.y = ((obstacleData.obstacleType == ObstacleType.Top) ? (_topObstaclePosY + _globalJumpOffsetY) : _verticalObstaclePosY);
+                float height = (obstacleData.obstacleType == ObstacleType.Top) ? _topObstacleHeight : _verticalObstacleHeight;
+                ObstacleController obstacleController = _obstaclePool.Spawn();
+                SetObstacleEventCallbacks(obstacleController);
                 obstacleController.transform.SetPositionAndRotation(a + noteOffset, Quaternion.identity);
-                obstacleController.Init(obstacleData, this._spawnRotationProcesser.rotation, a + noteOffset, a2 +
-                    noteOffset, a3 + noteOffset, num, num2, beatmapObjectData.time - this._spawnAheadTime, this._noteLinesDistance, height);
+                obstacleController.Init(obstacleData, _spawnRotationProcesser.rotation, a + noteOffset, a2 + noteOffset, a3 + noteOffset, num, num2, beatmapObjectData.time - _spawnAheadTime, _noteLinesDistance, height);
                 obstacleController.SetPrivateField("_playerController", owner);
                 obstacleController.SetPrivateField("_audioTimeSyncController", onlineSyncController);
                 obstacleController.finishedMovementEvent += ResetControllers;
@@ -139,7 +152,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                     NoteController noteController = _bombNotePool.Spawn();
                     SetNoteControllerEventCallbacks(noteController);
                     noteController.transform.SetPositionAndRotation(a4 + noteOffset2, Quaternion.identity);
-                    noteController.Init(noteData, this._spawnRotationProcesser.rotation, a4 + noteOffset2, a5 + noteOffset2, a6 + noteOffset2, num, num2, noteData.time - this._spawnAheadTime, jumpGravity);
+                    noteController.Init(noteData, _spawnRotationProcesser.rotation, a4 + noteOffset2, a5 + noteOffset2, a6 + noteOffset2, num, num2, noteData.time - _spawnAheadTime, jumpGravity);
 
                     var noteJump = noteController.GetComponent<NoteJump>();
                     noteJump.SetPrivateField("_playerController", owner);
@@ -165,11 +178,11 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                     GameNoteController gameNoteController = noteController2 as GameNoteController;
                     if (gameNoteController != null)
                     {
-                        gameNoteController.Init(noteData, this._spawnRotationProcesser.rotation, a4 + noteOffset3, a5 + noteOffset3, a6 + noteOffset2, num, num2, noteData.time - this._spawnAheadTime, jumpGravity, this._disappearingArrows, this._ghostNotes && !flag);
+                        gameNoteController.Init(noteData, _spawnRotationProcesser.rotation, a4 + noteOffset3, a5 + noteOffset3, a6 + noteOffset2, num, num2, noteData.time - _spawnAheadTime, jumpGravity, _disappearingArrows, _ghostNotes && !flag);
                     }
                     else
                     {
-                        noteController2.Init(noteData, this._spawnRotationProcesser.rotation, a4 + noteOffset3, a5 + noteOffset3, a6 + noteOffset2, num, num2, noteData.time - this._spawnAheadTime, jumpGravity);
+                        noteController2.Init(noteData, _spawnRotationProcesser.rotation, a4 + noteOffset3, a5 + noteOffset3, a6 + noteOffset2, num, num2, noteData.time - _spawnAheadTime, jumpGravity);
                     }
 
                     var noteJump = noteController2.GetComponent<NoteJump>();
@@ -202,6 +215,20 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                 offset = owner.avatarOffset + Vector3.right * num;
             return offset + new Vector3(0f, LineYPosForLineLayer(noteLineLayer), 0f);
         }
+
+        public override void HandleCallbacksForThisFrameWereProcessed()
+        {
+            for (int i = 0; i < _beatmapCallbackItemDataList.Count; i++)
+            {
+                BeatmapObjectSpawnController.BeatmapCallbackItemData beatmapCallbackItemData = _beatmapCallbackItemDataList[i];
+                if (beatmapCallbackItemData.callbackItemType == BeatmapObjectSpawnController.BeatmapCallbackItemType.kBeatmapObject)
+                {
+                    SpawnBeatmapObject(beatmapCallbackItemData.beatmapObjectData);
+                }
+            }
+            _beatmapCallbackItemDataList.Clear();
+        }
+
 
         private void ResetControllersNoteWasCut(NoteController controller, NoteCutInfo info)
         {

@@ -134,7 +134,7 @@ namespace BeatSaberMultiplayerLite
 
         public void SetBlocksState(bool active)
         {
-            if(active && beatmapCallbackController == null && audioTimeController == null && beatmapSpawnController == null && _leftSaber == null && _rightSaber == null)
+            if(active && !playerInfo.updateInfo.playerLevelOptions.characteristicName.ToLower().Contains("degree") && beatmapCallbackController == null && audioTimeController == null && beatmapSpawnController == null && _leftSaber == null && _rightSaber == null)
             {
                 SpawnBeatmapControllers();
                 SpawnSabers();
