@@ -13,15 +13,12 @@
 """"AudioModule.dll
 """"UnityWebRequestModule.dll
 """"CoreModule.dll
-""""TextRenderingModule.dll
 """"AssetBundleModule.dll
 """"UnityWebRequestTextureModule.dll
 """"JSONSerializeModule.dll
 """"XRModule.dll
-""""VRModule.dll
 """"UI
 """"".dll
-"""""ElementsModule.dll
 """""Module.dll
 """IPA.
 """"Loader.dll
