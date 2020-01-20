@@ -260,3 +260,6 @@ __pycache__/
 /BeatSaberMultiplayer.plog
 /BeatSaberMultiplayer/bin/Debug/MainAssembly.dll
 /bsinstalldir.txt
+/BeatSaberMultiplayer/bin/Release/zip
+/BeatSaberMultiplayer/bin/Release/Final/Plugins/BeatSaberMultiplayerLite.dll
+/BeatSaberMultiplayer/bin/Release/BeatSaberMultiplayerLite.dll

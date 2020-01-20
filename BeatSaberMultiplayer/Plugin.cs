@@ -6,9 +6,6 @@ using DiscordCore;
 using Harmony;
 using IPA;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -19,7 +16,7 @@ namespace BeatSaberMultiplayerLite
 {
     public class Plugin : IBeatSaberPlugin
     {
-        public static Version ClientCompatibilityVersion = new Version(0,7,0,0);
+        public static Version ClientCompatibilityVersion = new Version(0, 7, 0, 0);
         public static Plugin instance;
         public static IPA.Logging.Logger log;
         public static DiscordInstance discord;
@@ -99,10 +96,6 @@ namespace BeatSaberMultiplayerLite
             {
                 Plugin.log.Error("Unable to patch assembly! Exception: " + e);
             }
-            /*
-            try
-            {
-                discord = new Discord.Discord(661577830919962645, (UInt64)Discord.CreateFlags.NoRequireDiscord);
 
             discord = DiscordManager.Instance.CreateInstance(new DiscordSettings() { modId = "BeatSaberMultiplayer", modName = "Beat Saber Multiplayer", modIcon = Sprites.onlineIcon, handleInvites = true, appId = 661577830919962645 });
 
@@ -110,7 +103,7 @@ namespace BeatSaberMultiplayerLite
             discord.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
             discord.OnActivityInvite += ActivityManager_OnActivityInvite;
         }
-        /*
+
         private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)
         {
             if (SceneManager.GetActiveScene().name.Contains("Menu") && type == ActivityActionType.Join && !Client.Instance.inRoom && !Client.Instance.inRadioMode)
@@ -136,7 +129,7 @@ namespace BeatSaberMultiplayerLite
                 Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().First().RestartGame();
             }
         }
-        */
+        
 
         private void MenuSceneLoadedFresh()
         {

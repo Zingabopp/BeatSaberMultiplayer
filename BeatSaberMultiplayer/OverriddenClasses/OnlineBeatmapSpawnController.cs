@@ -29,7 +29,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                 info.SetValue(this, info.GetValue(original));
             }
 
-            _beatmapCallbackItemDataList = new List<BeatmapObjectSpawnController.BeatmapCallbackItemData>(10);
+            //_beatmapCallbackItemDataList = new List<BeatmapObjectSpawnController.BeatmapCallbackItemData>(10);
 
             owner = newOwner;
 
@@ -71,10 +71,6 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                     _jumpDistance = _noteJumpMovementSpeed * num * _halfJumpDurationInBeats * 2f;
                     _spawnAheadTime = _moveDistance / _moveSpeed + _jumpDistance * 0.5f / _noteJumpMovementSpeed;
                 }
-            }
-            catch (Exception e)
-            {
-                Plugin.log.Warn("Unable to update beatmap data! Exception: " + e);
             }
             catch (Exception e)
             {
@@ -215,7 +211,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                 offset = owner.avatarOffset + Vector3.right * num;
             return offset + new Vector3(0f, LineYPosForLineLayer(noteLineLayer), 0f);
         }
-
+        /*
         public override void HandleCallbacksForThisFrameWereProcessed()
         {
             for (int i = 0; i < _beatmapCallbackItemDataList.Count; i++)
@@ -228,7 +224,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             }
             _beatmapCallbackItemDataList.Clear();
         }
-
+        */
 
         private void ResetControllersNoteWasCut(NoteController controller, NoteCutInfo info)
         {
