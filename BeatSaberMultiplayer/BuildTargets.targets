@@ -25,10 +25,11 @@
       <Output TaskParameter="AssemblyVersion" PropertyName="AssemblyVersion" />
     </GetManifestInfo>
     <Message Text="PluginVersion: $(PluginVersion), AssemblyVersion: $(AssemblyVersion), GameVersion: $(GameVersion)" Importance="high" />
-	<PropertyGroup>
-		<ZipFile>$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip</ZipFile>
-	</PropertyGroup>
+	  <PropertyGroup>
+		  <ZipFile>$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip</ZipFile>
+	  </PropertyGroup>
     <ZipDir ZipFileName="$(OutDir)zip\$(ZipFile)" DirectoryName="$(OutputPath)Final" />
+    <Exec Command="del /F /Q &quot;$(ProjectDir)..\Output\Publish\BeatSaberMultiplayerLite*.zip&quot;"/>
     <Copy SourceFiles="$(OutDir)zip\$(ZipFile)" DestinationFiles="$(ProjectDir)..\Output\Publish\$(ZipFile)" />
   </Target>
   <!--Build Tasks-->
