@@ -25,7 +25,11 @@
       <Output TaskParameter="AssemblyVersion" PropertyName="AssemblyVersion" />
     </GetManifestInfo>
     <Message Text="PluginVersion: $(PluginVersion), AssemblyVersion: $(AssemblyVersion), GameVersion: $(GameVersion)" Importance="high" />
-    <ZipDir ZipFileName="$(OutDir)zip\$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip" DirectoryName="$(OutputPath)Final" />
+	<PropertyGroup>
+		<ZipFile>$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip</ZipFile>
+	</PropertyGroup>
+    <ZipDir ZipFileName="$(OutDir)zip\$(ZipFile)" DirectoryName="$(OutputPath)Final" />
+    <Copy SourceFiles="$(OutDir)zip\$(ZipFile)" DestinationFiles="$(ProjectDir)..\Output\Publish\$(ZipFile)" />
   </Target>
   <!--Build Tasks-->
   <UsingTask TaskName="GetManifestInfo" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll">
