@@ -120,6 +120,8 @@ namespace BeatSaberMultiplayerLite
 
                     voiceChatListener.OnAudioGenerated -= ProcesVoiceFragment;
                     voiceChatListener.OnAudioGenerated += ProcesVoiceFragment;
+                    Config.Instance.VoiceChatVolumeChanged -= Config_VoiceChatVolumeChanged;
+                    Config.Instance.VoiceChatVolumeChanged += Config_VoiceChatVolumeChanged;
 
                     DontDestroyOnLoad(voiceChatListener.gameObject);
 
@@ -127,6 +129,11 @@ namespace BeatSaberMultiplayerLite
                 }
 
             }
+        }
+
+        private void Config_VoiceChatVolumeChanged(object sender, float e)
+        {
+            VoiceChatVolumeChanged(e);
         }
 
         public void ToggleVoiceChat(bool enabled)
@@ -179,6 +186,8 @@ namespace BeatSaberMultiplayerLite
         {
             if (players != null)
             {
+                if (volume > 1f)
+                    volume = 1f;
                 foreach (var player in players.Values.Where(x => x != null && !x.destroyed))
                 {
                     player.SetVoIPVolume(volume);

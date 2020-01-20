@@ -33,7 +33,8 @@ namespace BeatSaberMultiplayerLite
             [CallerMemberName] string memberName = "",
             [CallerLineNumber] int line = -1)
         {
-            return;
+
+#if DEBUG
             log.Info($"{Path.GetFileName(memberPath)}_{memberName}({{{line}}}): {message}");
             var stackTrace = new StackTrace(1, true);
             List<StackFrame> frames = new List<StackFrame>();
@@ -51,6 +52,7 @@ namespace BeatSaberMultiplayerLite
             {
                 log.Debug(frame.ToString());
             }
+#endif
         }
         public void Init(object nullObject, IPA.Logging.Logger logger)
         {

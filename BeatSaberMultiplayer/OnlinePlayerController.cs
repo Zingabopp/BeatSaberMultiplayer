@@ -50,6 +50,7 @@ namespace BeatSaberMultiplayerLite
             voipSource.clip = null;
             voipSource.spatialize = Config.Instance.SpatialAudio;
             voipSource.loop = true;
+            voipSource.volume = Config.Instance.VoiceChatVolume;
             voipSource.Play();
 
             if (playerInfo != null)
@@ -383,7 +384,10 @@ namespace BeatSaberMultiplayerLite
 
                 _lastVoipFragIndex = fragIndex;
                 _silentFrames = 0;
-
+                if (Config.Instance.VoiceChatVolume > 1)
+                {
+                    AudioUtils.ApplyGain(data, Config.Instance.VoiceChatVolume);
+                }
                 _voipFragQueue.Write(data, 0, data.Length);
             }
         }

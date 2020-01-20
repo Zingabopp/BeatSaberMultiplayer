@@ -250,11 +250,14 @@ namespace BeatSaberMultiplayerLite
             get { return _voiceChatVolume; }
             set
             {
+                if (_voiceChatVolume == value)
+                    return;
                 _voiceChatVolume = value;
+                VoiceChatVolumeChanged?.Invoke(this, value);
                 MarkDirty();
             }
         }
-
+        public event EventHandler<float> VoiceChatVolumeChanged;
         public bool MicEnabled
         {
             get { return _micEnabled; }
