@@ -13,10 +13,12 @@
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
     <BeatSaberDir>.\Refs</BeatSaberDir>
+    <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
+    <PathMap>$(AppOutputBase)=X:\$(AssemblyName)\</PathMap>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;LOCALRADIO; UNITY_STANDALONE</DefineConstants>

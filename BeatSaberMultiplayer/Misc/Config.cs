@@ -188,6 +188,23 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
+        public string PublicAvatarHash
+        {
+            get { return _publicAvatarHash; }
+            set
+            {
+                if (value == null)
+                {
+                    _publicAvatarHash = Data.PlayerInfo.avatarHashPlaceholder;
+                }
+                else
+                {
+                    _publicAvatarHash = value;
+                }
+                MarkDirty();
+            }
+        }
+
         public bool SpectatorMode
         {
             get { return _spectatorMode; }
@@ -268,12 +285,12 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
-        public int PushToTalkButton
+        public PTTOption PushToTalkButton
         {
-            get { return _pushToTalkButton; }
+            get { return (PTTOption)_pushToTalkButton; }
             set
             {
-                _pushToTalkButton = value;
+                _pushToTalkButton = (int)value;
                 MarkDirty();
             }
         }
@@ -334,5 +351,47 @@ namespace BeatSaberMultiplayerLite
         void MarkClean() {
             IsDirty = false;
         }
+
+        
     }
+
+    [Flags]
+    public enum PTTOption
+    {
+        None = 0,                                          // 0000
+        LeftTrigger = 1 << 0,                              // 0001                              
+        RightTrigger = 1 << 1,                             // 0010
+        LeftAndRightTrigger = LeftTrigger | RightTrigger,  // 0011
+        AnyTrigger = 1 << 3 | LeftAndRightTrigger          // 0111
+    }
+
+    public static class PPTOptionExtensions
+    {
+        public static bool Satisfies(this PTTOption actualState, PTTOption checkState)
+        {
+            if (checkState == PTTOption.AnyTrigger)
+                return (actualState & PTTOption.AnyTrigger) != 0;
+            return actualState.HasFlag(checkState);
+        }
+
+        public static int OptionIndex(this PTTOption option)
+        {
+            switch (option)
+            {
+                case PTTOption.None:
+                    return 0;
+                case PTTOption.LeftTrigger:
+                    return 1;
+                case PTTOption.RightTrigger:
+                    return 2;
+                case PTTOption.LeftAndRightTrigger:
+                    return 3;
+                case PTTOption.AnyTrigger:
+                    return 4;
+                default:
+                    return 0;
+            }
+        }
+    }
+
 }

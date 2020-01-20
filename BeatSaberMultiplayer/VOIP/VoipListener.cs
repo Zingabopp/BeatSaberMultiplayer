@@ -36,6 +36,9 @@ namespace BeatSaberMultiplayerLite.VOIP
                     index += 3;
                     lastPos = Math.Max(Microphone.GetPosition(_usedMicrophone) - recordingBuffer.Length, 0);
                 }
+                if (_isListening == value)
+                    return;
+                Plugin.LogLocation($"IsListening Changed: {value}");
                 _isListening = value;
             }
         }
@@ -54,22 +57,28 @@ namespace BeatSaberMultiplayerLite.VOIP
 
         private void Instance_voiceChatMicrophoneChanged(string newMic)
         {
-            if(recording != null)
+
+            Plugin.LogLocation("Begin Instance_voiceChatMicrophoneChanged");
+            if (recording != null)
             {
                 StopRecording();
                 _usedMicrophone = newMic;
                 StartRecording();
             }
+            {
+                Plugin.log.Warn("Recording is null");
+            }
         }
 
         public void StartRecording()
         {
+            Plugin.LogLocation("Begin StartRecording");
             if (Microphone.devices.Length == 0) return;
 
+            Plugin.LogLocation("Microphone.devices.Length != 0");
             inputFreq = AudioUtils.GetFreqForMic();
             
             encoder = SpeexCodex.Create(BandMode.Wide);
-
             var ratio = inputFreq / (float)AudioUtils.GetFrequency(encoder.mode);
             int sizeRequired = (int)(ratio * encoder.dataSize);
             recordingBuffer = new float[sizeRequired];

@@ -5,8 +5,12 @@ using BS_Utils.Gameplay;
 using Harmony;
 using IPA;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,7 +28,30 @@ namespace BeatSaberMultiplayerLite
         private static bool joinAfterRestart;
         private static string joinSecret;
         public static bool DownloaderExists { get; private set; }
-
+        public static void LogLocation(string message,
+            [CallerFilePath] string memberPath = "",
+            [CallerMemberName] string memberName = "",
+            [CallerLineNumber] int line = -1)
+        {
+            return;
+            log.Info($"{Path.GetFileName(memberPath)}_{memberName}({{{line}}}): {message}");
+            var stackTrace = new StackTrace(1, true);
+            List<StackFrame> frames = new List<StackFrame>();
+            for (int i = 0; i < stackTrace.FrameCount; i++)
+            {
+                StackFrame frame = stackTrace.GetFrame(i);
+                var frameAssembly = frame.GetMethod().DeclaringType.Assembly;
+                if (frameAssembly == Assembly.GetExecutingAssembly())
+                {
+                    frames.Add(frame);
+                    Console.WriteLine(frame);
+                }
+            }
+            foreach (var frame in frames)
+            {
+                log.Debug(frame.ToString());
+            }
+        }
         public void Init(object nullObject, IPA.Logging.Logger logger)
         {
             log = logger;
@@ -39,7 +66,7 @@ namespace BeatSaberMultiplayerLite
             BS_Utils.Utilities.BSEvents.menuSceneLoadedFresh += MenuSceneLoadedFresh;
             BS_Utils.Utilities.BSEvents.menuSceneLoaded += MenuSceneLoaded;
             BS_Utils.Utilities.BSEvents.gameSceneLoaded += GameSceneLoaded;
-
+            LogLocation("OnApplicationStart");
             if (Config.Load())
                 log.Info("Loaded config!");
             else
