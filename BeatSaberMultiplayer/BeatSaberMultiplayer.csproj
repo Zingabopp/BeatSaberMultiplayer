@@ -117,9 +117,26 @@
     <Compile Include="Data\VoipFragment.cs" />
     <Compile Include="VOIP\VoipListener.cs" />
   </ItemGroup>
+  <Choose>
+    <When Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
+      <ItemGroup>
+        <EmbeddedResource Include="manifest_discord.json">
+          <LogicalName>$(RootNamespace).manifest.json</LogicalName>
+        </EmbeddedResource>
+        <None Include="manifest_original.json"/>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(Configuration)|$(Platform)' != 'ReleaseDiscord|AnyCPU'">
+      <ItemGroup>
+        <EmbeddedResource Include="manifest_original.json">
+          <LogicalName>$(RootNamespace).manifest.json</LogicalName>
+        </EmbeddedResource>
+        <None Include="manifest_discord.json"/>
+      </ItemGroup>
+    </When>
+  </Choose>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Shader.asset" />
-    <EmbeddedResource Include="manifest.json" />
     <EmbeddedResource Include="UI\SettingsView.bsml">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
@@ -202,14 +219,14 @@
   </ItemGroup>
   <Choose>
     <When Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
-	  <ItemGroup>
+      <ItemGroup>
         <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
           <SpecificVersion>False</SpecificVersion>
           <HintPath>..\Refs\DiscordCore.dll</HintPath>
           <Private>False</Private>
         </Reference>
       </ItemGroup>
-	</When>
+    </When>
   </Choose>
   <ItemGroup>
     <Reference Include="0Harmony.1.2.0.1">

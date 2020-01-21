@@ -19,7 +19,13 @@
     </GetCommitHash>
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).pdb" />
-    <GetManifestInfo>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
+      <ManifestName>manifest_discord.json</ManifestName>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' != 'ReleaseDiscord|AnyCPU'">
+      <ManifestName>manifest_original.json</ManifestName>
+    </PropertyGroup>
+    <GetManifestInfo ManifestName="$(ManifestName)">
       <Output TaskParameter="PluginVersion" PropertyName="PluginVersion" />
       <Output TaskParameter="GameVersion" PropertyName="GameVersion" />
       <Output TaskParameter="AssemblyVersion" PropertyName="AssemblyVersion" />
@@ -38,6 +44,7 @@
   <!--Build Tasks-->
   <UsingTask TaskName="GetManifestInfo" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v12.0.dll">
     <ParameterGroup>
+      <ManifestName ParameterType="System.String" Required="true" Output="false"/>
       <GameVersion ParameterType="System.String" Output="true" />
       <PluginVersion ParameterType="System.String" Output="true" />
       <AssemblyVersion ParameterType="System.String" Output="true" />
@@ -52,7 +59,8 @@
         <![CDATA[
             try
             {
-                string manifestFile = "manifest.json";
+                Log.LogMessage(MessageImportance.High, "Analyzing manifest: {0}", ManifestName);
+                string manifestFile = ManifestName;
                 string assemblyFile = "Properties\\AssemblyInfo.cs";
                 string manifest_gameVerStart = "\"gameVersion\"";
                 string manifest_versionStart = "\"version\"";
