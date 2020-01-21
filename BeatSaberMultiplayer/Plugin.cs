@@ -1,15 +1,19 @@
 ﻿using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
-
 using Harmony;
 using IPA;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if DEBUG
+using System.Diagnostics;
+using System.IO;
+#endif
 #if DISCORDCORE
 using Discord;
 using DiscordCore;
