@@ -4,7 +4,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <BuildTargetsVersion>1.0</BuildTargetsVersion>
-    <BuildTargetsModified>false</BuildTargetsModified> <!--Set this to true if you edit this file to prevent automatic updates-->
+    <BuildTargetsModified>true</BuildTargetsModified> <!--Set this to true if you edit this file to prevent automatic updates-->
   </PropertyGroup>
   <!--Build Targets-->
   <Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(NCrunch)' != '1'">
@@ -12,7 +12,7 @@
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(BeatSaberDir)\IPA\Pending\Plugins\$(AssemblyName).dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(BeatSaberDir)\IPA\Pending\Plugins\$(AssemblyName).pdb" />
   </Target>
-  <Target Name="ZipRelease" AfterTargets="Build" Condition="'$(NCrunch' != '1' AND '$(Configuration)' == 'Release'">
+  <Target Name="ZipRelease" AfterTargets="Build" Condition="'$(NCrunch' != '1' AND ('$(Configuration)' == 'Release' OR '$(Configuration)' == 'ReleaseDiscord')">
     <Message Text="Zipping plugin for release." Importance="high" />
     <GetCommitHash ProjectDir="$(ProjectDir)">
       <Output TaskParameter="CommitShortHash" PropertyName="CommitShortHash" />
@@ -25,9 +25,12 @@
       <Output TaskParameter="AssemblyVersion" PropertyName="AssemblyVersion" />
     </GetManifestInfo>
     <Message Text="PluginVersion: $(PluginVersion), AssemblyVersion: $(AssemblyVersion), GameVersion: $(GameVersion)" Importance="high" />
-	  <PropertyGroup>
-		  <ZipFile>$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip</ZipFile>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
+		  <ZipFile>$(AssemblyName)-$(PluginVersion)-DiscordCore-bs$(GameVersion)-$(CommitShortHash).zip</ZipFile>
 	  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+      <ZipFile>$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip</ZipFile>
+    </PropertyGroup>
     <ZipDir ZipFileName="$(OutDir)zip\$(ZipFile)" DirectoryName="$(OutputPath)Final" />
     <Exec Command="del /F /Q &quot;$(ProjectDir)..\Output\Publish\BeatSaberMultiplayerLite*.zip&quot;"/>
     <Copy SourceFiles="$(OutDir)zip\$(ZipFile)" DestinationFiles="$(ProjectDir)..\Output\Publish\$(ZipFile)" />

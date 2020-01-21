@@ -1,13 +1,16 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
-using Discord;
-using DiscordCore;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+#if DISCORDCORE
+using Discord;
+using DiscordCore;
+#endif
 
 namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
 {
+    #if DISCORDCORE
     class DiscordAskToJoinView : BSMLResourceViewController
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
@@ -84,4 +87,5 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
 
 
     }
+#endif
 }

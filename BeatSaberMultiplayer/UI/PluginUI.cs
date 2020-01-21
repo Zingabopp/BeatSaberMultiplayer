@@ -6,7 +6,7 @@ using BeatSaberMultiplayerLite.UI.FlowCoordinators;
 using BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens;
 using BS_Utils.Gameplay;
 using BS_Utils.Utilities;
-using Discord;
+
 using HMUI;
 using Polyglot;
 using SimpleJSON;
@@ -18,6 +18,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+#if DISCORDCORE
+using Discord;
+#endif
 
 namespace BeatSaberMultiplayerLite.UI
 {
@@ -97,9 +100,10 @@ namespace BeatSaberMultiplayerLite.UI
                     modeSelectionFlowCoordinator.didFinishEvent += () =>
                     {
                         Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First().InvokeMethod("DismissFlowCoordinator", modeSelectionFlowCoordinator, null, false);
-                       
+#if DISCORDCORE
                         Plugin.discordActivity = default;
                         Plugin.discord?.ClearActivity();
+#endif
                     };
 
                 }
@@ -157,7 +161,9 @@ namespace BeatSaberMultiplayerLite.UI
             {
                 try
                 {
+#if DISCORDCORE
                     SetLobbyDiscordActivity();
+#endif
 
                     MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
 
@@ -193,7 +199,8 @@ namespace BeatSaberMultiplayerLite.UI
                 }
             });
         }
-        
+
+#if DISCORDCORE
         public void ShowJoinRequest(User user)
         {
             FloatingScreen screen = FloatingScreen.CreateFloatingScreen(new Vector2(100, 50), true, new Vector3(0f, 0.9f, 2.4f), Quaternion.Euler(30f, 0f, 0f));
@@ -214,9 +221,11 @@ namespace BeatSaberMultiplayerLite.UI
 
             screen.SetRootViewController(discordView, false);
         }
-
+#endif
+#if DISCORDCORE
         public void SetLobbyDiscordActivity()
         {
+
             Plugin.discordActivity = new Discord.Activity
             {
                 State = "Playing multiplayer",
@@ -228,8 +237,9 @@ namespace BeatSaberMultiplayerLite.UI
                 Instance = false,
             };
             Plugin.discord.UpdateActivity(Plugin.discordActivity);
+
         }
-        
+
 
         public IEnumerator JoinGameWithSecret(string secret)
         {
@@ -240,7 +250,7 @@ namespace BeatSaberMultiplayerLite.UI
 
             modeSelectionFlowCoordinator.JoinGameWithSecret(secret);
         }
-
+#endif
         IEnumerator CheckVersion()
         {
 
@@ -271,7 +281,8 @@ namespace BeatSaberMultiplayerLite.UI
                         _newVersionText.alignment = TextAlignmentOptions.Center;
                     }
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Plugin.log.Error($"Error checking version: {ex.Message}");
                 Plugin.log.Debug(ex);
