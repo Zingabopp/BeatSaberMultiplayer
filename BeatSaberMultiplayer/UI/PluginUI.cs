@@ -276,9 +276,9 @@ namespace BeatSaberMultiplayerLite.UI
 
                     if (newTag)
                     {
-                        Plugin.log.Info($"An update for the mod is available!\nNew mod version: {(string)latestRelease["tag_name"]}\nCurrent mod version: {currentVer}");
+                        Plugin.log.Info($"An update for the mod is available!\nNew mod version: {githubVerStr}\nCurrent mod version: {currentVer}");
                         _newVersionText.gameObject.SetActive(true);
-                        _newVersionText.text = $"Version {(string)latestRelease["tag_name"]}\n of the mod is available!\nCurrent mod version: {currentVer}";
+                        _newVersionText.text = $"Version {githubVerStr}\n of the mod is available!\nCurrent mod version: {currentVer}";
                         _newVersionText.alignment = TextAlignmentOptions.Center;
                     }
                 }
