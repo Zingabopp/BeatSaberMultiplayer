@@ -218,13 +218,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             SetLeftScreenViewController(_playerManagementViewController);
             //PluginUI.instance.SetLobbyDiscordActivity();
             didFinishEvent?.Invoke();
-
-#if UMBRA_FIX_SCORESABER
-            if (IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber") != null)
-            {
-                Resources.FindObjectsOfTypeAll<LevelSelectionNavigationController>().First().GetPrivateField<StandardLevelDetailViewController>("_levelDetailViewController").GetPrivateField<StandardLevelDetailView>("_standardLevelDetailView").SetPrivateField("_selectedDifficultyBeatmap", null);
-            }
-#endif
         }
 
         private void ConnectedToServerHub()
@@ -666,16 +659,18 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 practiceSettings.songSpeedMul = modifiers.songSpeedMul;
                 practiceSettings.startInAdvanceAndClearNotes = true;
 
-#if UMBRA_FIX_SCORESABER
+                var scoreSaber = IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber");
 
-                if (IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber") != null)
+                if (scoreSaber != null)
                 {
-                    ScoreSaberInteraction.FixScoreSaber(difficultyBeatmap);
-                    ScoreSaberInteraction.InitAndSignIn();
+                    if (scoreSaber.Metadata.Version.CompareTo(new SemVer.Version(2, 2, 8)) < 0)
+                    {
+                        ScoreSaberInteraction.FixScoreSaber(difficultyBeatmap);
+                        Plugin.log.Info($"Applying fix for outdated ScoreSaber version!");
+                    }
 
-                    Plugin.log.Info("Hopefully ScoreSaber fix doesn't break anything :)");
+                    ScoreSaberInteraction.InitAndSignIn();
                 }
-#endif
 
                 menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, startTime > 1f ? practiceSettings : null, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
 #if DISCORDCORE
