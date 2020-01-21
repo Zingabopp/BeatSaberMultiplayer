@@ -200,6 +200,17 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\DoubleArrowIcon.png" />
   </ItemGroup>
+  <Choose>
+    <When Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
+	  <ItemGroup>
+        <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>..\Refs\DiscordCore.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+	</When>
+  </Choose>
   <ItemGroup>
     <Reference Include="0Harmony.1.2.0.1">
       <HintPath>..\Refs\0Harmony.1.2.0.1.dll</HintPath>
@@ -218,11 +229,6 @@
     <Reference Include="BS_Utils, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\BS_Utils.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\DiscordCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
