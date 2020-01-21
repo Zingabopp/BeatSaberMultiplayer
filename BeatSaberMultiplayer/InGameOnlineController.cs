@@ -1002,9 +1002,7 @@ namespace BeatSaberMultiplayerLite
             yield return new WaitUntil(delegate () { return FindObjectOfType<ScoreController>() != null; });
 
             Plugin.log.Debug("Game controllers found!");
-            Plugin.log.Warn($"Score Submission disabled");
-            BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Beat Saber Multiplayer Lite");
-            BS_Utils.Gameplay.ScoreSubmission.DisableScoreSaberScoreSubmission();
+
             _scoreController = FindObjectOfType<ScoreController>();
 
             if (_scoreController != null)

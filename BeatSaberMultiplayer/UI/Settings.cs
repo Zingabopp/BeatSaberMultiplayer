@@ -127,9 +127,7 @@ namespace BeatSaberMultiplayerLite.UI
         [UIValue("submit-scores-value")]
         public object submitScores
         {
-            // TODO: Change back once score submission works properly
-            get { return 0; }
-            //get { return submitScoresOptions[Config.Instance.SubmitScores]; }
+            get { return submitScoresOptions[Config.Instance.SubmitScores]; }
             set { Config.Instance.SubmitScores = submitScoresOptions.IndexOf(value); }
         }
         #endregion
