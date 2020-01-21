@@ -256,7 +256,7 @@ namespace BeatSaberMultiplayerLite.UI
 
             Plugin.log.Info("Checking for updates...");
 
-            UnityWebRequest www = UnityWebRequest.Get($"https://api.github.com/repos/andruzzzhka/BeatSaberMultiplayer/releases");
+            UnityWebRequest www = UnityWebRequest.Get($"https://api.github.com/repos/Zingabopp/BeatSaberMultiplayer/releases");
             www.timeout = 10;
 
             yield return www.SendWebRequest();
@@ -269,7 +269,8 @@ namespace BeatSaberMultiplayerLite.UI
                     JSONNode latestRelease = releases[0];
 
                     SemVer.Version currentVer = IPA.Loader.PluginManager.GetPlugin("Beat Saber Multiplayer Lite").Metadata.Version;
-                    SemVer.Version githubVer = new SemVer.Version(latestRelease["tag_name"], true);
+                    string githubVerStr = latestRelease["tag_name"]?.Value.Replace("-L", "");
+                    SemVer.Version githubVer = new SemVer.Version(githubVerStr);
 
                     bool newTag = new SemVer.Range($">{currentVer}").IsSatisfied(githubVer);
 
@@ -281,6 +282,8 @@ namespace BeatSaberMultiplayerLite.UI
                         _newVersionText.alignment = TextAlignmentOptions.Center;
                     }
                 }
+                else
+                    Plugin.log.Warn($"Unable to check latest release: {www.error}");
             }
             catch (Exception ex)
             {
