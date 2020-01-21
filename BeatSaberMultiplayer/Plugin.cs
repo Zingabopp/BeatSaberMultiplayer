@@ -71,7 +71,6 @@ namespace BeatSaberMultiplayerLite
             BS_Utils.Utilities.BSEvents.menuSceneLoadedFresh += MenuSceneLoadedFresh;
             BS_Utils.Utilities.BSEvents.menuSceneLoaded += MenuSceneLoaded;
             BS_Utils.Utilities.BSEvents.gameSceneLoaded += GameSceneLoaded;
-            LogLocation("OnApplicationStart");
             if (Config.Load())
                 log.Info("Loaded config!");
             else
