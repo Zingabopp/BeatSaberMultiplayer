@@ -4,20 +4,16 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-#if DISCORDCORE
-using Discord;
-using DiscordCore;
-#endif
+using BeatSaberMultiplayerLite.DiscordInterface;
 
 namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
 {
-#if DISCORDCORE
     class DiscordInviteResponseView : BSMLResourceViewController
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
-        public User user;
-        public Activity activity;
+        public IUserInfo user { get; set; }
+        public GameActivity activity;
 
         [UIComponent("player-avatar")]
         public RawImage playerAvatar;
@@ -27,21 +23,12 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
         [UIAction("#post-parse")]
         public void SetupScreen()
         {
-            titleText.text = $"<b>{user.Username}#{user.Discriminator}</b> invited you to play! ({activity.Party.Size.CurrentSize}/{activity.Party.Size.MaxSize} players)";
+            titleText.text = $"<b>{user.FullName}</b> invited you to play! ({activity.Party.Size.CurrentSize}/{activity.Party.Size.MaxSize} players)";
 
-            var imageManager = DiscordClient.GetImageManager(); 
-
-            var handle = new ImageHandle()
+            user.GetAvatarTexture((success, texture) =>
             {
-                Id = user.Id,
-                Size = 256
-            };
-
-            imageManager.Fetch(handle, false, (result, img) =>
-            {
-                if (result == Result.Ok)
+                if (success)
                 {
-                    var texture = imageManager.GetTexture(img);
                     playerAvatar.rectTransform.localRotation = Quaternion.Euler(180f, 0f, 0f);
                     playerAvatar.texture = texture;
                 }
@@ -51,7 +38,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
         [UIAction("accept-pressed")]
         public void AcceptPressed()
         {
-            Plugin.instance.OnActivityJoin(activity.Secrets.Join);
+            Plugin.instance.OnActivityJoin(this, activity.Secrets.Join);
 
             Destroy(screen.gameObject);
         }
@@ -62,5 +49,4 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
             Destroy(screen.gameObject);
         }
     }
-#endif
 }

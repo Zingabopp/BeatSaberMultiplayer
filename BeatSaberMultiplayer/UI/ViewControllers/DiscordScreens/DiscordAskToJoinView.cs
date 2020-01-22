@@ -3,19 +3,17 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-#if DISCORDCORE
-using Discord;
-using DiscordCore;
-#endif
+using BeatSaberMultiplayerLite.DiscordInterface;
 
 namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
 {
-    #if DISCORDCORE
     class DiscordAskToJoinView : BSMLResourceViewController
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
-        public User user;
+        public IUserInfo user => request.User;
+
+        public IActivityJoinRequest request;
 
         [UIComponent("player-avatar")]
         public RawImage playerAvatar;
@@ -25,67 +23,39 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
         [UIAction("#post-parse")]
         public void SetupScreen()
         {
-            titleText.text = $"<b>{user.Username}#{user.Discriminator}</b> wants to join your game!";
-
-            var imageManager = DiscordClient.GetImageManager(); 
-
-            var handle = new ImageHandle()
+            titleText.text = $"<b>{user.FullName}</b> wants to join your game!";
+            user.GetAvatarTexture((success, texture) =>
             {
-                Id = user.Id,
-                Size = 256
-            };
-
-            imageManager.Fetch(handle, false, (result, img) =>
-            {
-                if (result == Result.Ok)
+                if(success)
                 {
-                    var texture = imageManager.GetTexture(img);
                     playerAvatar.rectTransform.localRotation = Quaternion.Euler(180f, 0f, 0f);
                     playerAvatar.texture = texture;
                 }
             });
+            
         }
 
         [UIAction("accept-pressed")]
         public void AcceptPressed()
         {
-            DiscordClient.GetActivityManager().SendRequestReply(user.Id, ActivityJoinRequestReply.Yes,
-                (result) =>
-                {
-                    Plugin.log.Debug("Accept invite result: " + result);
-                }
-            );
-
+            request.SendRequestReply(GameActivityRequestReply.Yes);
             Destroy(screen.gameObject);
         }
 
         [UIAction("decline-pressed")]
         public void DeclinePressed()
         {
-            DiscordClient.GetActivityManager().SendRequestReply(user.Id, ActivityJoinRequestReply.No,
-                (result) =>
-                {
-                    Plugin.log.Debug("Decline invite result: " + result);
-                }
-            );
-
+            request.SendRequestReply(GameActivityRequestReply.No);
             Destroy(screen.gameObject);
         }
 
         [UIAction("ignore-pressed")]
         public void IgnorePressed()
         {
-            DiscordClient.GetActivityManager().SendRequestReply(user.Id, ActivityJoinRequestReply.Ignore,
-                (result) =>
-                {
-                    Plugin.log.Debug("Ignore invite result: " + result);
-                }
-            );
-
+            request.SendRequestReply(GameActivityRequestReply.Ignore);
             Destroy(screen.gameObject);
         }
 
 
     }
-#endif
 }
