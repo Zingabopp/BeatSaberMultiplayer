@@ -147,7 +147,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
         [UIAction("create-room-btn-pressed")]
         private void CreateRoomBtnPressed()
         {
-            CreatedRoom?.Invoke(new RoomSettings() { Name = _roomName, UsePassword = _usePassword, Password = _roomPassword, PerPlayerDifficulty = _allowPerPlayerDifficulty, MaxPlayers = _maxPlayers, SelectionType = _songSelectionType, ResultsShowTime = _resultsShowTime });
+            // TODO: Room passwords not working
+            CreatedRoom?.Invoke(new RoomSettings() { Name = _roomName, UsePassword = false /*_usePassword*/, Password = _roomPassword, PerPlayerDifficulty = _allowPerPlayerDifficulty, MaxPlayers = _maxPlayers, SelectionType = _songSelectionType, ResultsShowTime = _resultsShowTime });
         }
     }
 }
