@@ -42,6 +42,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         public LevelCompletionResults levelResults;
         public int lastHighscoreForLevel;
         public bool lastHighscoreValid;
+        public bool PassHostEnabled = true;
 
         AdditionalContentModel _contentModelSO;
         BeatmapLevelsModel _beatmapLevelsModel;
@@ -86,6 +87,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
+            PassHostEnabled = true;
             _beatmapCharacteristics = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSO>();
             _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().FirstOrDefault();
             _contentModelSO = Resources.FindObjectsOfTypeAll<AdditionalContentModel>().FirstOrDefault();
@@ -93,6 +95,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             if (firstActivation && activationType == ActivationType.AddedToHierarchy)
             {
                 _playerManagementViewController = BeatSaberUI.CreateViewController<PlayerManagementViewController>();
+                _playerManagementViewController.ParentFlowCoordinator = this;
                 _playerManagementViewController.gameplayModifiersChanged += UpdateLevelOptions;
                 _playerManagementViewController.transferHostButtonPressed += TransferHostConfirmation;
 
@@ -1017,6 +1020,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         }
         public void ShowResultsLeaderboard(SongInfo song)
         {
+            PassHostEnabled = false;
             if (_resultsViewController == null)
             {
                 _resultsViewController = BeatSaberUI.CreateViewController<MultiplayerResultsViewController>();
@@ -1043,6 +1047,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         public void HideResultsLeaderboard()
         {
+            PassHostEnabled = true;
             if (_resultsViewController != null)
             {
                 if (_roomNavigationController.viewControllers.IndexOf(_resultsViewController) >= 0)
