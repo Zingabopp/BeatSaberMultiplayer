@@ -216,7 +216,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             Client.Instance.inRoom = false;
             PopAllViewControllers();
             SetLeftScreenViewController(_playerManagementViewController);
-            //PluginUI.instance.SetLobbyDiscordActivity();
+#if DISCORDCORE
+            PluginUI.instance.SetLobbyDiscordActivity();
+#endif
             didFinishEvent?.Invoke();
         }
 
@@ -548,8 +550,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     break;
             }
             _playerManagementViewController.UpdateViewController(Client.Instance.isHost, (int)state <= 1);
-
-            //UpdateDiscordActivity(roomInfo);
+#if DISCORDCORE
+            UpdateDiscordActivity(roomInfo);
+#endif
         }
 
         private void UpdateLevelOptions()
@@ -586,8 +589,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                             Client.Instance.playerInfo.updateInfo.playerLevelOptions = new LevelOptionsInfo(BeatmapDifficulty.Hard, _playerManagementViewController.modifiers, "Standard");
                         }
                     }
-
-                    //UpdateDiscordActivity(roomInfo);
+#if DISCORDCORE
+                    UpdateDiscordActivity(roomInfo);
+#endif
                 }
             }
             catch (Exception e)
@@ -1251,7 +1255,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     MaxSize = roomInfo.maxPlayers == 0 ? 256 : roomInfo.maxPlayers
                 }
             };
-
+            Plugin.log.Warn($"Setting partyInfo to: {partyInfo.Id}, {partyInfo.Size.CurrentSize}/{partyInfo.Size.MaxSize}");
             ActivityTimestamps timestamps = new ActivityTimestamps()
             {
                 Start = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -1270,7 +1274,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 SmallImage = roomInfo.roomState == RoomState.InGame ? GetCharacteristicIconID(Client.Instance.playerInfo.updateInfo.playerLevelOptions.characteristicName) : "multiplayer",
                 SmallText = roomInfo.roomState == RoomState.InGame ? GetFancyCharacteristicName(Client.Instance.playerInfo.updateInfo.playerLevelOptions.characteristicName) : "Multiplayer"
             };
-
             Plugin.discordActivity = new Discord.Activity
             {
                 State = RoomInfo.StateToActivityState(roomInfo.roomState),
