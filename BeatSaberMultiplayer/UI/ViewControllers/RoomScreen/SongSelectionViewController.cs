@@ -103,6 +103,13 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             SelectTopButtons(TopButtonsState.Select);
         }
 
+        protected override void DidDeactivate(DeactivationType deactivationType)
+        {
+            if (_searchKeyboard != null)
+                _searchKeyboard.modalView.Hide(false);
+            base.DidDeactivate(deactivationType);
+        }
+
         public void SetSongs(List<IPreviewBeatmapLevel> levels)
         {
             availableSongs = levels;

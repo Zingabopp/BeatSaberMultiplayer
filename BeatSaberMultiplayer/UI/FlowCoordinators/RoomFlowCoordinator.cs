@@ -49,7 +49,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         RoomNavigationController _roomNavigationController;
 
-        ModalKeyboard _searchKeyboard;
         SongSelectionViewController _songSelectionViewController;
         DifficultySelectionViewController _difficultySelectionViewController;
         MultiplayerResultsViewController _resultsViewController;
@@ -156,6 +155,10 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 {
                     ConnectedToServerHub();
                 }
+            }
+            else
+            {
+                _roomNavigationController.DisplayError("Unable to join room:\nPassword is required!");
             }
         }
 
@@ -661,12 +664,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 if (scoreSaber != null)
                 {
-                    if (scoreSaber.Metadata.Version.CompareTo(new SemVer.Version(2, 2, 8)) < 0)
-                    {
-                        ScoreSaberInteraction.FixScoreSaber(difficultyBeatmap);
-                        Plugin.log.Info($"Applying fix for outdated ScoreSaber version!");
-                    }
-
                     ScoreSaberInteraction.InitAndSignIn();
                 }
 
