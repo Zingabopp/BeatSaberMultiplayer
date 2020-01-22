@@ -10,13 +10,10 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using BeatSaberMultiplayerLite.DiscordInterface;
 #if DEBUG
 using System.Diagnostics;
 using System.IO;
-#endif
-#if DISCORDCORE
-using Discord;
-using DiscordCore;
 #endif
 
 namespace BeatSaberMultiplayerLite
@@ -26,12 +23,10 @@ namespace BeatSaberMultiplayerLite
         public static Version ClientCompatibilityVersion = new Version(0, 7, 0, 0);
         public static Plugin instance;
         public static IPA.Logging.Logger log;
-#if DISCORDCORE
-        public static DiscordInstance discord;
-        public static Discord.Activity discordActivity;
+        public static IDiscordInstance discord;
+        public static GameActivity gameActivity;
         private static bool joinAfterRestart;
         private static string joinSecret;
-#endif
         private static PlayerAvatarInput _playerAvatarInput;
         public static bool overrideDiscordActivity;
         public static bool DownloaderExists { get; private set; }
@@ -103,34 +98,45 @@ namespace BeatSaberMultiplayerLite
             {
                 Plugin.log.Error("Unable to patch assembly! Exception: " + e);
             }
-#if DISCORDCORE
-            discord = DiscordManager.Instance.CreateInstance(new DiscordSettings() { modId = "BeatSaberMultiplayer", modName = "Beat Saber Multiplayer", modIcon = Sprites.onlineIcon, handleInvites = true, appId = 661577830919962645 });
-
-            discord.OnActivityJoin += OnActivityJoin;
-            discord.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
-            discord.OnActivityInvite += ActivityManager_OnActivityInvite;
-#endif
-        }
-
-#if DISCORDCORE
-        private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)
-        {
-            if (SceneManager.GetActiveScene().name.Contains("Menu") && type == ActivityActionType.Join && !Client.Instance.inRoom && !Client.Instance.inRadioMode)
+            if (IPA.Loader.PluginManager.GetPluginFromId("DiscordCore") != null)
             {
-                PluginUI.instance.ShowInvite(user, activity);
+                Plugin.log.Info("DiscordCore found, Discord Rich Presence will be available.");
+                discord = PresenceLoader.LoadDiscord("BeatSaberMultiplayer", "Beat Saber Multiplayer", Sprites.onlineIcon, true, 661577830919962645);
+                discord.ActivityJoinReceived += OnActivityJoin;
+                discord.ActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
+                discord.ActivityInviteReceived += ActivityManager_OnActivityInvite;
+                discord.Destroyed += Discord_Destroyed;
             }
         }
 
-        private void ActivityManager_OnActivityJoinRequest(ref User user)
+        private void Discord_Destroyed(object sender, EventArgs e)
+        {
+            if (discord == sender)
+                discord = null;
+        }
+
+        private void ActivityManager_OnActivityInvite(object sender, ActivityInviteEventArgs args)
+        {
+            if (SceneManager.GetActiveScene().name.Contains("Menu") && args.GameActivityAction == GameActivityActionType.Join && !Client.Instance.inRoom && !Client.Instance.inRadioMode)
+            {
+                PluginUI.instance.ShowInvite(args.User, args.Activity);
+            }
+        }
+
+        private void ActivityManager_OnActivityJoinRequest(object sender, IActivityJoinRequest joinRequest)
         {
             if (SceneManager.GetActiveScene().name.Contains("Menu"))
             {
-                PluginUI.instance.ShowJoinRequest(user);
+                PluginUI.instance.ShowJoinRequest(joinRequest);
             }
         }
-
-        public void OnActivityJoin(string secret)
+        
+        public void OnActivityJoin(object sender, string secret)
         {
+            if(string.IsNullOrEmpty(secret))
+            {
+                Plugin.log.Warn($"Unable to join game, room information unavailble.");
+            }
             if (SceneManager.GetActiveScene().name.Contains("Menu") && !Client.Instance.inRoom && !Client.Instance.inRadioMode)
             {
                 joinAfterRestart = true;
@@ -138,7 +144,6 @@ namespace BeatSaberMultiplayerLite
                 Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().First().RestartGame();
             }
         }
-#endif
 
         private void MenuSceneLoadedFresh()
         {
@@ -147,14 +152,12 @@ namespace BeatSaberMultiplayerLite
             InGameOnlineController.OnLoad();
             SpectatingController.OnLoad();
             GetUserInfo.UpdateUserInfo();
-#if DISCORDCORE
             if (joinAfterRestart)
             {
                 joinAfterRestart = false;
                 SharedCoroutineStarter.instance.StartCoroutine(PluginUI.instance.JoinGameWithSecret(joinSecret));
                 joinSecret = string.Empty;
             }
-#endif
         }
 
         private void MenuSceneLoaded()

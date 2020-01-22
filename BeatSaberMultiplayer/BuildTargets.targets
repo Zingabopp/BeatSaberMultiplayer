@@ -19,13 +19,8 @@
     </GetCommitHash>
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).pdb" />
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
-      <ManifestName>manifest_discord.json</ManifestName>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' != 'ReleaseDiscord|AnyCPU'">
-      <ManifestName>manifest_original.json</ManifestName>
-    </PropertyGroup>
-    <GetManifestInfo ManifestName="$(ManifestName)">
+
+    <GetManifestInfo ManifestName="manifest.json">
       <Output TaskParameter="PluginVersion" PropertyName="PluginVersion" />
       <Output TaskParameter="GameVersion" PropertyName="GameVersion" />
       <Output TaskParameter="AssemblyVersion" PropertyName="AssemblyVersion" />

@@ -2,6 +2,7 @@
 using BeatSaberMarkupLanguage.FloatingScreen;
 using BeatSaberMarkupLanguage.Settings;
 using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.DiscordInterface;
 using BeatSaberMultiplayerLite.UI.FlowCoordinators;
 using BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens;
 using BS_Utils.Gameplay;
@@ -18,9 +19,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
-#if DISCORDCORE
-using Discord;
-#endif
 
 namespace BeatSaberMultiplayerLite.UI
 {
@@ -100,10 +98,8 @@ namespace BeatSaberMultiplayerLite.UI
                     modeSelectionFlowCoordinator.didFinishEvent += () =>
                     {
                         Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First().InvokeMethod("DismissFlowCoordinator", modeSelectionFlowCoordinator, null, false);
-#if DISCORDCORE
-                        Plugin.discordActivity = default;
+                        Plugin.gameActivity = default;
                         Plugin.discord?.ClearActivity();
-#endif
                     };
 
                 }
@@ -161,9 +157,7 @@ namespace BeatSaberMultiplayerLite.UI
             {
                 try
                 {
-#if DISCORDCORE
                     SetLobbyDiscordActivity();
-#endif
 
                     MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
 
@@ -200,18 +194,17 @@ namespace BeatSaberMultiplayerLite.UI
             });
         }
 
-#if DISCORDCORE
-        public void ShowJoinRequest(User user)
+        public void ShowJoinRequest(IActivityJoinRequest request)
         {
             FloatingScreen screen = FloatingScreen.CreateFloatingScreen(new Vector2(100, 50), true, new Vector3(0f, 0.9f, 2.4f), Quaternion.Euler(30f, 0f, 0f));
 
             DiscordAskToJoinView discordView = BeatSaberUI.CreateViewController<DiscordAskToJoinView>();
-            discordView.user = user;
+            discordView.request = request;
 
             screen.SetRootViewController(discordView, false);
         }
 
-        public void ShowInvite(User user, Activity activity)
+        public void ShowInvite(IUserInfo user, GameActivity activity)
         {
             FloatingScreen screen = FloatingScreen.CreateFloatingScreen(new Vector2(100, 50), true, new Vector3(0f, 0.9f, 2.4f), Quaternion.Euler(30f, 0f, 0f));
 
@@ -221,12 +214,11 @@ namespace BeatSaberMultiplayerLite.UI
 
             screen.SetRootViewController(discordView, false);
         }
-#endif
-#if DISCORDCORE
+
         public void SetLobbyDiscordActivity()
         {
 
-            Plugin.discordActivity = new Discord.Activity
+            Plugin.gameActivity = new GameActivity
             {
                 State = "Playing multiplayer",
                 Details = "In lobby",
@@ -236,10 +228,9 @@ namespace BeatSaberMultiplayerLite.UI
                         },
                 Instance = false,
             };
-            Plugin.discord.UpdateActivity(Plugin.discordActivity);
+            Plugin.discord?.UpdateActivity(Plugin.gameActivity);
 
         }
-
 
         public IEnumerator JoinGameWithSecret(string secret)
         {
@@ -250,7 +241,6 @@ namespace BeatSaberMultiplayerLite.UI
 
             modeSelectionFlowCoordinator.JoinGameWithSecret(secret);
         }
-#endif
         IEnumerator CheckVersion()
         {
 

@@ -37,11 +37,15 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         public void JoinGameWithSecret(string secret)
         {
+            if(string.IsNullOrEmpty(secret))
+            {
+                return;
+            }
             string ip = secret.Substring(0, secret.IndexOf(':'));
             int port = int.Parse(secret.Substring(secret.IndexOf(':') + 1, secret.IndexOf('?') - secret.IndexOf(':') - 1));
             uint roomId = uint.Parse(secret.Substring(secret.IndexOf('?') + 1, secret.IndexOf('#') - secret.IndexOf('?') - 1));
             string password = secret.Substring(secret.IndexOf('#') + 1);
-
+            Plugin.log.Debug($"Joining game: {ip}:{port}?{roomId}");
             //if (ModelSaberAPI.isCalculatingHashes)
             //{
             //    ModelSaberAPI.hashesCalculated += () =>

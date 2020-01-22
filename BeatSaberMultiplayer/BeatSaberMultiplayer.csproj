@@ -33,15 +33,6 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ReleaseDiscord\</OutputPath>
-    <DefineConstants>TRACE;UNITY_STANDALONE; UMBRA_FIX_SCORESABER;DISCORDCORE</DefineConstants>
-    <DebugType>portable</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="AvatarController.cs" />
     <Compile Include="Client.cs" />
@@ -56,6 +47,14 @@
     <Compile Include="Data\ServerRepository.cs" />
     <Compile Include="Data\SongInfo.cs" />
     <Compile Include="Data\LevelOptionsInfo.cs" />
+    <Compile Include="DiscordInterface\ActivityStructs.cs" />
+    <Compile Include="DiscordInterface\DiscordInterop.cs" />
+    <Compile Include="DiscordInterface\DiscordJoinRequest.cs" />
+    <Compile Include="DiscordInterface\DiscordUser.cs" />
+    <Compile Include="DiscordInterface\IActivityRequest.cs" />
+    <Compile Include="DiscordInterface\IDiscordInstance.cs" />
+    <Compile Include="DiscordInterface\IUserInfo.cs" />
+    <Compile Include="DiscordInterface\PresenceLoader.cs" />
     <Compile Include="InGameOnlineController.cs" />
     <Compile Include="IPlayerInfoReceiver.cs" />
     <Compile Include="Misc\ControllersHelper.cs" />
@@ -117,24 +116,6 @@
     <Compile Include="Data\VoipFragment.cs" />
     <Compile Include="VOIP\VoipListener.cs" />
   </ItemGroup>
-  <Choose>
-    <When Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
-      <ItemGroup>
-        <EmbeddedResource Include="manifest_discord.json">
-          <LogicalName>$(RootNamespace).manifest.json</LogicalName>
-        </EmbeddedResource>
-        <None Include="manifest_original.json"/>
-      </ItemGroup>
-    </When>
-    <When Condition="'$(Configuration)|$(Platform)' != 'ReleaseDiscord|AnyCPU'">
-      <ItemGroup>
-        <EmbeddedResource Include="manifest_original.json">
-          <LogicalName>$(RootNamespace).manifest.json</LogicalName>
-        </EmbeddedResource>
-        <None Include="manifest_discord.json"/>
-      </ItemGroup>
-    </When>
-  </Choose>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Shader.asset" />
     <EmbeddedResource Include="UI\SettingsView.bsml">
@@ -163,6 +144,7 @@
       <DependentUpon>RoomListViewController.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="BuildTargets.targets" />
+    <EmbeddedResource Include="manifest.json" />
     <None Include="packages.config" />
     <EmbeddedResource Include="UI\ViewControllers\CreateRoomScreen\MainRoomCreationViewController.bsml">
       <DependentUpon>MainRoomCreationViewController.cs</DependentUpon>
@@ -217,18 +199,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\DoubleArrowIcon.png" />
   </ItemGroup>
-  <Choose>
-    <When Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
-      <ItemGroup>
-        <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-          <SpecificVersion>False</SpecificVersion>
-          <HintPath>..\Refs\DiscordCore.dll</HintPath>
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
   <ItemGroup>
+    <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\DiscordCore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="0Harmony.1.2.0.1">
       <HintPath>..\Refs\0Harmony.1.2.0.1.dll</HintPath>
       <Private>False</Private>
