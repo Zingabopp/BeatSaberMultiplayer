@@ -41,8 +41,8 @@ Global
 		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.ReleaseDiscord|Any CPU.ActiveCfg = ReleaseDiscord|Any CPU
-		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.ReleaseDiscord|Any CPU.Build.0 = ReleaseDiscord|Any CPU
+		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.ReleaseDiscord|Any CPU.ActiveCfg = Release|Any CPU
+		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.ReleaseDiscord|Any CPU.Build.0 = Release|Any CPU
 		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.ServerDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19E76954-2EBA-4761-8AD4-1425CC29EC0E}.ServerRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{5EB8EED4-4FC1-4ABD-B9E9-0EDB0CAEB7A1}.AllDebug|Any CPU.ActiveCfg = Debug|Any CPU

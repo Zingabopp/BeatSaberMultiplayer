@@ -3,6 +3,7 @@ using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.UI.FlowCoordinators;
 using BS_Utils.Utilities;
 using HMUI;
 using System;
@@ -17,6 +18,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     public interface IPlayerManagementButtons
     {
+        bool TransferHostButtonInteractable { get; }
+
         void MuteButtonWasPressed(PlayerInfo player);
         void TransferHostButtonWasPressed(PlayerInfo player);
     }
@@ -24,10 +27,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
     class PlayerManagementViewController : BSMLResourceViewController, IPlayerManagementButtons
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
-
+        public RoomFlowCoordinator ParentFlowCoordinator { get; set; }
         public event Action gameplayModifiersChanged;
         public event Action<PlayerInfo> transferHostButtonPressed;
-
+        public bool TransferHostButtonInteractable { get { return ParentFlowCoordinator?.PassHostEnabled ?? true; } }
         public GameplayModifiers modifiers { get { return modifiersPanel.gameplayModifiers; } }
 
         [UIComponent("ping-text")]
@@ -40,7 +43,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         [UIComponent("modifiers-panel-blocker")]
         public Image modifiersPanelBlocker;
-        
+
         [UIComponent("modifiers-rect")]
         public TableView playersTableView;
 
@@ -88,24 +91,24 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         public void Update()
         {
-            if(Time.frameCount % 45 == 0 && pingText != null && Client.Instance.networkClient != null && Client.Instance.networkClient.Connections.Count > 0)
-                pingText.text = "PING: "+ Math.Round(Client.Instance.networkClient.Connections[0].AverageRoundtripTime*1000, 2).ToString();
+            if (Time.frameCount % 45 == 0 && pingText != null && Client.Instance.networkClient != null && Client.Instance.networkClient.Connections.Count > 0)
+                pingText.text = "PING: " + Math.Round(Client.Instance.networkClient.Connections[0].AverageRoundtripTime * 1000, 2).ToString();
         }
 
         public void UpdateViewController(bool isHost, bool modifiersInteractable)
         {
-            if(modifiersPanelBlocker != null)
+            if (modifiersPanelBlocker != null)
                 modifiersPanelBlocker.gameObject.SetActive(!isHost || !modifiersInteractable);
         }
 
         public void UpdatePlayerList(RoomState state)
         {
-            
+
             var playersDict = InGameOnlineController.Instance.players;
-                
+
             if (playersDict.Count != players.Count)
             {
-                while(playersDict.Count > players.Count)
+                while (playersDict.Count > players.Count)
                 {
                     players.Add(new PlayerListObject(null, this));
                 }
@@ -116,22 +119,22 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             }
 
             int index = 0;
-            foreach(var playerPair in playersDict)
+            foreach (var playerPair in playersDict)
             {
                 (players[index] as PlayerListObject).Update(playerPair.Value.playerInfo, state);
                 index++;
-            }            
+            }
         }
 
         public void SetGameplayModifiers(GameplayModifiers modifiers)
         {
-            
+
             if (modifiersPanel != null)
             {
                 modifiersPanel.SetData(modifiers);
                 modifiersPanel.Refresh();
             }
-            
+
         }
 
         public void MuteButtonWasPressed(PlayerInfo player)
@@ -226,8 +229,11 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
                 speakerIcon.enabled = InGameOnlineController.Instance.VoiceChatIsTalking(playerInfo.playerId);
 
-                controlButtonsRect.gameObject.SetActive(( state == RoomState.SelectingSong || state == RoomState.Results) && !playerInfo.Equals(Client.Instance.playerInfo));
-                passHostButton.interactable = Client.Instance.isHost && !playerInfo.Equals(Client.Instance.playerInfo);
+                controlButtonsRect.gameObject.SetActive((state == RoomState.SelectingSong || state == RoomState.Results) && !playerInfo.Equals(Client.Instance.playerInfo));
+                if (passHostButton.isActiveAndEnabled != Client.Instance.isHost)
+                    passHostButton.gameObject.SetActive(Client.Instance.isHost);
+                if (Client.Instance.isHost)
+                    passHostButton.interactable = !playerInfo.Equals(Client.Instance.playerInfo) && _buttonsInterface.TransferHostButtonInteractable;
 
                 if (_isMuted && !InGameOnlineController.Instance.mutedPlayers.Contains(playerInfo.playerId))
                 {
@@ -242,7 +248,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
                 progressText.gameObject.SetActive(state == RoomState.Preparing);
 
-                if(playerInfo.updateInfo.playerProgress < 0f)
+                if (playerInfo.updateInfo.playerProgress < 0f)
                 {
                     progressText.text = "ERROR";
                 }
