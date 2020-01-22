@@ -33,15 +33,6 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ReleaseDiscord\</OutputPath>
-    <DefineConstants>TRACE;UNITY_STANDALONE; UMBRA_FIX_SCORESABER;DISCORDCORE</DefineConstants>
-    <DebugType>portable</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
     <Compile Include="AvatarController.cs" />
     <Compile Include="Client.cs" />
