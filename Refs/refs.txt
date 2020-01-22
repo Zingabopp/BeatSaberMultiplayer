@@ -33,6 +33,7 @@
 ""BSML.dll
 ""BS_Utils.dll
 ""SongCore.dll
+""ScoreSaber.dll
 
 ::startopt
 ::from ./bsinstalldir.txt

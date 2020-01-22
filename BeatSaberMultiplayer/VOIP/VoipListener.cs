@@ -38,7 +38,6 @@ namespace BeatSaberMultiplayerLite.VOIP
                 }
                 if (_isListening == value)
                     return;
-                Plugin.LogLocation($"IsListening Changed: {value}");
                 _isListening = value;
             }
         }
@@ -57,25 +56,18 @@ namespace BeatSaberMultiplayerLite.VOIP
 
         private void Instance_voiceChatMicrophoneChanged(string newMic)
         {
-
-            Plugin.LogLocation("Begin Instance_voiceChatMicrophoneChanged");
             if (recording != null)
             {
                 StopRecording();
                 _usedMicrophone = newMic;
                 StartRecording();
             }
-            {
-                Plugin.log.Warn("Recording is null");
-            }
         }
 
         public void StartRecording()
         {
-            Plugin.LogLocation("Begin StartRecording");
             if (Microphone.devices.Length == 0) return;
 
-            Plugin.LogLocation("Microphone.devices.Length != 0");
             inputFreq = AudioUtils.GetFreqForMic();
 
             encoder = SpeexCodex.Create(BandMode.Wide);

@@ -263,3 +263,7 @@ __pycache__/
 /BeatSaberMultiplayer/bin/Release/zip
 /BeatSaberMultiplayer/bin/Release/Final/Plugins/BeatSaberMultiplayerLite.dll
 /BeatSaberMultiplayer/bin/Release/BeatSaberMultiplayerLite.dll
+/BeatSaberMultiplayer/bin/ReleaseDiscord/zip
+/BeatSaberMultiplayer/bin/ReleaseDiscord/Final/Plugins/BeatSaberMultiplayerLite.dll
+/BeatSaberMultiplayer/bin/ReleaseDiscord/BeatSaberMultiplayerLite.dll
+/BeatSaberMultiplayer/bin/Debug/BeatSaberMultiplayerLite.dll

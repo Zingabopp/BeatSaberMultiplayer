@@ -1,16 +1,23 @@
 ﻿using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
-using Discord;
-using DiscordCore;
 using Harmony;
 using IPA;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if DEBUG
+using System.Diagnostics;
+using System.IO;
+#endif
+#if DISCORDCORE
+using Discord;
+using DiscordCore;
+#endif
 
 namespace BeatSaberMultiplayerLite
 {
@@ -19,13 +26,14 @@ namespace BeatSaberMultiplayerLite
         public static Version ClientCompatibilityVersion = new Version(0, 7, 0, 0);
         public static Plugin instance;
         public static IPA.Logging.Logger log;
+#if DISCORDCORE
         public static DiscordInstance discord;
         public static Discord.Activity discordActivity;
-
-        private static PlayerAvatarInput _playerAvatarInput;
-        public static bool overrideDiscordActivity;
         private static bool joinAfterRestart;
         private static string joinSecret;
+#endif
+        private static PlayerAvatarInput _playerAvatarInput;
+        public static bool overrideDiscordActivity;
         public static bool DownloaderExists { get; private set; }
         public static void LogLocation(string message,
             [CallerFilePath] string memberPath = "",
@@ -67,7 +75,6 @@ namespace BeatSaberMultiplayerLite
             BS_Utils.Utilities.BSEvents.menuSceneLoadedFresh += MenuSceneLoadedFresh;
             BS_Utils.Utilities.BSEvents.menuSceneLoaded += MenuSceneLoaded;
             BS_Utils.Utilities.BSEvents.gameSceneLoaded += GameSceneLoaded;
-            LogLocation("OnApplicationStart");
             if (Config.Load())
                 log.Info("Loaded config!");
             else
@@ -96,14 +103,16 @@ namespace BeatSaberMultiplayerLite
             {
                 Plugin.log.Error("Unable to patch assembly! Exception: " + e);
             }
-
+#if DISCORDCORE
             discord = DiscordManager.Instance.CreateInstance(new DiscordSettings() { modId = "BeatSaberMultiplayer", modName = "Beat Saber Multiplayer", modIcon = Sprites.onlineIcon, handleInvites = true, appId = 661577830919962645 });
 
             discord.OnActivityJoin += OnActivityJoin;
             discord.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
             discord.OnActivityInvite += ActivityManager_OnActivityInvite;
+#endif
         }
 
+#if DISCORDCORE
         private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)
         {
             if (SceneManager.GetActiveScene().name.Contains("Menu") && type == ActivityActionType.Join && !Client.Instance.inRoom && !Client.Instance.inRadioMode)
@@ -129,7 +138,7 @@ namespace BeatSaberMultiplayerLite
                 Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().First().RestartGame();
             }
         }
-        
+#endif
 
         private void MenuSceneLoadedFresh()
         {
@@ -138,13 +147,14 @@ namespace BeatSaberMultiplayerLite
             InGameOnlineController.OnLoad();
             SpectatingController.OnLoad();
             GetUserInfo.UpdateUserInfo();
-
+#if DISCORDCORE
             if (joinAfterRestart)
             {
                 joinAfterRestart = false;
                 SharedCoroutineStarter.instance.StartCoroutine(PluginUI.instance.JoinGameWithSecret(joinSecret));
                 joinSecret = string.Empty;
             }
+#endif
         }
 
         private void MenuSceneLoaded()

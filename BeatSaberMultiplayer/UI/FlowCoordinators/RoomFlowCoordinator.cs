@@ -4,7 +4,7 @@ using BeatSaberMultiplayerLite.Data;
 using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen;
 using BS_Utils.Utilities;
-// using Discord;
+
 using HMUI;
 using Lidgren.Network;
 using System;
@@ -13,7 +13,10 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
-
+#if DISCORDCORE
+using Discord;
+using DiscordCore;
+#endif
 namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 {
     public enum SortMode { Default, Difficulty, Newest };
@@ -213,7 +216,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             Client.Instance.inRoom = false;
             PopAllViewControllers();
             SetLeftScreenViewController(_playerManagementViewController);
-            //PluginUI.instance.SetLobbyDiscordActivity();
+#if DISCORDCORE
+            PluginUI.instance.SetLobbyDiscordActivity();
+#endif
             didFinishEvent?.Invoke();
         }
 
@@ -545,8 +550,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     break;
             }
             _playerManagementViewController.UpdateViewController(Client.Instance.isHost, (int)state <= 1);
-
-            //UpdateDiscordActivity(roomInfo);
+#if DISCORDCORE
+            UpdateDiscordActivity(roomInfo);
+#endif
         }
 
         private void UpdateLevelOptions()
@@ -583,8 +589,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                             Client.Instance.playerInfo.updateInfo.playerLevelOptions = new LevelOptionsInfo(BeatmapDifficulty.Hard, _playerManagementViewController.modifiers, "Standard");
                         }
                     }
-
-                    //UpdateDiscordActivity(roomInfo);
+#if DISCORDCORE
+                    UpdateDiscordActivity(roomInfo);
+#endif
                 }
             }
             catch (Exception e)
@@ -639,7 +646,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 IDifficultyBeatmap difficultyBeatmap = level.GetDifficultyBeatmap(characteristic, difficulty, false);
 
                 Plugin.log.Debug($"Starting song: name={level.songName}, levelId={level.levelID}, difficulty={difficulty}");
-                
+
                 Client.Instance.MessageReceived -= PacketReceived;
 
                 try
@@ -656,9 +663,23 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 practiceSettings.songSpeedMul = modifiers.songSpeedMul;
                 practiceSettings.startInAdvanceAndClearNotes = true;
 
-                menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, startTime > 1f ? practiceSettings : null, "Lobby", false, () => { }, (StandardLevelScenesTransitionSetupDataSO sender, LevelCompletionResults levelCompletionResults) => { InGameOnlineController.Instance.SongFinished(levelCompletionResults, difficultyBeatmap, modifiers, startTime > 1f); });
+                var scoreSaber = IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber");
 
-                //UpdateDiscordActivity(roomInfo);
+                if (scoreSaber != null)
+                {
+                    if (scoreSaber.Metadata.Version.CompareTo(new SemVer.Version(2, 2, 8)) < 0)
+                    {
+                        ScoreSaberInteraction.FixScoreSaber(difficultyBeatmap);
+                        Plugin.log.Info($"Applying fix for outdated ScoreSaber version!");
+                    }
+
+                    ScoreSaberInteraction.InitAndSignIn();
+                }
+
+                menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, startTime > 1f ? practiceSettings : null, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
+#if DISCORDCORE
+                UpdateDiscordActivity(roomInfo);
+#endif
             }
             else
             {
@@ -1220,8 +1241,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     });
             }
         }
-        /*
+
         #region Discord rich presence stuff
+#if DISCORDCORE
         public void UpdateDiscordActivity(RoomInfo roomInfo)
         {
             ActivityParty partyInfo = new ActivityParty()
@@ -1233,7 +1255,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     MaxSize = roomInfo.maxPlayers == 0 ? 256 : roomInfo.maxPlayers
                 }
             };
-
+            Plugin.log.Warn($"Setting partyInfo to: {partyInfo.Id}, {partyInfo.Size.CurrentSize}/{partyInfo.Size.MaxSize}");
             ActivityTimestamps timestamps = new ActivityTimestamps()
             {
                 Start = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
@@ -1252,7 +1274,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 SmallImage = roomInfo.roomState == RoomState.InGame ? GetCharacteristicIconID(Client.Instance.playerInfo.updateInfo.playerLevelOptions.characteristicName) : "multiplayer",
                 SmallText = roomInfo.roomState == RoomState.InGame ? GetFancyCharacteristicName(Client.Instance.playerInfo.updateInfo.playerLevelOptions.characteristicName) : "Multiplayer"
             };
-
             Plugin.discordActivity = new Discord.Activity
             {
                 State = RoomInfo.StateToActivityState(roomInfo.roomState),
@@ -1311,7 +1332,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
             return "empty";
         }
+#endif
         #endregion
-        */
+
     }
 }

@@ -26,7 +26,7 @@ namespace BeatSaberMultiplayerLite
     {
         private const float _PTTReleaseDelay = 0.2f;
         private const string _gameSceneName = "GameCore";
-        private const string _menuSceneName = "MenuCore";
+        private const string _menuSceneName = "MenuViewControllers";
 
         public static Quaternion oculusTouchRotOffset = Quaternion.Euler(-40f, 0f, 0f);
         public static Vector3 oculusTouchPosOffset = new Vector3(0f, 0f, 0.055f);
@@ -900,9 +900,11 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
-        public void SongFinished(LevelCompletionResults levelCompletionResults, IDifficultyBeatmap difficultyBeatmap, GameplayModifiers gameplayModifiers, bool practice)
+        public void SongFinished(StandardLevelScenesTransitionSetupDataSO sender, LevelCompletionResults levelCompletionResults)
         {
-            Plugin.log.Debug("Song finished!");
+            GameplayCoreSceneSetupData sceneData = sender.sceneSetupDataArray.First(x => x is GameplayCoreSceneSetupData) as GameplayCoreSceneSetupData;
+
+            IDifficultyBeatmap difficultyBeatmap = sceneData.difficultyBeatmap;
 
             SoloFreePlayFlowCoordinator freePlayCoordinator = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().First();
 
@@ -922,7 +924,7 @@ namespace BeatSaberMultiplayerLite
                 Plugin.log.Debug("Set level results!");
             }
 
-            if (Config.Instance.SpectatorMode || Client.disableScoreSubmission || ScoreSubmission.Disabled || ScoreSubmission.ProlongedDisabled || practice)
+            if (Config.Instance.SpectatorMode || Client.disableScoreSubmission || ScoreSubmission.Disabled || ScoreSubmission.ProlongedDisabled || sceneData.practiceSettings != null)
             {
                 List<string> reasons = new List<string>();
 
@@ -930,7 +932,7 @@ namespace BeatSaberMultiplayerLite
                 if (Client.disableScoreSubmission) reasons.Add("Multiplayer score submission disabled by another mod");
                 if (ScoreSubmission.Disabled) reasons.Add("Score submission is disabled by " + ScoreSubmission.ModString);
                 if (ScoreSubmission.ProlongedDisabled) reasons.Add("Score submission is disabled for a prolonged time by " + ScoreSubmission.ProlongedModString);
-                if (practice) reasons.Add("Practice mode");
+                if (sceneData.practiceSettings != null) reasons.Add("Practice mode");
 
                 Plugin.log.Warn("\nScore submission is disabled! Reason:\n" + string.Join(",\n", reasons));
                 return;
@@ -944,34 +946,29 @@ namespace BeatSaberMultiplayerLite
             else if (Config.Instance.SubmitScores == 1)
             {
                 bool submitScore = false;
-                if (!gameplayModifiers.noFail)
+                if (ScrappedData.Downloaded)
                 {
-                    if (ScrappedData.Downloaded)
+                    ScrappedSong song = ScrappedData.Songs.FirstOrDefault(x => x.Hash == SongCore.Collections.hashForLevelID(difficultyBeatmap.level.levelID));
+                    if (song != default)
                     {
-                        ScrappedSong song = ScrappedData.Songs.FirstOrDefault(x => x.Hash == SongCore.Collections.hashForLevelID(difficultyBeatmap.level.levelID));
-                        if (song != default)
+                        DifficultyStats stats = song.Diffs.FirstOrDefault(x => x.Diff == difficultyBeatmap.difficulty.ToString().Replace("+", "Plus"));
+                        if (stats != default)
                         {
-                            DifficultyStats stats = song.Diffs.FirstOrDefault(x => x.Diff == difficultyBeatmap.difficulty.ToString().Replace("+", "Plus"));
-                            if (stats != default)
+                            if (stats.Ranked != 0)
                             {
-                                if (stats.Ranked != 0)
-                                {
-                                    submitScore = true;
-                                }
-                                else
-                                    Plugin.log.Warn("Song is unrakned!");
+                                submitScore = true;
                             }
                             else
-                                Plugin.log.Warn("Difficulty not found!");
+                                Plugin.log.Warn("Song is unrakned!");
                         }
                         else
-                            Plugin.log.Warn("Song not found!");
+                            Plugin.log.Warn("Difficulty not found!");
                     }
                     else
-                        Plugin.log.Warn("Scrapped data is not downloaded!");
+                        Plugin.log.Warn("Song not found!");
                 }
                 else
-                    Plugin.log.Warn("No fail enabled, score submission disabled!");
+                    Plugin.log.Warn("Scrapped data is not downloaded!");
 
                 if (!submitScore)
                 {
@@ -1005,9 +1002,7 @@ namespace BeatSaberMultiplayerLite
             yield return new WaitUntil(delegate () { return FindObjectOfType<ScoreController>() != null; });
 
             Plugin.log.Debug("Game controllers found!");
-            Plugin.log.Warn($"Score Submission disabled");
-            BS_Utils.Gameplay.ScoreSubmission.DisableSubmission("Beat Saber Multiplayer Lite");
-            BS_Utils.Gameplay.ScoreSubmission.DisableScoreSaberScoreSubmission();
+
             _scoreController = FindObjectOfType<ScoreController>();
 
             if (_scoreController != null)

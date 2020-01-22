@@ -117,14 +117,15 @@ namespace BeatSaberMultiplayerLite
                     _instance.ServerHubPorts = _instance.ServerHubPorts.Concat(Enumerable.Repeat(3700, hubs.Count)).ToArray();
 
                     Plugin.log.Info($"Added {hubs.Count} new ServerHubs to config!");
+
                     List<string> repos = new List<string>();
-                    if(_instance._serverRepositories.Length != 0)
+                    if (_instance._serverRepositories.Length != 0)
                     {
                         repos.AddRange(_instance._serverRepositories);
                     }
                     foreach (var newRepo in newServerRepositories)
                     {
-                        Plugin.log.Debug($"Adding repo: {newRepo}");
+                        Plugin.log.Info($"Adding repo: {newRepo}");
                         repos.Add(newRepo);
                     }
                     _instance.ServerRepositories = repos.ToArray();
@@ -168,10 +169,10 @@ namespace BeatSaberMultiplayerLite
                 MarkDirty();
             }
         }
-        
+
         /// <summary>
-         /// Remember to Save after changing the value
-         /// </summary>
+        /// Remember to Save after changing the value
+        /// </summary>
         public string[] ServerHubIPs
         {
             get { return _serverHubIPs; }

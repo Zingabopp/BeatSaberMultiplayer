@@ -33,6 +33,15 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ReleaseDiscord\</OutputPath>
+    <DefineConstants>TRACE;UNITY_STANDALONE; UMBRA_FIX_SCORESABER;DISCORDCORE</DefineConstants>
+    <DebugType>portable</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="AvatarController.cs" />
     <Compile Include="Client.cs" />
@@ -40,7 +49,6 @@
     <Compile Include="Data\BeatSaverAPIResult.cs" />
     <Compile Include="Data\ChannelInfo.cs" />
     <Compile Include="Data\ExtraPlayerFlags.cs" />
-    <Compile Include="Data\ModelSaberAPI.cs" />
     <Compile Include="Data\PlayerInfo.cs" />
     <Compile Include="Data\RoomInfo.cs" />
     <Compile Include="Data\RoomPreset.cs" />
@@ -66,6 +74,7 @@
     <Compile Include="Misc\SongDownloader.cs" />
     <Compile Include="Misc\SongSeekBeatmapHandler.cs" />
     <Compile Include="Misc\TableViewHelper.cs" />
+    <Compile Include="Misc\ScoreSaberInteraction.cs" />
     <Compile Include="OverriddenClasses\CustomMoreSongsFlowCoordinator.cs" />
     <Compile Include="OverriddenClasses\HarmonyPatches.cs" />
     <Compile Include="OverriddenClasses\OnlineAudioTimeController.cs" />
@@ -108,9 +117,26 @@
     <Compile Include="Data\VoipFragment.cs" />
     <Compile Include="VOIP\VoipListener.cs" />
   </ItemGroup>
+  <Choose>
+    <When Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
+      <ItemGroup>
+        <EmbeddedResource Include="manifest_discord.json">
+          <LogicalName>$(RootNamespace).manifest.json</LogicalName>
+        </EmbeddedResource>
+        <None Include="manifest_original.json"/>
+      </ItemGroup>
+    </When>
+    <When Condition="'$(Configuration)|$(Platform)' != 'ReleaseDiscord|AnyCPU'">
+      <ItemGroup>
+        <EmbeddedResource Include="manifest_original.json">
+          <LogicalName>$(RootNamespace).manifest.json</LogicalName>
+        </EmbeddedResource>
+        <None Include="manifest_discord.json"/>
+      </ItemGroup>
+    </When>
+  </Choose>
   <ItemGroup>
     <EmbeddedResource Include="Assets\Shader.asset" />
-    <EmbeddedResource Include="manifest.json" />
     <EmbeddedResource Include="UI\SettingsView.bsml">
       <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
@@ -191,6 +217,17 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\DoubleArrowIcon.png" />
   </ItemGroup>
+  <Choose>
+    <When Condition="'$(Configuration)|$(Platform)' == 'ReleaseDiscord|AnyCPU'">
+      <ItemGroup>
+        <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+          <SpecificVersion>False</SpecificVersion>
+          <HintPath>..\Refs\DiscordCore.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <ItemGroup>
     <Reference Include="0Harmony.1.2.0.1">
       <HintPath>..\Refs\0Harmony.1.2.0.1.dll</HintPath>
@@ -209,11 +246,6 @@
     <Reference Include="BS_Utils, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\BS_Utils.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\DiscordCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -260,6 +292,10 @@
     </Reference>
     <Reference Include="RumbleEnhancer">
       <HintPath>..\Refs\RumbleEnhancer.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ScoreSaber">
+      <HintPath>..\Refs\ScoreSaber.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SemVer.1.2.0.0">
