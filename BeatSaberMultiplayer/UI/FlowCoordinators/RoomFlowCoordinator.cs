@@ -655,10 +655,17 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 }
 
-                PracticeSettings practiceSettings = new PracticeSettings(PracticeSettings.defaultPracticeSettings);
-                practiceSettings.startSongTime = startTime + 1.5f;
-                practiceSettings.songSpeedMul = modifiers.songSpeedMul;
-                practiceSettings.startInAdvanceAndClearNotes = true;
+                PracticeSettings practiceSettings = null;
+                if (Config.Instance.SpectatorMode || startTime > 1f)
+                {
+                    practiceSettings = new PracticeSettings(PracticeSettings.defaultPracticeSettings);
+                    if (startTime > 1f)
+                    {
+                        practiceSettings.startSongTime = startTime + 1.5f;
+                        practiceSettings.startInAdvanceAndClearNotes = true;
+                    }
+                    practiceSettings.songSpeedMul = modifiers.songSpeedMul;
+                }
 
                 var scoreSaber = IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber");
 
@@ -667,7 +674,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     ScoreSaberInteraction.InitAndSignIn();
                 }
 
-                menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, startTime > 1f ? practiceSettings : null, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
+                menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings : practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
                 UpdateDiscordActivity(roomInfo);
             }
             else
