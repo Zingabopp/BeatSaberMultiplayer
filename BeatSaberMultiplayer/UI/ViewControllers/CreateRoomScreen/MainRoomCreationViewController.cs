@@ -72,10 +72,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
             if (_presetNameKeyboard != null)
                 _presetNameKeyboard.modalView.Hide(false);
             if (_roomNameKeyboard != null)
-            {
-                Plugin.log.Warn($"Hiding modal keyboard");
                 _roomNameKeyboard.modalKeyboard.modalView.Hide(false);
-            }
             if (_passwordKeyboard != null)
                 _passwordKeyboard.modalKeyboard.modalView.Hide(false);
             base.DidDeactivate(deactivationType);
