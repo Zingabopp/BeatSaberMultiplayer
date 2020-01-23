@@ -20,7 +20,7 @@ namespace BeatSaberMultiplayerLite
 {
     public class Plugin : IBeatSaberPlugin
     {
-        public static Version ClientCompatibilityVersion = new Version(0, 7, 0, 0);
+        public static Version ClientCompatibilityVersion = new Version(0, 7, 1, 0);
         public static Plugin instance;
         public static IPA.Logging.Logger log;
         public static IDiscordInstance discord;
