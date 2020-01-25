@@ -70,7 +70,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
         {
             parserParams.EmitEvent("closeAllMPModals");
             if (_roomNameKeyboard != null)
+            {
                 _roomNameKeyboard.modalKeyboard.modalView.Hide(false);
+            }
             if (_passwordKeyboard != null)
                 _passwordKeyboard.modalKeyboard.modalView.Hide(false);
             base.DidDeactivate(deactivationType);
