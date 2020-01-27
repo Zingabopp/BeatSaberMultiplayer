@@ -20,6 +20,9 @@ namespace BeatSaberMultiplayerLite
 {
     public class Plugin : IBeatSaberPlugin
     {
+        public static readonly string PluginID = "BeatSaberMultiplayerLite";
+        public static readonly string PluginName = "Beat Saber Multiplayer Lite";
+        public static string PluginVersion { get; private set; }
         public static Version ClientCompatibilityVersion = new Version(0, 7, 1, 0);
         public static Plugin instance;
         public static IPA.Logging.Logger log;
@@ -60,6 +63,9 @@ namespace BeatSaberMultiplayerLite
         {
             log = logger;
             _playerAvatarInput = new PlayerAvatarInput();
+            Version v = Assembly.GetExecutingAssembly().GetName().Version;
+            PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";
+            log.Info($"{PluginName} v{PluginVersion} initialized.");
         }
 
         public void OnApplicationStart()

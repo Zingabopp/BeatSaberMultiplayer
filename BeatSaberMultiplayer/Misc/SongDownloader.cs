@@ -84,7 +84,7 @@ namespace BeatSaberMultiplayerLite.Misc
             try
             {
                 www = UnityWebRequest.Get(songInfo.downloadURL);
-                www.SetRequestHeader("User-Agent", "BeatSaverMultiplayer/7.0.0-z");
+                www.SetRequestHeader("User-Agent", $"{Plugin.PluginID}/{Plugin.PluginVersion}");
                 asyncRequest = www.SendWebRequest();
             }
             catch (Exception e)

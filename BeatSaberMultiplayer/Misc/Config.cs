@@ -91,7 +91,7 @@ namespace BeatSaberMultiplayerLite
 
         public static void UpdateServerHubs(Config _instance)
         {
-            SemVer.Version modVersion = IPA.Loader.PluginManager.GetPluginFromId("BeatSaberMultiplayerLite").Metadata.Version;
+            SemVer.Version modVersion = IPA.Loader.PluginManager.GetPluginFromId(Plugin.PluginID).Metadata.Version;
             if (string.IsNullOrEmpty(_instance.ModVersion) || new SemVer.Range($">{_instance.ModVersion}", true).IsSatisfied(modVersion))
             {
                 List<string> newVersions = null;

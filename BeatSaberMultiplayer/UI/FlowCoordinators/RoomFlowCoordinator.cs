@@ -723,7 +723,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 try
                 {
-                    BS_Utils.Gameplay.Gamemode.NextLevelIsIsolated("Beat Saber Multiplayer");
+                    BS_Utils.Gameplay.Gamemode.NextLevelIsIsolated(Plugin.PluginName);
                 }
                 catch
                 {

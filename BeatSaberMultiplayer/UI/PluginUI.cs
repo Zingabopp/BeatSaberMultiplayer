@@ -258,7 +258,7 @@ namespace BeatSaberMultiplayerLite.UI
 
                     JSONNode latestRelease = releases[0];
 
-                    SemVer.Version currentVer = IPA.Loader.PluginManager.GetPlugin("Beat Saber Multiplayer Lite").Metadata.Version;
+                    SemVer.Version currentVer = IPA.Loader.PluginManager.GetPluginFromId(Plugin.PluginID).Metadata.Version;
                     string githubVerStr = latestRelease["tag_name"]?.Value.Replace("-L", "");
                     SemVer.Version githubVer = new SemVer.Version(githubVerStr);
 
