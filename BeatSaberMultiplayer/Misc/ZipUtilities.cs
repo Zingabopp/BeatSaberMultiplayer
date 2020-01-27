@@ -130,7 +130,7 @@ namespace BeatSaberMultiplayerLite.Misc
 
                     result.CreatedOutputDirectory = !extractDirectoryExists;
                     createdDirectory = string.IsNullOrEmpty(toBeCreated) ? null : extractDirectory;
-                    // TODO: Ordering so largest files extracted first. If the extraction is interrupted, theoretically the song's hash won't match Beat Saver's.
+                    // Ordering so largest files extracted first. If the extraction is interrupted, theoretically the song's hash won't match Beat Saver's.
                     foreach (var entry in zipArchive.Entries.OrderByDescending(e => e.Length))
                     {
                         if (!entry.FullName.Equals(entry.Name)) // If false, the entry is a directory or file nested in one
@@ -177,7 +177,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 return result;
 #pragma warning disable CA1031 // Do not catch general exception types
             }
-            catch (InvalidDataException ex) // FileStream is not in the zip archive format.
+            catch (InvalidDataException ex) // Stream is not in the zip archive format.
             {
                 result.ResultStatus = ZipExtractResultStatus.SourceFailed;
                 result.Exception = ex;
