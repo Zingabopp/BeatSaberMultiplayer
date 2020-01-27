@@ -74,7 +74,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 songInfo.songQueueState = SongQueueState.Downloaded;
                 songDownloaded?.Invoke(songInfo);
                 downloadedCallback?.Invoke(true);
-                yield break; 
+                yield break;
             }
             UnityWebRequest www;
             bool timeout = false;
@@ -153,6 +153,16 @@ namespace BeatSaberMultiplayerLite.Misc
 
                 Task extract = ExtractZipAsync(songInfo, zipStream, customSongsPath);
                 yield return new WaitWhile(() => !extract.IsCompleted);
+                Plugin.log.Debug($"ExtractZipAsync complete for song: {songInfo.path}");
+                try
+                {
+                    string generatedHash = Hashing.GenerateHash(songInfo.path, songInfo.hash);
+                }
+                catch (Exception ex)
+                {
+                    Plugin.log.Error($"Error hashing song in directory {songInfo.path}: {ex.Message}");
+                    Plugin.log.Debug(ex);
+                }
                 songDownloaded?.Invoke(songInfo);
                 downloadedCallback?.Invoke(true);
             }
@@ -167,7 +177,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 //ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Read);
                 string basePath = songInfo.key + " (" + songInfo.songName + " - " + songInfo.levelAuthorName + ")";
                 basePath = string.Join("", basePath.Split((Path.GetInvalidFileNameChars().Concat(Path.GetInvalidPathChars()).ToArray())));
-                string path = customSongsPath + "/" + basePath;
+                string path = Path.GetFullPath(Path.Combine(customSongsPath, basePath));
 
                 if (Directory.Exists(path))
                 {
@@ -177,7 +187,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 }
                 Plugin.log.Debug($"Extracing to '{path}'");
                 ZipExtractResult result = await Task.Run(() => ZipUtilities.ExtractZip(zipStream, path, true));
-                if(result.ResultStatus != ZipExtractResultStatus.Success || result.Exception != null)
+                if (result.ResultStatus != ZipExtractResultStatus.Success || result.Exception != null)
                 {
                     Plugin.log.Error($"Error extracting song zip to folder: {result.Exception.Message}");
                     Plugin.log.Debug(result.Exception);
