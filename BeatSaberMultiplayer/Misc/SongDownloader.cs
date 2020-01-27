@@ -188,7 +188,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 if (result.OutputDirectory != path)
                 {
                     Plugin.log.Warn($"ZipExtractResult OutputDirectory ({result.OutputDirectory}) does not match path ({path})");
-                    songInfo.path = path;
+                    songInfo.path = result.OutputDirectory;
                 }
                 else
                     songInfo.path = path;
