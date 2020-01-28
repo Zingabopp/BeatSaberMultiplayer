@@ -2,9 +2,58 @@
 using Harmony;
 using IPA.Utilities;
 using System;
+using System.Reflection;
 
 namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
+    public static class HarmonyPatcher
+    {
+        public static void PatchAll()
+        {
+            BindingFlags allBindingFlags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            var harmony = HarmonyInstance.Create(Plugin.HarmonyId);
+            MethodInfo original = typeof(BeatmapObjectSpawnController).GetMethod("HandleNoteWasCut", allBindingFlags);
+            HarmonyMethod prefix = new HarmonyMethod(typeof(SpectatorNoteWasCutEventPatch).GetMethod("Prefix", allBindingFlags));
+            HarmonyMethod postfix = null;
+            ApplyPatch(harmony, original, prefix, postfix);
+            
+            original = typeof(BeatmapObjectSpawnController).GetMethod("HandleNoteWasMissed", allBindingFlags);
+            prefix = new HarmonyMethod(typeof(SpectatorNoteWasMissedEventPatch).GetMethod("Prefix", allBindingFlags));
+            postfix = null;
+            ApplyPatch(harmony, original, prefix, postfix);
+
+            original = typeof(GameEnergyCounter).GetMethod("AddEnergy", allBindingFlags);
+            prefix = new HarmonyMethod(typeof(SpectatorGameEnergyCounterPatch).GetMethod("Prefix", allBindingFlags));
+            postfix = null;
+            ApplyPatch(harmony, original, prefix, postfix);
+
+            original = typeof(PauseController).GetMethod("Pause");
+            prefix = new HarmonyMethod(typeof(GameplayManagerPausePatch).GetMethod("Prefix", allBindingFlags));
+            postfix = null;
+            ApplyPatch(harmony, original, prefix, postfix);
+        }
+
+        public static bool ApplyPatch(HarmonyInstance harmony, MethodInfo original, HarmonyMethod prefix = null, HarmonyMethod postfix = null)
+        {
+            try
+            {
+                string patchTypeName = null;
+                if (prefix != null)
+                    patchTypeName = prefix.declaringType.Name;
+                else if (postfix != null)
+                    patchTypeName = postfix.declaringType.Name;
+                Plugin.log.Debug($"Harmony patching {original.Name} with {patchTypeName}");
+                harmony.Patch(original, prefix, postfix);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Plugin.log.Error($"Unable to patch method {original.Name}: {e.Message}");
+                Plugin.log.Debug(e);
+                return false;
+            }
+        }
+    }
     [HarmonyPatch(typeof(BeatmapObjectSpawnController))]
     [HarmonyPatch("HandleNoteWasCut")]
     [HarmonyPatch(new Type[] { typeof(NoteController), typeof(NoteCutInfo) })]
