@@ -163,8 +163,14 @@ namespace BeatSaberMultiplayerLite.Misc
                     Plugin.log.Error($"Error hashing song in directory {songInfo.path}: {ex.Message}");
                     Plugin.log.Debug(ex);
                 }
-                songDownloaded?.Invoke(songInfo);
-                downloadedCallback?.Invoke(true);
+                if (songDownloaded != null)
+                    songDownloaded.Invoke(songInfo);
+                else
+                    Plugin.log.Debug($"{nameof(songDownloaded)} has no handlers to invoke.");
+                if (downloadedCallback != null)
+                    downloadedCallback.Invoke(true);
+                else
+                    Plugin.log.Debug($"No callbacks assigned to {downloadedCallback}");
             }
         }
 
@@ -191,6 +197,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 {
                     Plugin.log.Error($"Error extracting song zip to folder: {result.Exception.Message}");
                     Plugin.log.Debug(result.Exception);
+                    _extractingZip = false;
                     return;
                 }
                 //await Task.Run(() => archive.ExtractToDirectory(path)).ConfigureAwait(false);
@@ -271,6 +278,7 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public IEnumerator RequestSongByLevelIDCoroutine(string levelId, Action<Song> callback)
         {
+            Plugin.log.Debug($"Requesting song ({levelId.ToLower()}) from Beat Saver");
             UnityWebRequest wwwId = UnityWebRequest.Get($"{Config.Instance.BeatSaverURL}/api/maps/by-hash/" + levelId.ToLower());
             wwwId.timeout = 10;
 

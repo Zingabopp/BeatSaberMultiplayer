@@ -1026,6 +1026,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 _difficultySelectionViewController.playButton.interactable = false;
                 SongDownloader.Instance.RequestSongByLevelID(song.hash, (info) =>
                 {
+                    Plugin.log.Debug($"Starting callback for RequestSongByLevelID.");
                     Client.Instance.playerInfo.updateInfo.playerState = PlayerState.DownloadingSongs;
 
                     songToDownload = info;
@@ -1033,11 +1034,13 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     SongDownloader.Instance.DownloadSong(songToDownload,
                         (success) =>
                     {
+                        Plugin.log.Debug($"Starting callback for DownloadSong");
                         if (success)
                         {
                             Plugin.log.Debug($"SongDownloader.Instance.DownloadSong(downloadedCallback) {songToDownload.path} was successful");
                             void onLoaded(SongCore.Loader sender, Dictionary<string, CustomPreviewBeatmapLevel> songs)
                             {
+                                Plugin.log.Debug($"SongCore.Loader.SongsLoadedEvent invoked");
                                 SongCore.Loader.SongsLoadedEvent -= onLoaded;
                                 Client.Instance.playerInfo.updateInfo.playerState = PlayerState.Room;
                                 roomInfo.selectedSong.UpdateLevelId();
@@ -1049,7 +1052,12 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                         {
                                             if (loaded)
                                             {
-                                                Plugin.log.Debug($"Level loaded (type: {level.GetType().FullName}: {level.levelID}");
+                                                if (level is CustomBeatmapLevel customLevel)
+                                                {
+                                                    Plugin.log.Debug($"CustomLevel loaded: {customLevel.levelID} @ {customLevel.customLevelPath}");
+                                                }
+                                                else
+                                                    Plugin.log.Debug($"Level loaded (type: {level.GetType().FullName}): {level.levelID}");
                                                 PreviewPlayer.CrossfadeTo(level.beatmapLevelData.audioClip, level.previewStartTime, level.beatmapLevelData.audioClip.length - level.previewStartTime);
                                                 _difficultySelectionViewController.SetSelectedSong(level);
                                                 _difficultySelectionViewController.playButton.interactable = true;
@@ -1070,7 +1078,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                             }
 
                             SongCore.Loader.SongsLoadedEvent += onLoaded;
-
+                            Plugin.log.Debug("Calling RefreshSongs on SongCore...");
                             SongCore.Loader.Instance.RefreshSongs(false);
                         }
                         else

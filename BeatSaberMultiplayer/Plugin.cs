@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using BeatSaberMultiplayerLite.DiscordInterface;
+using System.Globalization;
 #if DEBUG
 using System.Diagnostics;
 using System.IO;
@@ -66,7 +67,7 @@ namespace BeatSaberMultiplayerLite
             _playerAvatarInput = new PlayerAvatarInput();
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";
-            log.Info($"{PluginName} v{PluginVersion} initialized.");
+            log.Info($"{PluginName} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");
         }
 
         public void OnApplicationStart()
