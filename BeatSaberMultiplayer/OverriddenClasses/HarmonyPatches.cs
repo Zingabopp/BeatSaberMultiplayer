@@ -10,6 +10,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
     {
         public static void PatchAll()
         {
+            Plugin.log.Debug($"Applying Harmony patches");
             BindingFlags allBindingFlags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             var harmony = HarmonyInstance.Create(Plugin.HarmonyId);
             MethodInfo original = typeof(BeatmapObjectSpawnController).GetMethod("HandleNoteWasCut", allBindingFlags);
@@ -39,9 +40,9 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             {
                 string patchTypeName = null;
                 if (prefix != null)
-                    patchTypeName = prefix.declaringType.Name;
+                    patchTypeName = prefix.method.DeclaringType?.Name;
                 else if (postfix != null)
-                    patchTypeName = postfix.declaringType.Name;
+                    patchTypeName = postfix.method.DeclaringType?.Name;
                 Plugin.log.Debug($"Harmony patching {original.Name} with {patchTypeName}");
                 harmony.Patch(original, prefix, postfix);
                 return true;
