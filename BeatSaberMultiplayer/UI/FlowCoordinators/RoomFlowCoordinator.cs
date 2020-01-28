@@ -1035,6 +1035,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     {
                         if (success)
                         {
+                            Plugin.log.Debug($"SongDownloader.Instance.DownloadSong(downloadedCallback) {songToDownload.path} was successful");
                             void onLoaded(SongCore.Loader sender, Dictionary<string, CustomPreviewBeatmapLevel> songs)
                             {
                                 SongCore.Loader.SongsLoadedEvent -= onLoaded;
@@ -1048,6 +1049,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                         {
                                             if (loaded)
                                             {
+                                                Plugin.log.Debug($"Level loaded (type: {level.GetType().FullName}: {level.levelID}");
                                                 PreviewPlayer.CrossfadeTo(level.beatmapLevelData.audioClip, level.previewStartTime, level.beatmapLevelData.audioClip.length - level.previewStartTime);
                                                 _difficultySelectionViewController.SetSelectedSong(level);
                                                 _difficultySelectionViewController.playButton.interactable = true;
@@ -1092,6 +1094,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         private async void LoadBeatmapLevelAsync(IPreviewBeatmapLevel selectedLevel, Action<AdditionalContentModel.EntitlementStatus, bool, IBeatmapLevel> callback)
         {
+            Plugin.log.Debug($"Attempting to load song {selectedLevel.levelID}");
             var token = new CancellationTokenSource();
 
             var entitlementStatus = await _contentModelSO.GetLevelEntitlementStatusAsync(selectedLevel.levelID, token.Token);
