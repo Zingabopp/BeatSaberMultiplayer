@@ -22,6 +22,7 @@ namespace BeatSaberMultiplayerLite
     {
         public static readonly string PluginID = "BeatSaberMultiplayerLite";
         public static readonly string PluginName = "Beat Saber Multiplayer Lite";
+        public static readonly string HarmonyId = "com.Zingabopp.BeatSaberMultiplayerLite";
         public static string PluginVersion { get; private set; }
         public static Version ClientCompatibilityVersion = new Version(0, 7, 1, 0);
         public static Plugin instance;
@@ -95,15 +96,7 @@ namespace BeatSaberMultiplayerLite
             ScrappedData.Instance.DownloadScrappedData(null);
             if (IPA.Loader.PluginManager.GetPluginFromId("BeatSaverDownloader") != null)
                 DownloaderExists = true;
-            try
-            {
-                var harmony = HarmonyInstance.Create("com.andruzzzhka.BeatSaberMultiplayer");
-                harmony.PatchAll(Assembly.GetExecutingAssembly());
-            }
-            catch (Exception e)
-            {
-                Plugin.log.Error("Unable to patch assembly! Exception: " + e);
-            }
+            OverriddenClasses.HarmonyPatcher.PatchAll();
             if (IPA.Loader.PluginManager.GetPluginFromId("DiscordCore") != null)
             {
                 Plugin.log.Info("DiscordCore found, Discord Rich Presence will be available.");
