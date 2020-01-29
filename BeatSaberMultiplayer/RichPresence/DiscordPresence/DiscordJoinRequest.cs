@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Discord;
 using DiscordCore;
 
-namespace BeatSaberMultiplayerLite.DiscordInterface
+namespace BeatSaberMultiplayerLite.RichPresence.DiscordPresence
 {
     public class DiscordJoinRequest : IActivityJoinRequest
     {

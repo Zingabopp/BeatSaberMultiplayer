@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Discord;
-using DiscordCore;
+using Steamworks;
 using UnityEngine;
 
-namespace BeatSaberMultiplayerLite.DiscordInterface
+namespace BeatSaberMultiplayerLite.RichPresence.SteamPresence
 {
-    public class DiscordUser : IUserInfo
+    public class SteamUser : IUserInfo
     {
         private User _user;
-        public DiscordUser(User user)
+        public SteamUser(User user)
         {
             _user = user;
         }

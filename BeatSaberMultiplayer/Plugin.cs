@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using BeatSaberMultiplayerLite.DiscordInterface;
+using BeatSaberMultiplayerLite.RichPresence;
 using System.Globalization;
 #if DEBUG
 using System.Diagnostics;
@@ -28,8 +28,7 @@ namespace BeatSaberMultiplayerLite
         public static Version ClientCompatibilityVersion = new Version(0, 7, 1, 0);
         public static Plugin instance;
         public static IPA.Logging.Logger log;
-        public static IDiscordInstance discord;
-        public static GameActivity gameActivity;
+        public static PresenceManager PresenceManager { get; private set; }
         private static bool joinAfterRestart;
         private static string joinSecret;
         private static PlayerAvatarInput _playerAvatarInput;
@@ -98,21 +97,12 @@ namespace BeatSaberMultiplayerLite
             if (IPA.Loader.PluginManager.GetPluginFromId("BeatSaverDownloader") != null)
                 DownloaderExists = true;
             OverriddenClasses.HarmonyPatcher.PatchAll();
-            if (IPA.Loader.PluginManager.GetPluginFromId("DiscordCore") != null)
-            {
-                Plugin.log.Info("DiscordCore found, Discord Rich Presence will be available.");
-                discord = PresenceLoader.LoadDiscord("BeatSaberMultiplayer", "Beat Saber Multiplayer", Sprites.onlineIcon, true, 661577830919962645);
-                discord.ActivityJoinReceived += OnActivityJoin;
-                discord.ActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
-                discord.ActivityInviteReceived += ActivityManager_OnActivityInvite;
-                discord.Destroyed += Discord_Destroyed;
-            }
-        }
+            PresenceManager = new PresenceManager();
+            PresenceManager.Initialize("BeatSaberMultiplayer", "Beat Saber Multiplayer", Sprites.onlineIcon, true, 661577830919962645);
+            PresenceManager.ActivityJoinReceived += OnActivityJoin;
+            PresenceManager.ActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
+            PresenceManager.ActivityInviteReceived += ActivityManager_OnActivityInvite;
 
-        private void Discord_Destroyed(object sender, EventArgs e)
-        {
-            if (discord == sender)
-                discord = null;
         }
 
         private void ActivityManager_OnActivityInvite(object sender, ActivityInviteEventArgs args)

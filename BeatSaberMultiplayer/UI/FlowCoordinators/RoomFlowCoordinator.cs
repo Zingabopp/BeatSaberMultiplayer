@@ -1,6 +1,6 @@
 ﻿using BeatSaberMarkupLanguage;
 using BeatSaberMultiplayerLite.Data;
-using BeatSaberMultiplayerLite.DiscordInterface;
+using BeatSaberMultiplayerLite.RichPresence;
 using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen;
 
@@ -1386,7 +1386,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 SmallImage = roomInfo.roomState == RoomState.InGame ? GetCharacteristicIconID(Client.Instance.playerInfo.updateInfo.playerLevelOptions.characteristicName) : "multiplayer",
                 SmallText = roomInfo.roomState == RoomState.InGame ? GetFancyCharacteristicName(Client.Instance.playerInfo.updateInfo.playerLevelOptions.characteristicName) : "Multiplayer"
             };
-            Plugin.gameActivity = new GameActivity
+            Plugin.PresenceManager.CurrentActivity = new GameActivity
             {
                 State = RoomInfo.StateToActivityState(roomInfo.roomState),
                 Details = GetActivityDetails(false),
@@ -1396,8 +1396,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 Assets = assets,
                 Instance = true,
             };
-
-            Plugin.discord?.UpdateActivity(Plugin.gameActivity);
         }
 
         private string GetActivityDetails(bool includeAuthorName)

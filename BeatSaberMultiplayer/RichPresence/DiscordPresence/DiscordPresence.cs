@@ -7,17 +7,20 @@ using Discord;
 using DiscordCore;
 using UnityEngine;
 
-namespace BeatSaberMultiplayerLite.DiscordInterface
+namespace BeatSaberMultiplayerLite.RichPresence.DiscordPresence
 {
-    public class DiscordInterop : IDiscordInstance
+    public class DiscordPresence : IPresenceInstance
     {
+        public static readonly string NameKey = "Discord";
+        public string Name => NameKey;
         private DiscordInstance discord;
-        public DiscordInterop(string modId, string modName, Sprite modIcon, bool handleInvites, long appid)
+        public DiscordPresence(string modId, string modName, Sprite modIcon, bool handleInvites, long appid)
         {
             discord = DiscordManager.Instance.CreateInstance(new DiscordSettings() { modId = modId, modName = modName, modIcon = modIcon, handleInvites = handleInvites, appId = appid });
             discord.OnActivityJoin += OnActivityJoin;
             discord.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
             discord.OnActivityInvite += ActivityManager_OnActivityInvite;
+            Plugin.log.Debug("DiscordCore found, Discord Rich Presence will be available.");
         }
 
         private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)
