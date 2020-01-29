@@ -12,11 +12,13 @@
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(BeatSaberDir)\IPA\Pending\Plugins\$(AssemblyName).dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(BeatSaberDir)\IPA\Pending\Plugins\$(AssemblyName).pdb" />
   </Target>
-  <Target Name="ZipRelease" AfterTargets="Build" Condition="'$(NCrunch' != '1' AND ('$(Configuration)' == 'Release' OR '$(Configuration)' == 'ReleaseDiscord')">
+  <Target Name="ZipRelease" AfterTargets="Build" Condition="'$(NCrunch' != '1' AND '$(Configuration)' == 'Release'">
     <Message Text="Zipping plugin for release." Importance="high" />
     <GetCommitHash ProjectDir="$(ProjectDir)">
       <Output TaskParameter="CommitShortHash" PropertyName="CommitShortHash" />
     </GetCommitHash>
+    <!-- Set up directory to zip-->
+    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayer.dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).pdb" />
 
