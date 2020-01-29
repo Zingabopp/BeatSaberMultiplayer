@@ -31,8 +31,5 @@ namespace BeatSaberMultiplayerLite.RichPresence
             IPresenceInstance steamPresence = new GameObject("SteamPresence").AddComponent<SteamPresence.SteamPresence>();
             return steamPresence;
         }
-
-
-        
     }
 }
