@@ -19,6 +19,8 @@ namespace BeatSaberMultiplayerLite
         [SerializeField] private int _submitScores;
         [SerializeField] private string _beatSaverURL;
 
+        [SerializeField] private bool _enableRichPresence;
+
         [SerializeField] private bool _enableVoiceChat;
         [SerializeField] private float _voiceChatVolume;
         [SerializeField] private bool _micEnabled;
@@ -39,8 +41,8 @@ namespace BeatSaberMultiplayerLite
         private static readonly Dictionary<string, string[]> newServerHubs = new Dictionary<string, string[]>()
         {
             {
-                "0.7.0.0",
-                new string[] { "127.0.0.1", "bs.tigersserver.xyz", "treasurehunters.nz", "www.questboard.xyz", "bbbear-wgzeyu.gtxcn.com", "pantie.xicp.net"}
+                "0.7.1.0",
+                new string[] { "127.0.0.1" }
             }
         };
 
@@ -240,6 +242,22 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
+        public bool EnableRichPresence
+        {
+            get { return _enableRichPresence; }
+            set
+            {
+                if (_enableRichPresence == value)
+                    return;
+                _enableRichPresence = value;
+                if (_enableRichPresence == false)
+                    Plugin.PresenceManager?.ClearActivity();
+                else
+                    Plugin.PresenceManager?.UpdateActivity();
+                MarkDirty();
+            }
+        }
+
         public bool EnableVoiceChat
         {
             get { return _enableVoiceChat; }
@@ -352,6 +370,8 @@ namespace BeatSaberMultiplayerLite
             _spectatorMode = false;
             _submitScores = 2;
             _beatSaverURL = "https://beatsaver.com";
+
+            _enableRichPresence = true;
 
             _enableVoiceChat = false;
             _voiceChatVolume = 0.8f;

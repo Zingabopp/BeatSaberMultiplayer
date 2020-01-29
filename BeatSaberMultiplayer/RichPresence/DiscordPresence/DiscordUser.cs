@@ -7,7 +7,7 @@ using Discord;
 using DiscordCore;
 using UnityEngine;
 
-namespace BeatSaberMultiplayerLite.DiscordInterface
+namespace BeatSaberMultiplayerLite.RichPresence.DiscordPresence
 {
     public class DiscordUser : IUserInfo
     {

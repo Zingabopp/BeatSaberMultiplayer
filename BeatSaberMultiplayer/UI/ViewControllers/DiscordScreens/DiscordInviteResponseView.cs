@@ -4,7 +4,7 @@ using BeatSaberMarkupLanguage.ViewControllers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using BeatSaberMultiplayerLite.DiscordInterface;
+using BeatSaberMultiplayerLite.RichPresence;
 
 namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
 {

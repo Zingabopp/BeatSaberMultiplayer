@@ -2,7 +2,7 @@
 using BeatSaberMarkupLanguage.FloatingScreen;
 using BeatSaberMarkupLanguage.Settings;
 using BeatSaberMultiplayerLite.Data;
-using BeatSaberMultiplayerLite.DiscordInterface;
+using BeatSaberMultiplayerLite.RichPresence;
 using BeatSaberMultiplayerLite.UI.FlowCoordinators;
 using BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens;
 using BS_Utils.Gameplay;
@@ -98,8 +98,8 @@ namespace BeatSaberMultiplayerLite.UI
                     modeSelectionFlowCoordinator.didFinishEvent += () =>
                     {
                         Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First().InvokeMethod("DismissFlowCoordinator", modeSelectionFlowCoordinator, null, false);
-                        Plugin.gameActivity = default;
-                        Plugin.discord?.ClearActivity();
+                        Plugin.PresenceManager?.UpdateActivity(default);
+                        Plugin.PresenceManager?.ClearActivity();
                     };
 
                 }
@@ -218,7 +218,7 @@ namespace BeatSaberMultiplayerLite.UI
         public void SetLobbyDiscordActivity()
         {
 
-            Plugin.gameActivity = new GameActivity
+            Plugin.PresenceManager.UpdateActivity(new GameActivity
             {
                 State = "Playing multiplayer",
                 Details = "In lobby",
@@ -227,8 +227,7 @@ namespace BeatSaberMultiplayerLite.UI
                             Start = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
                         },
                 Instance = false,
-            };
-            Plugin.discord?.UpdateActivity(Plugin.gameActivity);
+            });
 
         }
 

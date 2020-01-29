@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BeatSaberMultiplayerLite.DiscordInterface
+namespace BeatSaberMultiplayerLite.RichPresence
 {
-    public interface IDiscordInstance
+    public interface IPresenceInstance
     {
+        string Name { get; }
         void UpdateActivity(GameActivity activity);
         void ClearActivity();
         void Destroy();
