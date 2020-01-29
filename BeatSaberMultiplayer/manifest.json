@@ -12,6 +12,9 @@
     "SongCore": "^2.7.5",
     "BeatSaberMarkupLanguage": "^1.1.3"
   },
+  "conflictsWith": {
+    "BeatSaberMultiplayer": "*"
+  },
   "loadAfter": [ "ScoreSaber", "BeatSaverDownloader", "DiscordCore" ],
   "links": {
     "project-source": "https://github.com/andruzzzhka/BeatSaberMultiplayer",
