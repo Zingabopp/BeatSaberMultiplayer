@@ -9,6 +9,7 @@
       <checkbox text='Download other players avatars' value='download-avatars' apply-on-change='true' hover-hint='Download other players avatars from ModelSaber' />
       <checkbox text='Separate avatar for multiplayer' value='separate-avatar' apply-on-change='true' hover-hint='Use avatar specified in "Public avatar" instead of your current avatar for multiplayer'  />
       <dropdown-list-setting id='public-avatar-setting' text='Public avatar' value='public-avatar-value' options='public-avatar-options' formatter='public-avatar-formatter' apply-on-change='true' />-->
+      <checkbox text='Rich Presence' value='enable-rich-presence' apply-on-change='true' hover-hint='Advertise your presence on Discord or Steam if supported. Allows friends to join your game.' />
       <checkbox text='Spectator mode' value='spectator-mode' apply-on-change='true' hover-hint='&lt;color=red&gt;BETA&lt;/color&gt;&#13;&#10;Watch other players playing a song (e.g. on tournaments)&#13;&#10;&lt;color=red&gt;You can&apos;t play songs yourself while "Spectator Mode" is on!&lt;/color&gt;'  />
       <dropdown-list-setting text='Submit scores' value='submit-scores-value' apply-on-change='true' options='submit-scores-options' hover-hint='Submit scores to the leaderboard' />
     </vertical>

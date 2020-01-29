@@ -98,7 +98,7 @@ namespace BeatSaberMultiplayerLite.UI
                     modeSelectionFlowCoordinator.didFinishEvent += () =>
                     {
                         Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First().InvokeMethod("DismissFlowCoordinator", modeSelectionFlowCoordinator, null, false);
-                        Plugin.PresenceManager.CurrentActivity = default;
+                        Plugin.PresenceManager?.UpdateActivity(default);
                         Plugin.PresenceManager?.ClearActivity();
                     };
 
@@ -218,7 +218,7 @@ namespace BeatSaberMultiplayerLite.UI
         public void SetLobbyDiscordActivity()
         {
 
-            Plugin.PresenceManager.CurrentActivity = new GameActivity
+            Plugin.PresenceManager.UpdateActivity(new GameActivity
             {
                 State = "Playing multiplayer",
                 Details = "In lobby",
@@ -227,7 +227,7 @@ namespace BeatSaberMultiplayerLite.UI
                             Start = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
                         },
                 Instance = false,
-            };
+            });
 
         }
 

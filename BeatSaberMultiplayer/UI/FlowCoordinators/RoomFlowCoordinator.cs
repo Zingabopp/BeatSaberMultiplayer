@@ -1386,7 +1386,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 SmallImage = roomInfo.roomState == RoomState.InGame ? GetCharacteristicIconID(Client.Instance.playerInfo.updateInfo.playerLevelOptions.characteristicName) : "multiplayer",
                 SmallText = roomInfo.roomState == RoomState.InGame ? GetFancyCharacteristicName(Client.Instance.playerInfo.updateInfo.playerLevelOptions.characteristicName) : "Multiplayer"
             };
-            Plugin.PresenceManager.CurrentActivity = new GameActivity
+            Plugin.PresenceManager.UpdateActivity(new GameActivity
             {
                 State = RoomInfo.StateToActivityState(roomInfo.roomState),
                 Details = GetActivityDetails(false),
@@ -1395,7 +1395,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 Secrets = secrets,
                 Assets = assets,
                 Instance = true,
-            };
+            });
         }
 
         private string GetActivityDetails(bool includeAuthorName)

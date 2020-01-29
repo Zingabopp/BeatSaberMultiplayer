@@ -132,6 +132,17 @@ namespace BeatSaberMultiplayerLite.UI
         }
         #endregion
 
+        #region Rich Presence Settings
+
+        [UIValue("enable-rich-presence")]
+        public bool enableRichPresence
+        {
+            get { return Config.Instance.EnableRichPresence; }
+            set { Config.Instance.EnableRichPresence = value; }
+        }
+
+        #endregion
+
         #region Voice settings
 
         public void UpdateMicrophoneList(bool deviceWasChanged)

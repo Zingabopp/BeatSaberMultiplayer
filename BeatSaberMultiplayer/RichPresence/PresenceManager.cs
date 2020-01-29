@@ -47,10 +47,18 @@ namespace BeatSaberMultiplayerLite.RichPresence
         public GameActivity CurrentActivity
         {
             get => _currentActivity;
-            set
+            protected set
             {
                 _currentActivity = value;
-                OnCurrentActivityChanged();
+                try
+                {
+                    GameActivityChanged?.Invoke(this, _currentActivity);
+                }
+                catch (Exception ex)
+                {
+                    Plugin.log.Error($"Error invoking GameActivityChanged event: {ex.Message}");
+                    Plugin.log.Debug(ex);
+                }
             }
         }
 
@@ -62,34 +70,33 @@ namespace BeatSaberMultiplayerLite.RichPresence
             }
         }
 
+        internal void UpdateActivity()
+        {
+            UpdateActivity(CurrentActivity);
+        }
+
         public void UpdateActivity(GameActivity gameActivity)
         {
+            CurrentActivity = gameActivity;
+            if (!Config.Instance.EnableRichPresence)
+                return;
             foreach (var presence in presenceInstances.Values.ToArray())
             {
                 presence.UpdateActivity(gameActivity);
             }
         }
 
-        private void OnCurrentActivityChanged()
-        {
-            GameActivity newActivity = CurrentActivity;
-            foreach (var item in presenceInstances.Values.ToArray())
-                item.UpdateActivity(newActivity);
-            try
-            {
-                GameActivityChanged?.Invoke(this, newActivity);
-            }
-            catch (Exception ex)
-            {
-                Plugin.log.Error($"Error invoking GameActivityChanged event: {ex.Message}");
-                Plugin.log.Debug(ex);
-            }
-        }
-
         private void ActivityManager_OnActivityInvite(object sender, ActivityInviteEventArgs args)
         {
             if (sender is IPresenceInstance presence)
+            {
+                if (!Config.Instance.EnableRichPresence)
+                {
+                    Plugin.log.Debug($"Ignoring join request from {presence?.Name}, Rich Presence is disabled.");
+                    return;
+                }
                 ActivityInviteReceived?.Invoke(presence, args);
+            }
             else
                 Plugin.log.Debug($"ActivityManager_OnActivityInvite: sender (type {sender?.GetType().Name ?? "<NULL>"} is not a {nameof(IPresenceInstance)}");
         }
@@ -97,14 +104,20 @@ namespace BeatSaberMultiplayerLite.RichPresence
         private void ActivityManager_OnActivityJoinRequest(object sender, IActivityJoinRequest joinRequest)
         {
             if (sender is IPresenceInstance presence)
+            {
+                if (!Config.Instance.EnableRichPresence)
+                {
+                    Plugin.log.Debug($"Ignoring join request from {presence?.Name}, Rich Presence is disabled.");
+                    return;
+                }
                 ActivityJoinRequest?.Invoke(presence, joinRequest);
+            }
             else
                 Plugin.log.Debug($"ActivityManager_OnActivityJoinRequest: sender (type {sender?.GetType().Name ?? "<NULL>"} is not a {nameof(IPresenceInstance)}");
         }
 
         private void OnActivityJoin(object sender, string secret)
         {
-
             if (sender is IPresenceInstance presence)
                 ActivityJoinReceived?.Invoke(presence, secret);
             else
