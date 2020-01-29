@@ -102,6 +102,13 @@ namespace BeatSaberMultiplayerLite
             PresenceManager.ActivityJoinReceived += OnActivityJoin;
             PresenceManager.ActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
             PresenceManager.ActivityInviteReceived += ActivityManager_OnActivityInvite;
+            var connectString = Environment.GetCommandLineArgs().Where(a => a.Contains("connect:")).FirstOrDefault();
+            if (!string.IsNullOrEmpty(connectString))
+            {
+                joinSecret = connectString.Replace("connect:", string.Empty).Trim('|');
+                joinAfterRestart = true;
+                Plugin.log.Info($"Connect string {joinSecret} retrieved from launch args.");
+            }
 
         }
 
@@ -120,10 +127,10 @@ namespace BeatSaberMultiplayerLite
                 PluginUI.instance.ShowJoinRequest(joinRequest);
             }
         }
-        
+
         public void OnActivityJoin(object sender, string secret)
         {
-            if(string.IsNullOrEmpty(secret))
+            if (string.IsNullOrEmpty(secret))
             {
                 Plugin.log.Warn($"Unable to join game, room information unavailble.");
             }

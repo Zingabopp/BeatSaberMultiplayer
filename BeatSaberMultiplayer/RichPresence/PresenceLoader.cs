@@ -28,7 +28,7 @@ namespace BeatSaberMultiplayerLite.RichPresence
         public static IPresenceInstance LoadSteam(string modId, string modName, Sprite modIcon, bool handleInvites, long appid)
         {
             Plugin.log.Debug($"Loading SteamPresence");
-            IPresenceInstance steamPresence = new SteamPresence.SteamPresence(modId, modName, modIcon, handleInvites, appid);
+            IPresenceInstance steamPresence = new GameObject("SteamPresence").AddComponent<SteamPresence.SteamPresence>();
             return steamPresence;
         }
 

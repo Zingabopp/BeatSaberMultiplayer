@@ -49,8 +49,6 @@ namespace BeatSaberMultiplayerLite.RichPresence
             get => _currentActivity;
             set
             {
-                if (_currentActivity.Equals(value))
-                    return;
                 _currentActivity = value;
                 OnCurrentActivityChanged();
             }

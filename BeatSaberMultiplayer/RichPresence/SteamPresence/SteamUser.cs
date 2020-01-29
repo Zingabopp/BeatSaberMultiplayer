@@ -10,8 +10,8 @@ namespace BeatSaberMultiplayerLite.RichPresence.SteamPresence
 {
     public class SteamUser : IUserInfo
     {
-        private User _user;
-        public SteamUser(User user)
+        private Discord.User _user;
+        public SteamUser(Discord.User user)
         {
             _user = user;
         }
@@ -30,27 +30,27 @@ namespace BeatSaberMultiplayerLite.RichPresence.SteamPresence
 
         public void GetAvatarTexture(OnAvatarTextureFinishedCallback callback)
         {
-            if (callback == null)
-                return;
-            var imageManager = DiscordClient.GetImageManager();
+            //if (callback == null)
+            //    return;
+            //var imageManager = DiscordClient.GetImageManager();
 
-            var handle = new ImageHandle()
-            {
-                Id = Id,
-                Size = 256
-            };
+            //var handle = new ImageHandle()
+            //{
+            //    Id = Id,
+            //    Size = 256
+            //};
 
-            imageManager.Fetch(handle, false, (result, img) =>
-            {
-                bool success = false;
-                Texture2D texture = null;
-                if (result == Result.Ok)
-                {
-                    texture = imageManager.GetTexture(img);
-                    success = true;   
-                }
-                callback.Invoke(success, texture);
-            });
+            //imageManager.Fetch(handle, false, (result, img) =>
+            //{
+            //    bool success = false;
+            //    Texture2D texture = null;
+            //    if (result == Result.Ok)
+            //    {
+            //        texture = imageManager.GetTexture(img);
+            //        success = true;   
+            //    }
+            //    callback.Invoke(success, texture);
+            //});
         }
     }
 }
