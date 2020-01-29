@@ -165,7 +165,6 @@ namespace BeatSaberMultiplayerLite.UI
                     {
                         var dialogOrig = BS_Utils.Utilities.ReflectionUtil.GetPrivateField<SimpleDialogPromptViewController>(mainFlow, "_simpleDialogPromptViewController");
                         _noUserInfoWarning = Instantiate(dialogOrig.gameObject).GetComponent<SimpleDialogPromptViewController>();
-                        Steamworks.Callback<Steamworks.GameRichPresenceJoinRequested_t>.Create(OnGameLobbyJoinRequested);
                     }
 
                     if (GetUserInfo.GetUserID() == 0 && string.IsNullOrWhiteSpace(GetUserInfo.GetUserName()) || GetUserInfo.GetUserID() == 0)
@@ -193,11 +192,6 @@ namespace BeatSaberMultiplayerLite.UI
                     Plugin.log.Critical($"Unable to present flow coordinator! Exception: {e}");
                 }
             });
-        }
-
-        private void OnGameLobbyJoinRequested(Steamworks.GameRichPresenceJoinRequested_t pCallback)
-        {
-            var connectionString = pCallback.m_rgchConnect;
         }
 
         public void ShowJoinRequest(IActivityJoinRequest request)
