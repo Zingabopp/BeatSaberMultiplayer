@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using BeatSaberMultiplayerLite.RichPresence.DiscordPresence;
 
 namespace BeatSaberMultiplayerLite.RichPresence
 {
@@ -15,7 +10,12 @@ namespace BeatSaberMultiplayerLite.RichPresence
             List<IPresenceInstance> loadedPresences = new List<IPresenceInstance>();
             if (IPA.Loader.PluginManager.GetPluginFromId("DiscordCore") != null)
                 loadedPresences.Add(LoadDiscord(modId, modName, modIcon, handleInvites, appid));
-            loadedPresences.Add(LoadSteam(modId, modName, modIcon, handleInvites, appid));
+            else
+                Plugin.log.Debug($"DiscordCore mod not detected, Discord Rich Presence unavailable.");
+            if (Plugin.IsSteam)
+                loadedPresences.Add(LoadSteam(modId, modName, modIcon, handleInvites, appid));
+            else
+                Plugin.log.Debug($"Running on Oculus platform, Steam Rich Presence unavailable.");
             return loadedPresences.ToArray();
         }
 

@@ -29,11 +29,27 @@ namespace BeatSaberMultiplayerLite
         public static Plugin instance;
         public static IPA.Logging.Logger log;
         public static PresenceManager PresenceManager { get; private set; }
+        public static bool IsSteam { get; private set; }
         private static bool joinAfterRestart;
         private static string joinSecret;
         private static PlayerAvatarInput _playerAvatarInput;
         public static bool overrideDiscordActivity;
         public static bool DownloaderExists { get; private set; }
+        private static VRPlatformHelper _vRPlatformHelper;
+        public static VRPlatformHelper vRPlatformHelper
+        {
+            get
+            {
+                if (_vRPlatformHelper == null)
+                    _vRPlatformHelper = Resources.FindObjectsOfTypeAll<VRPlatformHelper>().FirstOrDefault();
+                return _vRPlatformHelper;
+
+            }
+            internal set
+            {
+                _vRPlatformHelper = value;
+            }
+        }
         public static void LogLocation(string message,
             [CallerFilePath] string memberPath = "",
             [CallerMemberName] string memberName = "",
@@ -98,10 +114,7 @@ namespace BeatSaberMultiplayerLite
                 DownloaderExists = true;
             OverriddenClasses.HarmonyPatcher.PatchAll();
             PresenceManager = new PresenceManager();
-            PresenceManager.Initialize("BeatSaberMultiplayer", "Beat Saber Multiplayer", Sprites.onlineIcon, true, 661577830919962645);
-            PresenceManager.ActivityJoinReceived += OnActivityJoin;
-            PresenceManager.ActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
-            PresenceManager.ActivityInviteReceived += ActivityManager_OnActivityInvite;
+            SharedCoroutineStarter.instance.StartCoroutine(WaitForVrPlatformHelper());
             var connectString = Environment.GetCommandLineArgs().Where(a => a.Contains("connect:")).FirstOrDefault();
             if (!string.IsNullOrEmpty(connectString))
             {
@@ -109,7 +122,25 @@ namespace BeatSaberMultiplayerLite
                 joinAfterRestart = true;
                 Plugin.log.Info($"Connect string {joinSecret} retrieved from launch args.");
             }
+        }
 
+        private IEnumerator<WaitForSeconds> WaitForVrPlatformHelper()
+        {
+            WaitForSeconds pollRate = new WaitForSeconds(1f);
+            while(_vRPlatformHelper == null && SceneManager.GetActiveScene().name != "GameCore")
+            {
+                if (vRPlatformHelper == null)
+                    yield return pollRate;
+            }
+            if (_vRPlatformHelper != null)
+            {
+                Plugin.log.Debug($"Platform SDK is {vRPlatformHelper.vrPlatformSDK.ToString()}");
+                IsSteam = vRPlatformHelper.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR;
+            }
+            PresenceManager.Initialize("BeatSaberMultiplayer", "Beat Saber Multiplayer", Sprites.onlineIcon, true, 661577830919962645);
+            PresenceManager.ActivityJoinReceived += OnActivityJoin;
+            PresenceManager.ActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
+            PresenceManager.ActivityInviteReceived += ActivityManager_OnActivityInvite;
         }
 
         private void ActivityManager_OnActivityInvite(object sender, ActivityInviteEventArgs args)
