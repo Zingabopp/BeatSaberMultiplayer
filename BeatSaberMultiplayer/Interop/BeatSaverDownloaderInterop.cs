@@ -1,11 +1,11 @@
 ﻿using System;
 using BeatSaberMarkupLanguage;
 using HMUI;
-using BeatSaberMultiplayer.OverriddenClasses;
+using BeatSaberMultiplayerLite.OverriddenClasses;
 
-namespace BeatSaberMultiplayer.Interop
+namespace BeatSaberMultiplayerLite.Interop
 {
-    internal class BeatSaverDownloaderInterop
+    internal class BeatSaverDownloaderInterop : ISongDownloader
     {
         private FlowCoordinator _coordinator;
         public bool CanCreate { get { return CustomMoreSongsFlowCoordinator.CanCreate; } }

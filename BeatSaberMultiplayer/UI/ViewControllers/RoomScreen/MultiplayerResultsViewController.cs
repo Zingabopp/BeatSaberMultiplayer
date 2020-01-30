@@ -1,9 +1,9 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Interop;
-using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.UI;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Interop;
+using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Utilities;
 using HMUI;
 using IPA.Loader;

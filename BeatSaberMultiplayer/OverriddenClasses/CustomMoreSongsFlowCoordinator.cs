@@ -4,10 +4,10 @@ using BeatSaberMarkupLanguage;
 using BeatSaverDownloader.UI.ViewControllers;
 using BeatSaverDownloader.UI;
 using HMUI;
-using BeatSaberMultiplayer.IPAUtilities;
+using BeatSaberMultiplayerLite.IPAUtilities;
 using System.Reflection;
 
-namespace BeatSaberMultiplayer.OverriddenClasses
+namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
     public class CustomMoreSongsFlowCoordinator : MoreSongsFlowCoordinator
     {

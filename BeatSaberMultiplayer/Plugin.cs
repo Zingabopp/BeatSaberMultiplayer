@@ -1,6 +1,6 @@
-﻿using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.OverriddenClasses;
-using BeatSaberMultiplayer.UI;
+﻿using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.OverriddenClasses;
+using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
 using Harmony;
 using IPA;
@@ -31,6 +31,7 @@ namespace BeatSaberMultiplayerLite
         public static Plugin instance;
         public static IPA.Logging.Logger log;
         public static PresenceManager PresenceManager { get; private set; }
+        internal static PlayerPosition _playerPosition;
         public static bool IsSteam { get; private set; }
         private static bool joinAfterRestart;
         private static string joinSecret;
@@ -61,7 +62,7 @@ namespace BeatSaberMultiplayerLite
         public void Init(IPA.Logging.Logger logger)
         {
             log = logger;
-            _playerAvatarInput = new PlayerAvatarInput();
+            _playerPosition = new PlayerPosition();
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";
             log.Info($"{PluginName} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");
@@ -87,15 +88,6 @@ namespace BeatSaberMultiplayerLite
             catch (Exception e)
             {
                 log.Warn("Unable to load presets! Exception: " + e);
-            }
-
-            try
-            {
-                AvatarsHashCache.Load();
-            }
-            catch (Exception e)
-            {
-                log.Warn("Unable to load avatar hashes! Exception: " + e);
             }
 
             Sprites.ConvertSprites();

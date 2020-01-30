@@ -8,10 +8,10 @@ using UnityEngine.XR;
 
 namespace BeatSaberMultiplayerLite
 {
-    public class PlayerAvatarInput
+    public class PlayerPosition
     {
-        public static PlayerAvatarInput instance;
-        public PlayerAvatarInput()
+        public static PlayerPosition instance;
+        public PlayerPosition()
         {
             instance = this;
         }

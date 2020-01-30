@@ -63,7 +63,7 @@ namespace BeatSaberMultiplayerLite
         private VRPlatformHelper _vrPlatformHelper;
         private VRControllersInputManager _vrInputManager;
 
-        private PlayerAvatarInput _avatarInput;
+        private PlayerPosition _avatarInput;
 
         public Dictionary<ulong, OnlinePlayerController> players = new Dictionary<ulong, OnlinePlayerController>();
         public List<PlayerScore> playerScores;
@@ -780,7 +780,7 @@ namespace BeatSaberMultiplayerLite
 
             if (_avatarInput == null)
             {
-                _avatarInput = PlayerAvatarInput.instance;//CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput;
+                _avatarInput = PlayerPosition.instance;//CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput;
             }
 
             var head = _avatarInput.HeadPosRot;

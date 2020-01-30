@@ -18,7 +18,7 @@
       <Output TaskParameter="CommitShortHash" PropertyName="CommitShortHash" />
     </GetCommitHash>
     <!-- Set up directory to zip-->
-    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayer.dll" />
+    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayerLite.dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).dll" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).pdb" />
 

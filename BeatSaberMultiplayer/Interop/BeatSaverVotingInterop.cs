@@ -1,6 +1,6 @@
 ﻿using BeatSaberMarkupLanguage;
-using BeatSaberMultiplayer.IPAUtilities;
-using BeatSaberMultiplayer.UI.ViewControllers.RoomScreen;
+using BeatSaberMultiplayerLite.IPAUtilities;
+using BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen;
 using BeatSaverVoting.UI;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.Interop
+namespace BeatSaberMultiplayerLite.Interop
 {
     internal static class BeatSaverVotingInterop
     {
@@ -74,7 +74,7 @@ namespace BeatSaberMultiplayer.Interop
 
             Plugin.log.Debug("Calling GetVotesForMap...");
 
-            instance.InvokePrivateMethod("GetVotesForMap", new object[0]);
+            instance.InvokeMethod("GetVotesForMap", new object[0]);
 
             Plugin.log.Debug("Called GetVotesForMap!");
         }

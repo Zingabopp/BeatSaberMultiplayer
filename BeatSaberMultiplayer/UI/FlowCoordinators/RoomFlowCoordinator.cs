@@ -1,10 +1,10 @@
 ﻿using BeatSaberMarkupLanguage;
 using BeatSaberMultiplayerLite.RichPresence;
 using BeatSaberMarkupLanguage.Components;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Interop;
-using BeatSaberMultiplayer.Misc;
-using BeatSaberMultiplayer.UI.ViewControllers.RoomScreen;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Interop;
+using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen;
 using BS_Utils.Utilities;
 using HMUI;
 using Lidgren.Network;

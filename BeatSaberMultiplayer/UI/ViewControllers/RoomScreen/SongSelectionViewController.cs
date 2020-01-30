@@ -6,8 +6,8 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using BeatSaberMultiplayer.UI.FlowCoordinators;
-using BeatSaberMultiplayer.Interop;
+using BeatSaberMultiplayerLite.UI.FlowCoordinators;
+using BeatSaberMultiplayerLite.Interop;
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
@@ -20,16 +20,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
     class SongSelectionViewController : BSMLResourceViewController, TableView.IDataSource
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
-        
-        IPAUtilities.PropertyAccessor<TableViewScroller, float>.Setter SetScrollPosition = IPAUtilities.PropertyAccessor<TableViewScroller, float>.GetSetter("position");
-        IPAUtilities.FieldAccessor<TableViewScroller, float>.Accessor GetTableViewScrollerTargetPosition = IPAUtilities.FieldAccessor<TableViewScroller, float>.GetAccessor("_targetPosition");
-        IPAUtilities.FieldAccessor<TableView, TableViewScroller>.Accessor GetTableViewScroller = IPAUtilities.FieldAccessor<TableView, TableViewScroller>.GetAccessor("_scroller");
-
         public RoomFlowCoordinator ParentFlowCoordinator { get; internal set; }
         private readonly IPAUtilities.PropertyAccessor<TableViewScroller, float>.Setter SetScrollPosition = IPAUtilities.PropertyAccessor<TableViewScroller, float>.GetSetter("position");
         private readonly IPAUtilities.FieldAccessor<TableViewScroller, float>.Accessor TableViewScrollerTargetPosition = IPAUtilities.FieldAccessor<TableViewScroller, float>.GetAccessor("_targetPosition");
         private readonly IPAUtilities.FieldAccessor<TableView, TableViewScroller>.Accessor GetTableViewScroller = IPAUtilities.FieldAccessor<TableView, TableViewScroller>.GetAccessor("_scroller");
-        public RoomFlowCoordinator ParentFlowCoordinator { get; internal set; }
         public event Action<IPreviewBeatmapLevel> SongSelected;
         public event Action<string> SearchPressed;
         public event Action<SortMode> SortPressed;
@@ -229,12 +223,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             }
         }
 
-        [UIAction("more-btn-pressed")]
-        public void MoreButtonPressed()
-        {
-            downloader?.PresentDownloaderFlowCoordinator(ParentFlowCoordinator, null);
-        }
-
         [UIAction("sort-btn-pressed")]
         public void SortButtonPressed()
         {
@@ -253,6 +241,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         {
             downloader?.PresentDownloaderFlowCoordinator(ParentFlowCoordinator, MoreSongsFinishedCallback);
         }
+
         int LastRandomSong;
         [UIAction("random-btn-pressed")]
         public void RandomButtonPressed()

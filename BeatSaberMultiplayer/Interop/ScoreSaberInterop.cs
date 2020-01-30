@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.Interop
+namespace BeatSaberMultiplayerLite.Interop
 {
     internal static class ScoreSaberInterop
     {
