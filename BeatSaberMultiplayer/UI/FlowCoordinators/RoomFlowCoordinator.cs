@@ -786,21 +786,23 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     float scrollPosition = LastScrollPosition;
                     if (LastSelectedCollection != pack)
                     {
-                        LastSelectedCollection = pack;
-                        LastSortMode = SortMode.Default;
-                        LastSearchRequest = "";
-                    }
-                    SetSongs(LastSelectedCollection, LastSortMode, LastSearchRequest);
-                    if (_songSelectionViewController.ScrollToPosition(scrollPosition))
-                    {
-#if DEBUG
-                        Plugin.log.Debug($"Scrolling to {scrollPosition} / {_songSelectionViewController.SongListScroller.scrollableSize}");
-#endif
+                        SetSongs(pack, SortMode.Default, string.Empty);
                     }
                     else
                     {
-                        Plugin.log.Debug($"Couldn't scroll to {scrollPosition}, max is {_songSelectionViewController.SongListScroller.scrollableSize}");
-                        _songSelectionViewController.ScrollToLevel(LastSelectedSong);
+                        if (!_songSelectionViewController.ScrollToPosition(scrollPosition))
+                        {
+                            Plugin.log.Debug($"Couldn't scroll to {scrollPosition}, max is {_songSelectionViewController.SongListScroller.scrollableSize}");
+                            _songSelectionViewController.ScrollToLevel(LastSelectedSong);
+
+
+                        }
+#if DEBUG
+                        else
+                        {
+                            Plugin.log.Debug($"Scrolling to {scrollPosition} / {_songSelectionViewController.SongListScroller.scrollableSize}");
+                        }
+#endif
                     }
                 };
             }
@@ -858,14 +860,19 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         public void SetSongs(IAnnotatedBeatmapLevelCollection selectedCollection, SortMode sortMode, string searchRequest)
         {
-            LastSortMode = sortMode;
-            LastSearchRequest = searchRequest;
-            LastSelectedCollection = selectedCollection;
+            if (selectedCollection == null)
+            {
+                Plugin.log.Warn("Unable to set songs with a null selectedCollection.");
+                return;
+            }
 
             List<IPreviewBeatmapLevel> levels = new List<IPreviewBeatmapLevel>();
 
-            if (LastSelectedCollection != null)
+            if (selectedCollection != LastSelectedCollection || LastSortMode != sortMode || LastSearchRequest != searchRequest)
             {
+                LastSelectedCollection = selectedCollection;
+                LastSortMode = sortMode;
+                LastSearchRequest = searchRequest;
                 levels = LastSelectedCollection.beatmapLevelCollection.beatmapLevels.ToList();
 
                 if (string.IsNullOrEmpty(searchRequest))
@@ -890,9 +897,11 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 {
                     levels = levels.Where(x => $"{x.songName} {x.songSubName} {x.levelAuthorName} {x.songAuthorName}".ToLower().Contains(searchRequest)).ToList();
                 }
+                _songSelectionViewController.SetSongs(levels);
             }
+            else
+                _songSelectionViewController.ClearSelection();
 
-            _songSelectionViewController.SetSongs(levels);
         }
 
         public List<IPreviewBeatmapLevel> SortLevelsByCreationTime(List<IPreviewBeatmapLevel> levels)
