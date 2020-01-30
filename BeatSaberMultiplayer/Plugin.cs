@@ -1,4 +1,5 @@
 ﻿using BeatSaberMultiplayerLite.Misc;
+using BeatSaberMultiplayerLite.OverriddenClasses;
 using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
 using Harmony;
@@ -30,11 +31,10 @@ namespace BeatSaberMultiplayerLite
         public static Plugin instance;
         public static IPA.Logging.Logger log;
         public static PresenceManager PresenceManager { get; private set; }
+        internal static PlayerPosition _playerPosition;
         public static bool IsSteam { get; private set; }
         private static bool joinAfterRestart;
         private static string joinSecret;
-        private static PlayerAvatarInput _playerAvatarInput;
-        public static bool overrideDiscordActivity;
         public static bool DownloaderExists { get; private set; }
 
         public static void LogLocation(string message,
@@ -62,7 +62,7 @@ namespace BeatSaberMultiplayerLite
         public void Init(IPA.Logging.Logger logger)
         {
             log = logger;
-            _playerAvatarInput = new PlayerAvatarInput();
+            _playerPosition = new PlayerPosition();
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";
             log.Info($"{PluginName} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");

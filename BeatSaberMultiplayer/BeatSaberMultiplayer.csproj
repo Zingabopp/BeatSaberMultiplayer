@@ -40,6 +40,7 @@
     <Compile Include="Data\BeatSaverAPIResult.cs" />
     <Compile Include="Data\ChannelInfo.cs" />
     <Compile Include="Data\ExtraPlayerFlags.cs" />
+    <Compile Include="Interop\BeatSaverVotingInterop.cs" />
     <Compile Include="Data\PlayerInfo.cs" />
     <Compile Include="Data\RoomInfo.cs" />
     <Compile Include="Data\RoomPreset.cs" />
@@ -59,11 +60,11 @@
     <Compile Include="IPlayerInfoReceiver.cs" />
     <Compile Include="Misc\ControllersHelper.cs" />
     <Compile Include="Misc\Hashing.cs" />
-    <Compile Include="Misc\ISongDownloader.cs" />
+    <Compile Include="Interop\ISongDownloader.cs" />
     <Compile Include="Misc\ScrappedData.cs" />
-    <Compile Include="Misc\ScrappedSong.cs" />
+    <Compile Include="Data\ScrappedSong.cs" />
     <Compile Include="Misc\SimpleJSON.cs" />
-    <Compile Include="Misc\SongDownloaderInterop.cs" />
+    <Compile Include="Interop\BeatSaverDownloaderInterop.cs" />
     <Compile Include="Misc\Sprites.cs" />
     <Compile Include="Misc\Config.cs" />
     <Compile Include="Misc\CustomExtensions.cs" />
@@ -74,16 +75,16 @@
     <Compile Include="Misc\SongDownloader.cs" />
     <Compile Include="Misc\SongSeekBeatmapHandler.cs" />
     <Compile Include="Misc\TableViewHelper.cs" />
-    <Compile Include="Misc\ScoreSaberInteraction.cs" />
-    <Compile Include="Misc\ZipUtilities.cs" />
+    <Compile Include="Interop\ScoreSaberInterop.cs" />
     <Compile Include="OverriddenClasses\CustomMoreSongsFlowCoordinator.cs" />
+    <Compile Include="Misc\ZipUtilities.cs" />
     <Compile Include="OverriddenClasses\HarmonyPatches.cs" />
     <Compile Include="OverriddenClasses\OnlineAudioTimeController.cs" />
     <Compile Include="OverriddenClasses\OnlineBeatmapCallbackController.cs" />
     <Compile Include="OverriddenClasses\OnlineBeatmapSpawnController.cs" />
     <Compile Include="OverriddenClasses\OnlineVRController.cs" />
     <Compile Include="OnlinePlayerController.cs" />
-    <Compile Include="PlayerAvatarInput.cs" />
+    <Compile Include="PlayerPosition.cs" />
     <Compile Include="PlayerInfoDisplay.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="UI\FlowCoordinators\ServerHubFlowCoordinator.cs" />
     <Compile Include="UI\PluginUI.cs" />
     <Compile Include="UI\Settings.cs" />
-    <Compile Include="Misc\CustomSettingsHelper.cs" />
     <Compile Include="UI\ViewControllers\CreateRoomScreen\PresetsListViewController.cs" />
     <Compile Include="UI\ViewControllers\CreateRoomScreen\RoomCreationServerHubsListViewController.cs" />
     <Compile Include="UI\ViewControllers\CreateRoomScreen\MainRoomCreationViewController.cs" />
@@ -213,10 +213,13 @@
       <HintPath>..\Refs\0Harmony.1.2.0.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BeatSaverDownloader, Version=5.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <Private>False</Private>
+    <Reference Include="BeatSaverDownloader">
       <HintPath>..\Refs\BeatSaverDownloader.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BeatSaverVoting">
+      <HintPath>..\Refs\BeatSaverVoting.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="BSML, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>

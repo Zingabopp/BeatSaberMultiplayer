@@ -60,7 +60,7 @@ namespace BeatSaberMultiplayerLite
                 Plugin.log.Debug($"Attempting to load JSON @ {FileLocation.FullName}");
                 _instance = JsonUtility.FromJson<Config>(File.ReadAllText(FileLocation.FullName));
 
-                UpdateServerHubs(_instance);
+                UpdateModVersion(_instance);
 
                 _instance.MarkDirty();
                 _instance.Save();
@@ -91,7 +91,7 @@ namespace BeatSaberMultiplayerLite
             return true;
         }
 
-        public static void UpdateServerHubs(Config _instance)
+        public static void UpdateModVersion(Config _instance)
         {
             SemVer.Version modVersion = IPA.Loader.PluginManager.GetPluginFromId(Plugin.PluginID).Metadata.Version;
             if (string.IsNullOrEmpty(_instance.ModVersion) || new SemVer.Range($">{_instance.ModVersion}", true).IsSatisfied(modVersion))
@@ -141,7 +141,7 @@ namespace BeatSaberMultiplayerLite
                 if (_instance == null)
                 {
                     _instance = new Config();
-                    UpdateServerHubs(_instance);
+                    UpdateModVersion(_instance);
                 }
                 return _instance;
             }

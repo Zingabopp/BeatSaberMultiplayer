@@ -1,9 +1,11 @@
 ﻿using BeatSaberMarkupLanguage;
-using BeatSaberMultiplayerLite.Data;
 using BeatSaberMultiplayerLite.RichPresence;
+using BeatSaberMarkupLanguage.Components;
+using BeatSaberMultiplayerLite.Data;
+using BeatSaberMultiplayerLite.Interop;
 using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen;
-
+using BS_Utils.Utilities;
 using HMUI;
 using Lidgren.Network;
 using System;
@@ -69,9 +71,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 _lastSelectedCollection = value;
 #if DEBUG
                 if (value == null)
-                    Plugin.LogLocation($"LastSelectedCollection set to <NULL>");
+                    Plugin.log.Debug($"LastSelectedCollection set to <NULL>");
                 else
-                    Plugin.LogLocation($"LastSelectedCollection set to {value.collectionName}");
+                    Plugin.log.Debug($"LastSelectedCollection set to {value.collectionName}");
 #endif
             }
         }
@@ -85,7 +87,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     return;
                 _lastSortMode = value;
 #if DEBUG
-                Plugin.LogLocation($"LastSortMode set to {value.ToString()}");
+                Plugin.log.Debug($"LastSortMode set to {value.ToString()}");
 #endif
             }
         }
@@ -100,9 +102,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 _lastSearchRequest = value;
 #if DEBUG
                 if (string.IsNullOrEmpty(value))
-                    Plugin.LogLocation($"LastSearchRequest set to {(value == null ? "<NULL>" : "<Empty>")}");
+                    Plugin.log.Debug($"LastSearchRequest set to {(value == null ? "<NULL>" : "<Empty>")}");
                 else
-                    Plugin.LogLocation($"LastSearchRequest set to {value}");
+                    Plugin.log.Debug($"LastSearchRequest set to {value}");
 #endif
             }
         }
@@ -118,9 +120,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 _lastSelectedSong = value;
 #if DEBUG
                 if (string.IsNullOrEmpty(value))
-                    Plugin.LogLocation($"LastSelectedSong set to {(value == null ? "<NULL>" : "<Empty>")}");
+                    Plugin.log.Debug($"LastSelectedSong set to {(value == null ? "<NULL>" : "<Empty>")}");
                 else
-                    Plugin.LogLocation($"LastSelectedSong set to {value}");
+                    Plugin.log.Debug($"LastSelectedSong set to {value}");
 #endif
             }
         }
@@ -135,7 +137,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     return;
                 _lastScrollPosition = value;
 #if DEBUG
-                    Plugin.LogLocation($"{nameof(LastScrollPosition)} set to {value}");
+                    Plugin.log.Debug($"{nameof(LastScrollPosition)} set to {value}");
 #endif
             }
         }
@@ -233,7 +235,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
             else
             {
-                _roomNavigationController.DisplayError("Unable to join room:\nPassword is required!");
+                DisplayError("Unable to join room:\nPassword is required!");
             }
         }
 
@@ -326,7 +328,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 PreviewPlayer.CrossfadeToDefault();
                 joined = false;
 
-                _roomNavigationController.DisplayError("Lost connection to the ServerHub!");
+                DisplayError("Lost connection to the ServerHub!");
             }
             else if (msg.LengthBytes > 3)
             {
@@ -338,11 +340,11 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 joined = false;
                 LastSelectedSong = "";
 
-                _roomNavigationController.DisplayError(reason);
+                DisplayError(reason);
             }
             else
             {
-                _roomNavigationController.DisplayError("ServerHub refused connection!");
+                DisplayError("ServerHub refused connection!");
             }
         }
 
@@ -385,22 +387,22 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                             break;
                         case 1:
                             {
-                                _roomNavigationController.DisplayError("Unable to join room!\nRoom not found");
+                                DisplayError("Unable to join room!\nRoom not found");
                             }
                             break;
                         case 2:
                             {
-                                _roomNavigationController.DisplayError("Unable to join room!\nIncorrect password");
+                                DisplayError("Unable to join room!\nIncorrect password");
                             }
                             break;
                         case 3:
                             {
-                                _roomNavigationController.DisplayError("Unable to join room!\nToo much players");
+                                DisplayError("Unable to join room!\nToo much players");
                             }
                             break;
                         default:
                             {
-                                _roomNavigationController.DisplayError("Unable to join room!\nUnknown error");
+                                DisplayError("Unable to join room!\nUnknown error");
                             }
                             break;
 
@@ -424,7 +426,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                 roomInfo = new RoomInfo(msg);
 
                                 Client.Instance.playerInfo.updateInfo.playerState = PlayerState.Room;
-
                                 Client.Instance.isHost = Client.Instance.playerInfo.Equals(roomInfo.roomHost);
 
                                 UpdateUI(roomInfo.roomState);
@@ -746,10 +747,10 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 if (scoreSaber != null)
                 {
-                    ScoreSaberInteraction.InitAndSignIn();
+                    ScoreSaberInterop.InitAndSignIn();
                 }
 
-                menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
+                menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings: practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
                 UpdateDiscordActivity(roomInfo);
             }
             else
@@ -760,10 +761,14 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         public void PopAllViewControllers()
         {
-            HideSongsList();
-            HideDifficultySelection();
-            HideInGameLeaderboard();
+            if (_hostLeaveDialog.isInViewControllerHierarchy && !_hostLeaveDialog.GetPrivateField<bool>("_isInTransition"))
+                DismissViewController(_hostLeaveDialog, null, true);
+            if (_passHostDialog.isInViewControllerHierarchy && !_passHostDialog.GetPrivateField<bool>("_isInTransition"))
+                DismissViewController(_passHostDialog, null, true);
             HideResultsLeaderboard();
+            HideInGameLeaderboard();
+            HideDifficultySelection();
+            HideSongsList();
         }
 
         public void ShowSongsList(string lastLevelId = "")
@@ -1365,7 +1370,17 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
         }
 
-        #region Discord rich presence stuff
+        public void DisplayError(string error, bool hideSideScreens = true)
+        {
+            _roomNavigationController.DisplayError(error);
+            if (hideSideScreens)
+            {
+                SetLeftScreenViewController(null);
+                SetRightScreenViewController(null);
+            }
+        }
+
+#region Discord rich presence stuff
         public void UpdateDiscordActivity(RoomInfo roomInfo)
         {
             GameActivityParty partyInfo = new GameActivityParty()
