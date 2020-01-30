@@ -57,10 +57,6 @@ namespace BeatSaberMultiplayerLite
                     Console.WriteLine(frame);
                 }
             }
-            foreach (var frame in frames)
-            {
-                log.Debug(frame.ToString());
-            }
 #endif
         }
         public void Init(IPA.Logging.Logger logger)
