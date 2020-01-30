@@ -13,25 +13,30 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             Plugin.log.Debug($"Applying Harmony patches");
             BindingFlags allBindingFlags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             var harmony = HarmonyInstance.Create(Plugin.HarmonyId);
-            MethodInfo original = typeof(BeatmapObjectSpawnController).GetMethod("HandleNoteWasCut", allBindingFlags);
+            MethodInfo original = typeof(BeatmapObjectSpawnController).GetMethod(nameof(BeatmapObjectSpawnController.HandleNoteWasCut), allBindingFlags);
             HarmonyMethod prefix = new HarmonyMethod(typeof(SpectatorNoteWasCutEventPatch).GetMethod("Prefix", allBindingFlags));
             HarmonyMethod postfix = null;
             ApplyPatch(harmony, original, prefix, postfix);
             
-            original = typeof(BeatmapObjectSpawnController).GetMethod("HandleNoteWasMissed", allBindingFlags);
+            original = typeof(BeatmapObjectSpawnController).GetMethod(nameof(BeatmapObjectSpawnController.HandleNoteWasMissed), allBindingFlags);
             prefix = new HarmonyMethod(typeof(SpectatorNoteWasMissedEventPatch).GetMethod("Prefix", allBindingFlags));
             postfix = null;
             ApplyPatch(harmony, original, prefix, postfix);
 
-            original = typeof(GameEnergyCounter).GetMethod("AddEnergy", allBindingFlags);
+            original = typeof(GameEnergyCounter).GetMethod(nameof(GameEnergyCounter.AddEnergy), allBindingFlags);
             prefix = new HarmonyMethod(typeof(SpectatorGameEnergyCounterPatch).GetMethod("Prefix", allBindingFlags));
             postfix = null;
             ApplyPatch(harmony, original, prefix, postfix);
 
-            original = typeof(PauseController).GetMethod("Pause");
+            original = typeof(PauseController).GetMethod(nameof(PauseController.Pause), allBindingFlags);
             prefix = new HarmonyMethod(typeof(GameplayManagerPausePatch).GetMethod("Prefix", allBindingFlags));
             postfix = null;
             ApplyPatch(harmony, original, prefix, postfix);
+
+            //original = typeof(PauseMenuManager).GetMethod(nameof(PauseMenuManager.ContinueButtonPressed), allBindingFlags);
+            //prefix = new HarmonyMethod(typeof(PauseMenuManagerContinueButtonPressed).GetMethod("Prefix", allBindingFlags));
+            //postfix = null;
+            //ApplyPatch(harmony, original, prefix, postfix);
         }
 
         public static bool ApplyPatch(HarmonyInstance harmony, MethodInfo original, HarmonyMethod prefix = null, HarmonyMethod postfix = null)
@@ -56,7 +61,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
         }
     }
     [HarmonyPatch(typeof(BeatmapObjectSpawnController))]
-    [HarmonyPatch("HandleNoteWasCut")]
+    [HarmonyPatch(nameof(BeatmapObjectSpawnController.HandleNoteWasCut))]
     [HarmonyPatch(new Type[] { typeof(NoteController), typeof(NoteCutInfo) })]
     class SpectatorNoteWasCutEventPatch
     {
@@ -130,7 +135,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
     }
 
     [HarmonyPatch(typeof(BeatmapObjectSpawnController))]
-    [HarmonyPatch("HandleNoteWasMissed")]
+    [HarmonyPatch(nameof(BeatmapObjectSpawnController.HandleNoteWasMissed))]
     [HarmonyPatch(new Type[] { typeof(NoteController) })]
     class SpectatorNoteWasMissedEventPatch
     {
@@ -177,7 +182,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
     }
 
     [HarmonyPatch(typeof(GameEnergyCounter))]
-    [HarmonyPatch("AddEnergy")]
+    [HarmonyPatch(nameof(GameEnergyCounter.AddEnergy))]
     [HarmonyPatch(new Type[] { typeof(float) })]
     class SpectatorGameEnergyCounterPatch
     {
@@ -210,7 +215,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
     }
 
     [HarmonyPatch(typeof(PauseController))]
-    [HarmonyPatch("Pause")]
+    [HarmonyPatch(nameof(PauseController.Pause))]
     class GameplayManagerPausePatch
     {
         static bool Prefix(StandardLevelGameplayManager __instance, PauseMenuManager ____pauseMenuManager)
@@ -231,4 +236,27 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             }
         }
     }
+    //[HarmonyPatch(typeof(PauseMenuManager))]
+    //[HarmonyPatch(nameof(PauseMenuManager.ContinueButtonPressed))]
+    //class PauseMenuManagerContinueButtonPressed
+    //{
+    //    static bool Prefix(PauseMenuManager __instance)
+    //    {
+    //        try
+    //        {
+    //            if (Client.Instance.connected)
+    //            {
+    //                __instance.enabled = false;
+    //                __instance.StartResumeAnimation();
+    //                return false;
+    //            }
+    //            return true;
+    //        }
+    //        catch (Exception e)
+    //        {
+    //            Plugin.log.Error("Exception in Harmony patch PauseMenuManager.ContinueButtonPressed: " + e);
+    //            return true;
+    //        }
+    //    }
+    //}
 }
