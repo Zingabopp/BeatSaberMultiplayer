@@ -1,5 +1,6 @@
-﻿using BeatSaberMultiplayerLite.Misc;
-using BeatSaberMultiplayerLite.UI;
+﻿using BeatSaberMultiplayer.Misc;
+using BeatSaberMultiplayer.OverriddenClasses;
+using BeatSaberMultiplayer.UI;
 using BS_Utils.Gameplay;
 using Harmony;
 using IPA;
@@ -33,8 +34,6 @@ namespace BeatSaberMultiplayerLite
         public static bool IsSteam { get; private set; }
         private static bool joinAfterRestart;
         private static string joinSecret;
-        private static PlayerAvatarInput _playerAvatarInput;
-        public static bool overrideDiscordActivity;
         public static bool DownloaderExists { get; private set; }
 
         public static void LogLocation(string message,
@@ -88,6 +87,15 @@ namespace BeatSaberMultiplayerLite
             catch (Exception e)
             {
                 log.Warn("Unable to load presets! Exception: " + e);
+            }
+
+            try
+            {
+                AvatarsHashCache.Load();
+            }
+            catch (Exception e)
+            {
+                log.Warn("Unable to load avatar hashes! Exception: " + e);
             }
 
             Sprites.ConvertSprites();
