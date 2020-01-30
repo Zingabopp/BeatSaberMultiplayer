@@ -34,6 +34,7 @@
 ""BS_Utils.dll
 ""SongCore.dll
 ""ScoreSaber.dll
+""BeatSaverVoting.dll
 
 ::startopt
 ::from ./bsinstalldir.txt
