@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSaberMultiplayer", "BeatSaberMultiplayer\BeatSaberMultiplayer.csproj", "{19E76954-2EBA-4761-8AD4-1425CC29EC0E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F} = {5F33B310-DC8D-4C0D-877E-BAC3908DE10F}
+		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A} = {E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerHub", "ServerHub\ServerHub.csproj", "{5EB8EED4-4FC1-4ABD-B9E9-0EDB0CAEB7A1}"
 EndProject
@@ -15,6 +19,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollectDependencies", "BS-Plugin-BuildTools\CollectDependencies\CollectDependencies.csproj", "{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyRenameStep", "BS-Plugin-BuildTools\AssemblyRenameStep\AssemblyRenameStep.csproj", "{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F} = {5F33B310-DC8D-4C0D-877E-BAC3908DE10F}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
