@@ -245,7 +245,7 @@ namespace BeatSaberMultiplayerLite.UI
 
             Plugin.log.Info("Checking for updates...");
 
-            UnityWebRequest www = UnityWebRequest.Get($"https://api.github.com/repos/Zingabopp/BeatSaberMultiplayer/releases");
+            UnityWebRequest www = Misc.SongDownloader.GetRequestForUrl($"https://api.github.com/repos/Zingabopp/BeatSaberMultiplayer/releases");
             www.timeout = 10;
 
             yield return www.SendWebRequest();

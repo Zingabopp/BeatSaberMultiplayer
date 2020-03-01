@@ -38,6 +38,14 @@ namespace BeatSaberMultiplayerLite.Misc
 
         private static BeatmapLevelsModel _beatmapLevelsModel;
 
+        public static UnityWebRequest GetRequestForUrl(string url)
+        {
+            UnityWebRequest www = UnityWebRequest.Get(url);
+            www.SetRequestHeader("User-Agent", UserAgent);
+            return www;
+        }
+        public static string UserAgent { get; } = $"{Plugin.PluginID}/{Plugin.PluginVersion}";
+
         public void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -83,8 +91,7 @@ namespace BeatSaberMultiplayerLite.Misc
 
             try
             {
-                www = UnityWebRequest.Get(songInfo.downloadURL);
-                www.SetRequestHeader("User-Agent", $"{Plugin.PluginID}/{Plugin.PluginVersion}");
+                www = GetRequestForUrl(songInfo.downloadURL);
                 asyncRequest = www.SendWebRequest();
             }
             catch (Exception e)
@@ -279,7 +286,7 @@ namespace BeatSaberMultiplayerLite.Misc
         public IEnumerator RequestSongByLevelIDCoroutine(string levelId, Action<Song> callback)
         {
             Plugin.log.Debug($"Requesting song ({levelId.ToLower()}) from Beat Saver");
-            UnityWebRequest wwwId = UnityWebRequest.Get($"{Config.Instance.BeatSaverURL}/api/maps/by-hash/" + levelId.ToLower());
+            UnityWebRequest wwwId = GetRequestForUrl($"{Config.Instance.BeatSaverURL}/api/maps/by-hash/" + levelId.ToLower());
             wwwId.timeout = 10;
 
             yield return wwwId.SendWebRequest();
@@ -311,7 +318,7 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public IEnumerator RequestSongByKeyCoroutine(string key, Action<Song> callback)
         {
-            UnityWebRequest wwwId = UnityWebRequest.Get($"{Config.Instance.BeatSaverURL}/api/maps/detail/" + key.ToLower());
+            UnityWebRequest wwwId = GetRequestForUrl($"{Config.Instance.BeatSaverURL}/api/maps/detail/" + key.ToLower());
             wwwId.timeout = 10;
 
             yield return wwwId.SendWebRequest();
