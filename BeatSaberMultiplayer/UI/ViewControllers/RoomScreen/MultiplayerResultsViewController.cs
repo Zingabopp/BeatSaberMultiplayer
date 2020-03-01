@@ -23,6 +23,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         public IPreviewBeatmapLevel selectedLevel;
 
+#pragma warning disable CS0649
         [UIComponent("level-details-rect")]
         public RectTransform levelDetailsRect;
 
@@ -51,6 +52,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public TextMeshProUGUI scoreChangeValue;
         [UIComponent("score-change-icon")]
         public Image scoreChangeIcon;
+#pragma warning restore CS0649
 
         private List<LeaderboardTableView.ScoreData> _scoreData = new List<LeaderboardTableView.ScoreData>();
 

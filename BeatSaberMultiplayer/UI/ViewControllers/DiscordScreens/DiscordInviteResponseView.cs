@@ -15,10 +15,12 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens
         public IUserInfo user { get; set; }
         public GameActivity activity;
 
+#pragma warning disable CS0649
         [UIComponent("player-avatar")]
         public RawImage playerAvatar;
         [UIComponent("title-text")]
         public TextMeshProUGUI titleText;
+#pragma warning disable CS0649
 
         [UIAction("#post-parse")]
         public void SetupScreen()

@@ -31,7 +31,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public BeatmapCharacteristicSO selectedCharacteristic { get { return _selectedDifficultyBeatmap.parentDifficultyBeatmapSet?.beatmapCharacteristic; } }
 
         public CancellationTokenSource cancellationToken;
-
+#pragma warning disable CS0649
         [UIComponent("diff-selection-view")]
         public RectTransform diffSelectionView;
         [UIComponent("loading-indicator")]
@@ -103,7 +103,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public TextMeshProUGUI maxRankValue;
         [UIComponent("ranking-value")]
         public TextMeshProUGUI rankingValue;
-
+#pragma warning restore CS0649
         private IBeatmapLevel _selectedLevel;
         private List<BeatmapCharacteristicSO> _beatmapCharacteristics = new List<BeatmapCharacteristicSO>();
         private IDifficultyBeatmap _selectedDifficultyBeatmap;

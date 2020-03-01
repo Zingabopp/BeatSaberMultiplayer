@@ -17,8 +17,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
 
         public event Action<RoomPreset> didFinishEvent;
 
+#pragma warning disable CS0649
         [UIComponent("presets-list")]
         public CustomCellListTableData presetsList;
+#pragma warning restore CS0649
 
         [UIValue("presets")]
         public List<object> presetsListContents = new List<object>();
@@ -63,6 +65,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
     {
         public RoomPreset preset;
 
+#pragma warning disable CS0649
         [UIValue("preset-name")]
         private string presetName;
 
@@ -74,6 +77,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
 
         [UIComponent("preset-room-name-text")]
         private TextMeshProUGUI presetRoomNameText;
+#pragma warning restore CS0649
 
         public PresetListObject(RoomPreset preset)
         {

@@ -33,6 +33,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public bool TransferHostButtonInteractable { get { return ParentFlowCoordinator?.PassHostEnabled ?? true; } }
         public GameplayModifiers modifiers { get { return modifiersPanel.gameplayModifiers; } }
 
+#pragma warning disable CS0649
         [UIComponent("ping-text")]
         public TextMeshProUGUI pingText;
 
@@ -49,6 +50,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         [UIComponent("players-list")]
         public CustomCellListTableData playersList;
+#pragma warning restore CS0649
 
         [UIValue("players")]
         List<object> players = new List<object>();
@@ -165,6 +167,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         public class PlayerListObject
         {
+#pragma warning disable CS0649
             [UIComponent("speaker-icon")]
             public Image speakerIcon;
 
@@ -182,6 +185,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
             [UIComponent("player-name")]
             public TextMeshProUGUI playerName;
+#pragma warning restore CS0649
 
             public PlayerInfo playerInfo;
 

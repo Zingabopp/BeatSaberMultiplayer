@@ -29,6 +29,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public event Action<SortMode> SortPressed;
         private ISongDownloader downloader;
 
+#pragma warning disable CS0649
         [UIParams]
         BSMLParserParams _parserParams;
 
@@ -53,6 +54,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         [UIValue("search-value")]
         string searchValue;
+#pragma warning restore CS0649
         private bool _moreSongsAvailable = true;
         [UIValue("more-btn-active")]
         public bool MoreSongsAvailable

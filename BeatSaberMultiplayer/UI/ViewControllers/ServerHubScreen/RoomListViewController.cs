@@ -21,6 +21,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
         public event Action createRoomButtonPressed;
         public event Action<ServerHubRoom, string> selectedRoom;
         public event Action refreshPressed;
+#pragma warning disable CS0649
         [UIParams]
         private BSMLParserParams parserParams;
 
@@ -32,6 +33,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
 
         [UIComponent("password-keyboard")]
         ModalKeyboard _passwordKeyboard;
+#pragma warning restore CS0649
 
         [UIValue("rooms")]
         public List<object> roomInfosList = new List<object>();
@@ -109,6 +111,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
         {
             public ServerHubRoom room;
 
+#pragma warning disable CS0649
             [UIValue("room-name")]
             private string roomName;
 
@@ -124,6 +127,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
 
             [UIComponent("room-state-text")]
             private TextMeshProUGUI roomStateText;
+#pragma warning restore CS0649
 
             public RoomListObject(ServerHubRoom room)
             {

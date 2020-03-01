@@ -19,8 +19,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
         public event Action didFinishEvent;
         public event Action<ServerHubClient> selectedServerHub;
 
+#pragma warning disable CS0649
         [UIComponent("hubs-list")]
         public CustomCellListTableData hubsList;
+#pragma warning restore CS0649
 
         [UIValue("hubs")]
         public List<object> hubInfosList = new List<object>();
@@ -61,6 +63,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
     {
         public ServerHubClient hub;
 
+#pragma warning disable CS0649
         [UIValue("hub-name")]
         private string hubName;
 
@@ -72,6 +75,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
 
         [UIComponent("hub-state-text")]
         private TextMeshProUGUI hubStateText;
+#pragma warning restore CS0649
 
         public ServerHubListObject(ServerHubClient hub)
         {

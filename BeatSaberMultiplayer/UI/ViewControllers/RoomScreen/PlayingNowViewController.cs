@@ -28,6 +28,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public BeatmapDifficulty selectedDifficulty;
         public bool perPlayerDifficulty;
 
+#pragma warning disable CS0649
         [UIComponent("level-details-rect")]
         public RectTransform levelDetailsRect;
 
@@ -56,6 +57,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         [UIComponent("play-now-button")]
         public Button playNowButton;
+#pragma warning restore CS0649
         public Glowable playNowButtonGlow;
 
         private List<LeaderboardTableView.ScoreData> _scoreData = new List<LeaderboardTableView.ScoreData>();

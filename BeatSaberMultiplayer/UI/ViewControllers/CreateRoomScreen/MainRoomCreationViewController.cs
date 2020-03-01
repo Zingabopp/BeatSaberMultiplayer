@@ -22,6 +22,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
 
         private string _presetName;
 
+#pragma warning disable CS0649
         [UIParams]
         private BSMLParserParams parserParams;
 
@@ -51,6 +52,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
         private StringSetting _roomNameKeyboard;
         [UIComponent("password-keyboard")]
         private StringSetting _passwordKeyboard;
+#pragma warning restore CS0649
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
