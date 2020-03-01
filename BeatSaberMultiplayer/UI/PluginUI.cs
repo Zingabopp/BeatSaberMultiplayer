@@ -10,7 +10,7 @@ using BS_Utils.Utilities;
 
 using HMUI;
 using Polyglot;
-using SimpleJSON;
+using BeatSaberMultiplayerLite.Misc.SimpleJSON;
 using System;
 using System.Collections;
 using System.Collections.Generic;
