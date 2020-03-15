@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <BeatSaberRefs>.\Refs</BeatSaberRefs>
     <BeatSaberDir>.\Refs</BeatSaberDir>
     <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
     <PathMap>$(AppOutputBase)=X:\$(AssemblyName)\</PathMap>
@@ -204,13 +205,19 @@
     <EmbeddedResource Include="Assets\DoubleArrowIcon.png" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\Refs\0Harmony.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Colors">
+      <HintPath>..\Refs\Colors.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\DiscordCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="0Harmony.1.2.0.1">
-      <HintPath>..\Refs\0Harmony.1.2.0.1.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BeatSaverDownloader">
@@ -250,10 +257,10 @@
       <HintPath>..\Refs\Lidgren.Network.2012.1.7.0.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MainAssembly, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\MainAssembly.dll</HintPath>
+    <Reference Include="Main">
+      <HintPath>..\Refs\Main.dll</HintPath>
       <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Newtonsoft.Json.12.0.0.0">
       <HintPath>..\Refs\Newtonsoft.Json.12.0.0.0.dll</HintPath>
@@ -268,10 +275,10 @@
       <HintPath>..\Refs\Oculus.VR.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Polyglot.Scripts, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\Polyglot.Scripts.dll</HintPath>
+    <Reference Include="Polyglot">
+      <HintPath>..\Refs\Polyglot.dll</HintPath>
       <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="RumbleEnhancer">
       <HintPath>..\Refs\RumbleEnhancer.dll</HintPath>
@@ -297,7 +304,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Steamworks.NET">
-      <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\Steamworks.NET.dll</HintPath>
+      <HintPath>..\Refs\Steamworks.NET.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -329,6 +336,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\Refs\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -372,4 +384,9 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties manifest_1json__JsonSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -1,16 +1,20 @@
 ::from ./bsinstalldir.txt
 "Beat Saber_Data/
 ""Managed/
-"""HMUI.dll
-"""HMLib.dll
+"""Main.dll?virt
+"""HMUI.dll?virt
+"""HMLib.dll?virt
+"""Colors.dll
+"""Polyglot.dll
 """SteamVR.dll
+"""Steamworks.NET.dll
 """Oculus.VR.dll
-"""Polyglot.Scripts.dll
 """Zenject.dll
 """Unity.TextMeshPro.dll
 """UnityEngine.
 """"dll
 """"AudioModule.dll
+""""InputLegacyModule.dll
 """"UnityWebRequestModule.dll
 """"CoreModule.dll
 """"AssetBundleModule.dll
@@ -23,22 +27,21 @@
 """IPA.
 """"Loader.dll
 "Libs/
-""0Harmony.1.2.0.1.dll
+""0Harmony.dll
 ""Lidgren.Network.2012.1.7.0.dll
 ""Newtonsoft.Json.12.0.0.0.dll
 ""NSpeex.1.1.1.0.dll
 ""SemVer.1.2.0.0.dll
 "Plugins/
-""BeatSaverDownloader.dll
 ""BSML.dll
 ""BS_Utils.dll
 ""SongCore.dll
-""ScoreSaber.dll
-""BeatSaverVoting.dll
 
 ::startopt
 ::from ./bsinstalldir.txt
-"Beat Saber_Data/
-""Managed/
-"""MainAssembly.dll?virt
+"Plugins/
+""BeatSaverDownloader.dll
+""ScoreSaber.dll
+""BeatSaverVoting.dll
+""DiscordCore.dll
 ::endopt
