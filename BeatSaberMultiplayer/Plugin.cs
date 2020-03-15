@@ -2,7 +2,6 @@
 using BeatSaberMultiplayerLite.OverriddenClasses;
 using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
-using Harmony;
 using IPA;
 using System;
 using System.Collections.Generic;
@@ -19,9 +18,10 @@ using System.Diagnostics;
 using System.IO;
 #endif
 
+[Plugin(RuntimeOptions.SingleStartInit)]
 namespace BeatSaberMultiplayerLite
 {
-    public class Plugin : IBeatSaberPlugin
+    public class Plugin
     {
         public static readonly string PluginID = "BeatSaberMultiplayerLite";
         public static readonly string PluginName = "Beat Saber Multiplayer Lite";

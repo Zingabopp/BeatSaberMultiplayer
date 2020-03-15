@@ -7,9 +7,8 @@ using BeatSaberMultiplayerLite.UI.FlowCoordinators;
 using BeatSaberMultiplayerLite.UI.ViewControllers.DiscordScreens;
 using BS_Utils.Gameplay;
 using BS_Utils.Utilities;
-
-using HMUI;
 using Polyglot;
+using HMUI;
 using BeatSaberMultiplayerLite.Misc.SimpleJSON;
 using System;
 using System.Collections;

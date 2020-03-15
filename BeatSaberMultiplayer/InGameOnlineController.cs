@@ -909,7 +909,7 @@ namespace BeatSaberMultiplayerLite
 
             SoloFreePlayFlowCoordinator freePlayCoordinator = Resources.FindObjectsOfTypeAll<SoloFreePlayFlowCoordinator>().First();
 
-            PlayerDataModelSO dataModel = freePlayCoordinator.GetPrivateField<PlayerDataModelSO>("_playerDataModel");
+            PlayerDataModel dataModel = freePlayCoordinator.GetPrivateField<PlayerDataModel>("_playerDataModel");
 
             var playerLevelStats = dataModel.playerData.GetPlayerLevelStatsData(difficultyBeatmap);
 

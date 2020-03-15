@@ -1,5 +1,5 @@
 ﻿using BeatSaberMultiplayerLite.Data;
-using Harmony;
+using HarmonyLib;
 using IPA.Utilities;
 using System;
 using System.Reflection;
@@ -8,11 +8,13 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
     public static class HarmonyPatcher
     {
+        internal static Harmony harmony;
         public static void PatchAll()
         {
             Plugin.log.Debug($"Applying Harmony patches");
             BindingFlags allBindingFlags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            var harmony = HarmonyInstance.Create(Plugin.HarmonyId);
+            if(harmony == null)
+              harmony = new Harmony(Plugin.HarmonyId);
             MethodInfo original = typeof(BeatmapObjectSpawnController).GetMethod(nameof(BeatmapObjectSpawnController.HandleNoteWasCut), allBindingFlags);
             HarmonyMethod prefix = new HarmonyMethod(typeof(SpectatorNoteWasCutEventPatch).GetMethod("Prefix", allBindingFlags));
             HarmonyMethod postfix = null;
@@ -39,7 +41,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             //ApplyPatch(harmony, original, prefix, postfix);
         }
 
-        public static bool ApplyPatch(HarmonyInstance harmony, MethodInfo original, HarmonyMethod prefix = null, HarmonyMethod postfix = null)
+        public static bool ApplyPatch(Harmony harmony, MethodInfo original, HarmonyMethod prefix = null, HarmonyMethod postfix = null)
         {
             try
             {
@@ -100,10 +102,10 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                                 Plugin.log.Warn("We cut the note, but the player cut it wrong");
 #endif
 
-                                    noteCutInfo.SetPrivateProperty("wasCutTooSoon", hit.wasCutTooSoon);
-                                    noteCutInfo.SetPrivateProperty("directionOK", hit.directionOK);
-                                    noteCutInfo.SetPrivateProperty("saberTypeOK", hit.saberTypeOK);
-                                    noteCutInfo.SetPrivateProperty("speedOK", hit.speedOK);
+                                    noteCutInfo.SetProperty("wasCutTooSoon", hit.wasCutTooSoon);
+                                    noteCutInfo.SetProperty("directionOK", hit.directionOK);
+                                    noteCutInfo.SetProperty("saberTypeOK", hit.saberTypeOK);
+                                    noteCutInfo.SetProperty("speedOK", hit.speedOK);
 
                                     return true;
                                 }

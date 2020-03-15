@@ -97,6 +97,35 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             (this as BeatmapObjectSpawnController).noteWasCutEvent += (sender, controller, cutInfo) => { if(cutInfo.allIsOK) cutEffectSpawner.HandleNoteWasCutEvent(sender, controller, cutInfo); };
         }
 
+        public override void SpawnObstacle(ObstacleData obstacleData)
+        {
+            if (_disableSpawning)
+            {
+                return;
+            }
+            float num = _moveDistance / _moveSpeed;
+            float num2 = _jumpDistance / _noteJumpMovementSpeed;
+            Vector3 forward = transform.forward;
+            Vector3 a = transform.position;
+            a += forward * (_moveDistance + _jumpDistance * 0.5f);
+            Vector3 a2 = a - forward * _moveDistance;
+            Vector3 a3 = a - forward * (_moveDistance + _jumpDistance);
+            Vector3 noteOffset = GetNoteOffset(beatmapObjectData.lineIndex, NoteLineLayer.Base);
+            noteOffset.y = ((obstacleData.obstacleType == ObstacleType.Top) ? (_topObstaclePosY + _globalJumpOffsetY) : _verticalObstaclePosY);
+            float height = (obstacleData.obstacleType == ObstacleType.Top) ? _topObstacleHeight : _verticalObstacleHeight;
+            ObstacleController obstacleController = _obstaclePool.Spawn();
+            SetObstacleEventCallbacks(obstacleController);
+            obstacleController.transform.SetPositionAndRotation(a + noteOffset, Quaternion.identity);
+            obstacleController.Init(obstacleData, _spawnRotationProcesser.rotation, a + noteOffset, a2 + noteOffset, a3 + noteOffset, num, num2, beatmapObjectData.time - _spawnAheadTime, _noteLinesDistance, height);
+            obstacleController.SetPrivateField("_playerController", owner);
+            obstacleController.SetPrivateField("_audioTimeSyncController", onlineSyncController);
+            obstacleController.finishedMovementEvent += ResetControllers;
+            obstacleController.didDissolveEvent += ResetControllers;
+            _activeObstacles.Add(obstacleController);
+
+            this.GetPrivateField<Action<BeatmapObjectSpawnController, ObstacleController>>("obstacleDiStartMovementEvent")?.Invoke(this, obstacleController);
+        }
+
         public override void SpawnBeatmapObject(BeatmapObjectData beatmapObjectData)
         {
             if (_disableSpawning)
