@@ -43,16 +43,6 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
 
         public override void LateUpdate()
         {
-            if (this._firstLateUpdate)
-            {
-                this._firstLateUpdate = false;
-                return;
-            }
-			if (_firstLateUpdate)
-			{
-				_firstLateUpdate = false;
-				return;
-			}
 			if (_beatmapData == null)
 			{
 				return;

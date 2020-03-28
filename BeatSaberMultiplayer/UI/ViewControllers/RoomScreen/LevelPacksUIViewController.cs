@@ -70,7 +70,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
             List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
             levelPacksAndPlaylists.AddRange(_beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks);
-            var playlistViewControllers = Resources.FindObjectsOfTypeAll<PlaylistsViewController>();
+            var playlistViewControllers = Resources.FindObjectsOfTypeAll<AnnotatedBeatmapLevelCollectionsViewController>();
             var playlistController = playlistViewControllers?.FirstOrDefault();
             if (playlistController != null)
             {

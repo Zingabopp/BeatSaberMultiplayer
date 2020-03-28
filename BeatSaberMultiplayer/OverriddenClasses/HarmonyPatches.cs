@@ -15,12 +15,12 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             BindingFlags allBindingFlags = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             if(harmony == null)
               harmony = new Harmony(Plugin.HarmonyId);
-            MethodInfo original = typeof(BeatmapObjectSpawnController).GetMethod(nameof(BeatmapObjectSpawnController.HandleNoteWasCut), allBindingFlags);
+            MethodInfo original = typeof(BeatmapObjectManager).GetMethod(nameof(BeatmapObjectManager.HandleNoteWasCut), allBindingFlags);
             HarmonyMethod prefix = new HarmonyMethod(typeof(SpectatorNoteWasCutEventPatch).GetMethod("Prefix", allBindingFlags));
             HarmonyMethod postfix = null;
             ApplyPatch(harmony, original, prefix, postfix);
             
-            original = typeof(BeatmapObjectSpawnController).GetMethod(nameof(BeatmapObjectSpawnController.HandleNoteWasMissed), allBindingFlags);
+            original = typeof(BeatmapObjectManager).GetMethod(nameof(BeatmapObjectManager.HandleNoteWasMissed), allBindingFlags);
             prefix = new HarmonyMethod(typeof(SpectatorNoteWasMissedEventPatch).GetMethod("Prefix", allBindingFlags));
             postfix = null;
             ApplyPatch(harmony, original, prefix, postfix);
@@ -62,12 +62,12 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             }
         }
     }
-    [HarmonyPatch(typeof(BeatmapObjectSpawnController))]
-    [HarmonyPatch(nameof(BeatmapObjectSpawnController.HandleNoteWasCut))]
+    [HarmonyPatch(typeof(BeatmapObjectManager))]
+    [HarmonyPatch(nameof(BeatmapObjectManager.HandleNoteWasCut))]
     [HarmonyPatch(new Type[] { typeof(NoteController), typeof(NoteCutInfo) })]
     class SpectatorNoteWasCutEventPatch
     {
-        static bool Prefix(BeatmapObjectSpawnController __instance, NoteController noteController, NoteCutInfo noteCutInfo)
+        static bool Prefix(BeatmapObjectManager __instance, NoteController noteController, NoteCutInfo noteCutInfo)
         {
             try
             {
@@ -136,12 +136,12 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
         }
     }
 
-    [HarmonyPatch(typeof(BeatmapObjectSpawnController))]
-    [HarmonyPatch(nameof(BeatmapObjectSpawnController.HandleNoteWasMissed))]
+    [HarmonyPatch(typeof(BeatmapObjectManager))]
+    [HarmonyPatch(nameof(BeatmapObjectManager.HandleNoteWasMissed))]
     [HarmonyPatch(new Type[] { typeof(NoteController) })]
     class SpectatorNoteWasMissedEventPatch
     {
-        static bool Prefix(BeatmapObjectSpawnController __instance, NoteController noteController)
+        static bool Prefix(BeatmapObjectManager __instance, NoteController noteController)
         {
             try
             {

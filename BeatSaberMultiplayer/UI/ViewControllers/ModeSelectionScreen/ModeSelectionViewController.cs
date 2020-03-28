@@ -90,7 +90,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
                     _avatarsLoadingRect.gameObject.SetActive(false);
                 try
                 {
-                    var pluginVersion = IPA.Loader.PluginManager.GetPluginFromId(Plugin.PluginID).Metadata.Version.ToString();
+                    var pluginVersion = Plugin.PluginMetadata.Version.ToString();
                     var pluginBuild = pluginVersion.Substring(pluginVersion.LastIndexOf('.') + 1);
 
                     _versionText.text = $"v{pluginVersion}{(!int.TryParse(pluginBuild, out var buildNumber) ? " <color=red>(UNSTABLE)</color>" : "")}";

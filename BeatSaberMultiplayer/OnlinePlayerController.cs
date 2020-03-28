@@ -7,6 +7,7 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Xft;
 
 namespace BeatSaberMultiplayerLite
 {
@@ -19,7 +20,7 @@ namespace BeatSaberMultiplayerLite
         public AudioSource voipSource;
 
         public OnlineBeatmapCallbackController beatmapCallbackController;
-        public OnlineBeatmapSpawnController beatmapSpawnController;
+        //public OnlineBeatmapSpawnController beatmapSpawnController;
         public OnlineAudioTimeController audioTimeController;
 
         public Vector3 avatarOffset { get; set; }
@@ -76,12 +77,13 @@ namespace BeatSaberMultiplayerLite
             audioTimeController.Init(this);
             Plugin.log.Debug("Initialized audio time controller!");
 
-            beatmapSpawnController = new GameObject("OnlineBeatmapSpawnController").AddComponent<OnlineBeatmapSpawnController>();
-            Plugin.log.Debug("Created beatmap spawn controller!");
-            beatmapSpawnController.Init(this, beatmapCallbackController, audioTimeController);
-            Plugin.log.Debug("Initialized beatmap spawn controller!");
+            //beatmapSpawnController = new GameObject("OnlineBeatmapSpawnController").AddComponent<OnlineBeatmapSpawnController>();
+            //Plugin.log.Debug("Created beatmap spawn controller!");
+            //beatmapSpawnController.Init(this, beatmapCallbackController, audioTimeController);
+            //Plugin.log.Debug("Initialized beatmap spawn controller!");
         }
 
+        [Obsolete("XWeaponTrail doesn't have these private fields.")]
         void SpawnSabers()
         {
             Plugin.log.Debug("Spawning left saber...");
@@ -99,7 +101,7 @@ namespace BeatSaberMultiplayerLite
             leftController.owner = this;
             _leftSaber.SetPrivateField("_vrController", leftController);
 
-            var leftTrail = leftController.GetComponentInChildren<SaberWeaponTrail>();
+            var leftTrail = leftController.GetComponentInChildren<XWeaponTrail>();
             var colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().First();
             leftTrail.SetPrivateField("_colorManager", colorManager);
             leftTrail.SetPrivateField("_saberTypeObject", leftController.GetComponentInChildren<SaberTypeObject>());
@@ -119,7 +121,7 @@ namespace BeatSaberMultiplayerLite
             rightController.owner = this;
             _rightSaber.SetPrivateField("_vrController", rightController);
 
-            var rightTrail = rightController.GetComponentInChildren<SaberWeaponTrail>();
+            var rightTrail = rightController.GetComponentInChildren<XWeaponTrail>();
             rightTrail.SetPrivateField("_colorManager", colorManager);
             rightTrail.SetPrivateField("_saberTypeObject", rightController.GetComponentInChildren<SaberTypeObject>());
             
@@ -132,23 +134,23 @@ namespace BeatSaberMultiplayerLite
             _rightSaber = rightSaber;
         }
 
-        public void SetBlocksState(bool active)
-        {
-            if(active && !playerInfo.updateInfo.playerLevelOptions.characteristicName.ToLower().Contains("degree") && beatmapCallbackController == null && audioTimeController == null && beatmapSpawnController == null && _leftSaber == null && _rightSaber == null)
-            {
-                SpawnBeatmapControllers();
-                SpawnSabers();
-            }
-            else if (!active && beatmapCallbackController != null && audioTimeController != null && beatmapSpawnController != null && _leftSaber != null && _rightSaber != null)
-            {
-                Destroy(beatmapCallbackController.gameObject);
-                Destroy(audioTimeController.gameObject);
-                Destroy(_leftSaber.gameObject);
-                Destroy(_rightSaber.gameObject);
-                beatmapSpawnController.PrepareForDestroy();
-                Destroy(beatmapSpawnController.gameObject, 1.4f);
-            }
-        }
+        //public void SetBlocksState(bool active)
+        //{
+        //    if(active && !playerInfo.updateInfo.playerLevelOptions.characteristicName.ToLower().Contains("degree") && beatmapCallbackController == null && audioTimeController == null && beatmapSpawnController == null && _leftSaber == null && _rightSaber == null)
+        //    {
+        //        SpawnBeatmapControllers();
+        //        SpawnSabers();
+        //    }
+        //    else if (!active && beatmapCallbackController != null && audioTimeController != null && beatmapSpawnController != null && _leftSaber != null && _rightSaber != null)
+        //    {
+        //        Destroy(beatmapCallbackController.gameObject);
+        //        Destroy(audioTimeController.gameObject);
+        //        Destroy(_leftSaber.gameObject);
+        //        Destroy(_rightSaber.gameObject);
+        //        beatmapSpawnController.PrepareForDestroy();
+        //        Destroy(beatmapSpawnController.gameObject, 1.4f);
+        //    }
+        //}
 
         public override void Update()
         {
@@ -242,12 +244,12 @@ namespace BeatSaberMultiplayerLite
                 PlayerInfoReceiver.DestroyReceiver();
             }
 
-            if (beatmapCallbackController != null && beatmapSpawnController != null && audioTimeController != null)
+            if (beatmapCallbackController != null && audioTimeController != null) // && beatmapSpawnController != null
             {
                 Destroy(beatmapCallbackController.gameObject, 2f);
                 Destroy(audioTimeController.gameObject, 2f);
-                Destroy(beatmapSpawnController.gameObject, 2f);
-                beatmapSpawnController.PrepareForDestroy();
+                //Destroy(beatmapSpawnController.gameObject, 2f);
+                //beatmapSpawnController.PrepareForDestroy();
             }
         }
 

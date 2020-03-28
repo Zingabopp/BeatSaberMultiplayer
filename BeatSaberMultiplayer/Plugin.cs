@@ -13,14 +13,15 @@ using UnityEngine.SceneManagement;
 using BeatSaberMultiplayerLite.RichPresence;
 using System.Globalization;
 using System.IO;
+using IPA.Loader;
 #if DEBUG
 using System.Diagnostics;
 using System.IO;
 #endif
 
-[Plugin(RuntimeOptions.SingleStartInit)]
 namespace BeatSaberMultiplayerLite
 {
+    [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
         public static readonly string PluginID = "BeatSaberMultiplayerLite";
@@ -28,6 +29,7 @@ namespace BeatSaberMultiplayerLite
         public static readonly string HarmonyId = "com.Zingabopp.BeatSaberMultiplayerLite";
         public static string PluginVersion { get; private set; }
         public static Version ClientCompatibilityVersion = new Version(0, 7, 1, 0);
+        internal static PluginMetadata PluginMetadata;
         public static Plugin instance;
         public static IPA.Logging.Logger log;
         public static PresenceManager PresenceManager { get; private set; }
@@ -59,9 +61,10 @@ namespace BeatSaberMultiplayerLite
             }
 #endif
         }
-        public void Init(IPA.Logging.Logger logger)
+        public void Init(IPA.Logging.Logger logger, PluginMetadata pluginMetadata)
         {
             log = logger;
+            PluginMetadata = pluginMetadata;
             _playerPosition = new PlayerPosition();
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";

@@ -93,7 +93,7 @@ namespace BeatSaberMultiplayerLite
 
         public static void UpdateModVersion(Config _instance)
         {
-            SemVer.Version modVersion = IPA.Loader.PluginManager.GetPluginFromId(Plugin.PluginID).Metadata.Version;
+            SemVer.Version modVersion = Plugin.PluginMetadata.Version;
             if (string.IsNullOrEmpty(_instance.ModVersion) || new SemVer.Range($">{_instance.ModVersion}", true).IsSatisfied(modVersion))
             {
                 List<string> newVersions = null;

@@ -251,13 +251,13 @@ namespace BeatSaberMultiplayerLite
             
             audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
 
-            _leftSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == Saber.SaberType.SaberB);
-            _leftController = _leftSaber.GetPrivateField<VRController>("_vrController").gameObject.AddComponent<OnlineVRController>();
-            _leftSaber.SetPrivateField("_vrController", _leftController);
+            _leftSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == SaberType.SaberB);
+            _leftController = _leftSaber.GetField<VRController, Saber>("_vrController").gameObject.AddComponent<OnlineVRController>();
+            _leftSaber.SetField("_vrController", _leftController);
 
-            _rightSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == Saber.SaberType.SaberA);
-            _rightController = _rightSaber.GetPrivateField<VRController>("_vrController").gameObject.AddComponent<OnlineVRController>();
-            _rightSaber.SetPrivateField("_vrController", _rightController);
+            _rightSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == SaberType.SaberA);
+            _rightController = _rightSaber.GetField<VRController, Saber>("_vrController").gameObject.AddComponent<OnlineVRController>();
+            _rightSaber.SetField("_vrController", _rightController);
 
             Plugin.log.Info("Controllers replaced!");
 
@@ -567,14 +567,14 @@ namespace BeatSaberMultiplayerLite
 
                     if (_scoreController != null)
                     {
-                        _scoreController.SetPrivateField("_prevFrameRawScore", (int)lerpFrom.playerScore);
-                        _scoreController.SetPrivateField("_baseRawScore", (int)lerpTo.playerScore);
-                        _scoreController.SetPrivateField("_combo", (int)lerpTo.playerComboBlocks);
+                        _scoreController.SetField("_prevFrameRawScore", (int)lerpFrom.playerScore);
+                        _scoreController.SetField("_baseRawScore", (int)lerpTo.playerScore);
+                        _scoreController.SetField("_combo", (int)lerpTo.playerComboBlocks);
                     }
 
                     if(_energyCounter != null)
                     {
-                        _energyCounter.SetPrivateProperty("energy", lerpTo.playerEnergy / 100f);
+                        _energyCounter.SetProperty("energy", lerpTo.playerEnergy / 100f);
                     }
 
                 }
@@ -587,7 +587,7 @@ namespace BeatSaberMultiplayerLite
 
             foreach(Type type in typesToReplace)
             {
-                Resources.FindObjectsOfTypeAll(type).ToList().ForEach(x => x.SetPrivateField("_playerController", newPlayerController));
+                Resources.FindObjectsOfTypeAll(type).ToList().ForEach(x => x.SetField("_playerController", newPlayerController));
             }
         }
 

@@ -253,22 +253,25 @@
       <HintPath>..\Refs\IPA.Loader.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Lidgren.Network.2012.1.7.0">
-      <HintPath>..\Refs\Lidgren.Network.2012.1.7.0.dll</HintPath>
+    <Reference Include="Lidgren.Network">
+      <HintPath>$(BeatSaberDir)\Libs\Lidgren.Network.dll</HintPath>
       <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Main">
       <HintPath>..\Refs\Main.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Newtonsoft.Json.12.0.0.0">
-      <HintPath>..\Refs\Newtonsoft.Json.12.0.0.0.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="NSpeex.1.1.1.0">
-      <HintPath>..\Refs\NSpeex.1.1.1.0.dll</HintPath>
+    <Reference Include="NSpeex">
+      <HintPath>$(BeatSaberDir)\Libs\NSpeex.dll</HintPath>
       <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Oculus.VR, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -289,9 +292,10 @@
       <Private>False</Private>
       <Aliases>ScoreSaberGlobal</Aliases>
     </Reference>
-    <Reference Include="SemVer.1.2.0.0">
-      <HintPath>..\Refs\SemVer.1.2.0.0.dll</HintPath>
+    <Reference Include="SemVer">
+      <HintPath>$(BeatSaberDir)\Libs\SemVer.dll</HintPath>
       <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="SongCore, Version=2.7.4.0, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\Refs\SongCore.dll</HintPath>
