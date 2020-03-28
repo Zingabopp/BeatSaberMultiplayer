@@ -2,6 +2,7 @@
 using BeatSaberMarkupLanguage.ViewControllers;
 using BeatSaberMultiplayerLite.Misc;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -17,9 +18,11 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
         public event Action didSelectRadio;
         public event Action didFinishEvent;
 
-        private string[] _dllPaths = new[] { @"Libs\Lidgren.Network.2012.1.7.0.dll", @"Libs\NSpeex.1.1.1.0.dll" };
+        private string[] _dllPaths = new[] { @"Libs\Lidgren.Network.dll", @"Libs\NSpeex.dll" };
         private bool _filesMising;
-        private string _missingFilesString = "Missing DLL files:";
+
+        [UIValue("MissingFilesString")]
+        public string MissingFilesString { get; private set; }
 
 
 #pragma warning disable CS0649
@@ -53,13 +56,13 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
             if (firstActivation)
             {
                 _radioButton.interactable = false;
-
+                List<string> missingFiles = new List<string>();
                 foreach (string path in _dllPaths)
                 {
                     if (!File.Exists(path))
                     {
                         _filesMising = true;
-                        _missingFilesString += "\n" + path;
+                        missingFiles.Add(path);
                     }
                 }
 
@@ -67,6 +70,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
 
                 if (_filesMising)
                 {
+                    _missingFilesText.text = $"Missing files: {string.Join(", ", missingFiles)}";
+                    Plugin.log.Error($"Missing critical files for Multiplayer: {string.Join(", ", missingFiles)}");
                     _missingFilesRect.gameObject.SetActive(true);
                     _buttonsRect.gameObject.SetActive(false);
                 }

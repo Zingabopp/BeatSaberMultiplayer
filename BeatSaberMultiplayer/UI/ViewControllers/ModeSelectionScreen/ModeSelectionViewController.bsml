@@ -15,7 +15,7 @@
   </vertical>
 
   <horizontal id='missing-files-rect'>
-    <text id='missing-files-text' font-size='6.0' align='Center' text='Missing files:' />
+    <text id='missing-files-text' font-size='6.0' align='Center' text='~MissingFilesString' />
   </horizontal>
 
   <horizontal pad='4' vertical-fit='Unconstrained'>
