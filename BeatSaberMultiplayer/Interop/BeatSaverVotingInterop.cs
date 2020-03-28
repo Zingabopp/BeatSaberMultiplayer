@@ -1,7 +1,8 @@
 ﻿using BeatSaberMarkupLanguage;
-using BeatSaberMultiplayerLite.IPAUtilities;
 using BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen;
 using BeatSaverVoting.UI;
+using IPA.Utilities;
+using IPA.Loader;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,39 +13,39 @@ using UnityEngine;
 
 namespace BeatSaberMultiplayerLite.Interop
 {
-    internal static class BeatSaverVotingInterop
+    internal class BeatSaverVotingInterop : IVotingInterop
     {
+        //private FieldAccessor<VotingUI, Transform>.Accessor UpButton;
+        //private FieldAccessor<VotingUI, Transform>.Accessor DownButton;
+        //private FieldAccessor<VotingUI, IBeatmapLevel>.Accessor LastSong;
 
-        private static FieldAccessor<VotingUI, Transform>.Accessor UpButton;
-        private static FieldAccessor<VotingUI, Transform>.Accessor DownButton;
-        private static FieldAccessor<VotingUI, IBeatmapLevel>.Accessor LastSong;
+        private object votingInstance;
+        private RectTransform votingUIHost;
 
-        private static VotingUI instance;
-        private static RectTransform votingUIHost;
+        public BeatSaverVotingInterop()
+        {
+            //UpButton = FieldAccessor<VotingUI, Transform>.GetAccessor("upButton");
+            //DownButton = FieldAccessor<VotingUI, Transform>.GetAccessor("downButton");
+            //LastSong = FieldAccessor<VotingUI, IBeatmapLevel>.GetAccessor("_lastSong");
+        }
 
-        public static void Setup(MultiplayerResultsViewController resultsView, IBeatmapLevel level)
+        public void Setup(MultiplayerResultsViewController resultsView, IBeatmapLevel level)
         {
             if (!resultsView) return;
-
-            if (instance == null)
+            VotingUI voting = votingInstance as VotingUI;
+            if (voting == null)
             {
                 Plugin.log.Debug("Setting up BeatSaverVoting interop...");
 
                 var modInfo = IPA.Loader.PluginManager.GetPluginFromId("BeatSaverVoting");
 
-                Plugin.log.Debug("Found BeatSaverVoting plugin!");
-
                 if (modInfo == null) return;
 
-                UpButton = FieldAccessor<VotingUI, Transform>.GetAccessor("upButton");
-                DownButton = FieldAccessor<VotingUI, Transform>.GetAccessor("downButton");
-                LastSong = FieldAccessor<VotingUI, IBeatmapLevel>.GetAccessor("_lastSong");
-
-                Plugin.log.Debug("Got accessors");
+                Plugin.log.Debug("Found BeatSaverVoting plugin!");
 
                 Assembly votingAssembly = modInfo.Assembly;
-
-                instance = VotingUI.instance;
+                voting = VotingUI.instance;
+                votingInstance = voting;
 
                 votingUIHost = new GameObject("VotingUIHost").AddComponent<RectTransform>();
                 votingUIHost.SetParent(resultsView.transform, false);
@@ -53,12 +54,13 @@ namespace BeatSaberMultiplayerLite.Interop
                 votingUIHost.sizeDelta = Vector2.zero;
                 votingUIHost.anchoredPosition = new Vector2(2.25f, -6f);
 
-                BSMLParser.instance.Parse(Utilities.GetResourceContent(votingAssembly, "BeatSaverVoting.UI.votingUI.bsml"), votingUIHost.gameObject, instance);
+                BSMLParser.instance.Parse(Utilities.GetResourceContent(votingAssembly, "BeatSaverVoting.UI.votingUI.bsml"), votingUIHost.gameObject, votingInstance);
 
                 Plugin.log.Debug("Created UI");
 
-                UnityEngine.UI.Image upArrow = UpButton(ref instance).transform.Find("Arrow")?.GetComponent<UnityEngine.UI.Image>();
-                UnityEngine.UI.Image downArrow = DownButton(ref instance).transform.Find("Arrow")?.GetComponent<UnityEngine.UI.Image>();
+
+                UnityEngine.UI.Image upArrow = voting.GetField<Transform, VotingUI>("upButton").transform.Find("Arrow")?.GetComponent<UnityEngine.UI.Image>();
+                UnityEngine.UI.Image downArrow = voting.GetField<Transform, VotingUI>("downButton").transform.Find("Arrow")?.GetComponent<UnityEngine.UI.Image>();
                 if (upArrow != null && downArrow != null)
                 {
                     upArrow.color = new Color(0.341f, 0.839f, 0.341f);
@@ -69,17 +71,18 @@ namespace BeatSaberMultiplayerLite.Interop
             {
                 votingUIHost.gameObject.SetActive(true);
             }
+            if (voting != null)
+            {
+                voting.SetField("_lastSong", level);
 
-            LastSong(ref instance) = level;
+                Plugin.log.Debug("Calling GetVotesForMap...");
+                voting.InvokeMethod<object, VotingUI>("GetVotesForMap", new object[0]);
 
-            Plugin.log.Debug("Calling GetVotesForMap...");
-
-            instance.InvokeMethod("GetVotesForMap", new object[0]);
-
-            Plugin.log.Debug("Called GetVotesForMap!");
+                Plugin.log.Debug("Called GetVotesForMap!");
+            }
         }
 
-        public static void Hide()
+        public void Hide()
         {
             if(votingUIHost != null)
                 votingUIHost.gameObject.SetActive(false);

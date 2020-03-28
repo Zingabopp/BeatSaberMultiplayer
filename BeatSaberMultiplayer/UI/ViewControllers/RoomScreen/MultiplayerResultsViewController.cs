@@ -22,6 +22,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
         public IPreviewBeatmapLevel selectedLevel;
+        public IVotingInterop voting;
 
 #pragma warning disable CS0649
         [UIComponent("level-details-rect")]
@@ -82,6 +83,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
             if (selectedLevel != null)
                 SetContent(selectedLevel);
+            if (PluginManager.GetPluginFromId("BeatSaverVoting") != null)
+                voting = new BeatSaverVotingInterop();
         }
 
         public void UpdateLeaderboard()
@@ -145,10 +148,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                     songNameText.text = info.songName;
 
                     StartCoroutine(LoadScripts.LoadSpriteCoroutine(song.coverURL, (cover) => { levelCoverImage.texture = cover; }));
-                }); 
-                
-                if (PluginManager.GetPluginFromId("BeatSaverVoting") != null)
-                    BeatSaverVotingInterop.Hide();
+                });
+
+                voting?.Hide();
             }
         }
 
@@ -176,7 +178,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 }
                 else
                 {
-                    if(PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel > levelResults.modifiedScore)
+                    if (PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel > levelResults.modifiedScore)
                     {
                         scoreChangeValue.text = (levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
                         scoreChangeValue.color = new Color32(240, 38, 31, 255);
@@ -186,7 +188,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                     }
                     else
                     {
-                        scoreChangeValue.text = "+"+(levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
+                        scoreChangeValue.text = "+" + (levelResults.modifiedScore - PluginUI.instance.roomFlowCoordinator.lastHighscoreForLevel).ToString();
                         scoreChangeValue.color = new Color32(55, 235, 43, 255);
                         scoreChangeIcon.gameObject.SetActive(true);
                         scoreChangeIcon.rectTransform.localRotation = Quaternion.Euler(180f, 0f, 0f);
@@ -194,12 +196,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                     }
                 }
 
-
-                if (PluginManager.GetPluginFromId("BeatSaverVoting") != null)
-                    BeatSaverVotingInterop.Setup(this, PluginUI.instance.roomFlowCoordinator.levelDifficultyBeatmap.level);
+                voting?.Setup(this, PluginUI.instance.roomFlowCoordinator.levelDifficultyBeatmap.level);
             }
-            else if (PluginManager.GetPluginFromId("BeatSaverVoting") != null)
-                    BeatSaverVotingInterop.Hide();
+            voting?.Hide();
 
             levelCoverImage.texture = await selectedLevel.GetCoverImageTexture2DAsync(new CancellationTokenSource().Token);
 
