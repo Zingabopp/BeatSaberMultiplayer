@@ -1,12 +1,12 @@
-﻿using BeatSaberMarkupLanguage.ViewControllers;
+﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
-using System;
-using System.Linq;
-using BeatSaberMarkupLanguage.Attributes;
-using HMUI;
-using UnityEngine;
-using System.Collections.Generic;
+using BeatSaberMarkupLanguage.ViewControllers;
 using BS_Utils.Utilities;
+using HMUI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
@@ -70,11 +70,11 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
             List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
             levelPacksAndPlaylists.AddRange(_beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks);
-            var playlistViewControllers = Resources.FindObjectsOfTypeAll<AnnotatedBeatmapLevelCollectionsViewController>();
-            var playlistController = playlistViewControllers?.FirstOrDefault();
+            AnnotatedBeatmapLevelCollectionsViewController[] playlistViewControllers = Resources.FindObjectsOfTypeAll<AnnotatedBeatmapLevelCollectionsViewController>();
+            AnnotatedBeatmapLevelCollectionsViewController playlistController = playlistViewControllers?.FirstOrDefault();
             if (playlistController != null)
             {
-                IAnnotatedBeatmapLevelCollection[] playlists = playlistController.GetPrivateField<IAnnotatedBeatmapLevelCollection[]>("_playlists");
+                IAnnotatedBeatmapLevelCollection[] playlists = playlistController.GetPrivateField<IAnnotatedBeatmapLevelCollection[]>("_annotatedBeatmapLevelCollections");
                 if (playlists == null)
                     Plugin.log.Info($"Found _playlists is null.");
                 else
@@ -161,7 +161,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         {
             levelPacksTableData.data.Clear();
             Plugin.log.Debug($"{packs.Length} level packs found in LevelPacksUIViewController.SetPacks()");
-            foreach (var pack in packs)
+            foreach (IAnnotatedBeatmapLevelCollection pack in packs)
             {
                 levelPacksTableData.data.Add(new CustomListTableData.CustomCellInfo(pack.collectionName, $"{pack.beatmapLevelCollection.beatmapLevels.Length} levels", pack.coverImage.texture));
             }

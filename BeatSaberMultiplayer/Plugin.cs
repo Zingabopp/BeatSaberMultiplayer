@@ -61,6 +61,7 @@ namespace BeatSaberMultiplayerLite
             }
 #endif
         }
+        [Init]
         public void Init(IPA.Logging.Logger logger, PluginMetadata pluginMetadata)
         {
             log = logger;
@@ -68,14 +69,20 @@ namespace BeatSaberMultiplayerLite
             _playerPosition = new PlayerPosition();
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";
-            log.Info($"{PluginName} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");
+            log.Info($"{PluginMetadata.Name} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");
         }
-
+        [OnStart]
         public void OnApplicationStart()
         {
             instance = this;
-
-            BS_Utils.Utilities.BSEvents.OnLoad();
+            var votingMeta = PluginManager.GetPluginFromId("BeatSaverVoting");
+            if (votingMeta != null)
+            {
+                log.Error($"votingMeta is not null: {votingMeta.File}");
+            }
+            else
+                log.Warn($"votingMeta is null.");
+            //BS_Utils.Utilities.BSEvents.OnLoad();
             BS_Utils.Utilities.BSEvents.menuSceneLoadedFresh += MenuSceneLoadedFresh;
             BS_Utils.Utilities.BSEvents.menuSceneLoaded += MenuSceneLoaded;
             BS_Utils.Utilities.BSEvents.gameSceneLoaded += GameSceneLoaded;
@@ -178,30 +185,6 @@ namespace BeatSaberMultiplayerLite
             InGameOnlineController.Instance?.GameSceneLoaded();
             if (Config.Instance.SpectatorMode)
                 SpectatingController.Instance?.GameSceneLoaded();
-        }
-
-        public void OnApplicationQuit()
-        {
-        }
-
-        public void OnUpdate()
-        {
-        }
-
-        public void OnFixedUpdate()
-        {
-        }
-
-        public void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
-        {
-        }
-
-        public void OnSceneUnloaded(Scene scene)
-        {
-        }
-
-        public void OnActiveSceneChanged(Scene prevScene, Scene nextScene)
-        {
         }
         /*
         private void DiscordLogCallback(LogLevel level, string message)
