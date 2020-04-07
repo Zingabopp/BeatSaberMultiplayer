@@ -88,16 +88,19 @@ namespace BeatSaberMultiplayerLite.Data
 
         public override int GetHashCode()
         {
-            var hashCode = 2127499901;
-            hashCode = hashCode * -1521134295 + rainbowName.GetHashCode();
-            hashCode = hashCode * -1521134295 + unused1.GetHashCode();
-            hashCode = hashCode * -1521134295 + unused2.GetHashCode();
-            hashCode = hashCode * -1521134295 + unused3.GetHashCode();
-            hashCode = hashCode * -1521134295 + unused4.GetHashCode();
-            hashCode = hashCode * -1521134295 + unused5.GetHashCode();
-            hashCode = hashCode * -1521134295 + unused6.GetHashCode();
-            hashCode = hashCode * -1521134295 + unused7.GetHashCode();
-            return hashCode;
+            unchecked
+            {
+                int hashCode = 2127499901;
+                hashCode = hashCode * -1521134295 + rainbowName.GetHashCode();
+                hashCode = hashCode * -1521134295 + unused1.GetHashCode();
+                hashCode = hashCode * -1521134295 + unused2.GetHashCode();
+                hashCode = hashCode * -1521134295 + unused3.GetHashCode();
+                hashCode = hashCode * -1521134295 + unused4.GetHashCode();
+                hashCode = hashCode * -1521134295 + unused5.GetHashCode();
+                hashCode = hashCode * -1521134295 + unused6.GetHashCode();
+                hashCode = hashCode * -1521134295 + unused7.GetHashCode();
+                return hashCode;
+            }
         }
 
         public bool Equals(ExtraPlayerFlags other)
