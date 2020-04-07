@@ -50,6 +50,8 @@
     <Compile Include="Data\SongInfo.cs" />
     <Compile Include="Data\LevelOptionsInfo.cs" />
     <Compile Include="Interop\IVotingInterop.cs" />
+    <Compile Include="OnlinePlayerPosition.cs" />
+    <Compile Include="PlayerPosition.cs" />
     <Compile Include="MultiplayerExceptions.cs" />
     <Compile Include="RichPresence\ActivityStructs.cs" />
     <Compile Include="RichPresence\DiscordPresence\DiscordPresence.cs" />
@@ -89,7 +91,7 @@
     <Compile Include="OverriddenClasses\OnlineBeatmapSpawnController.cs" />
     <Compile Include="OverriddenClasses\OnlineVRController.cs" />
     <Compile Include="OnlinePlayerController.cs" />
-    <Compile Include="PlayerPosition.cs" />
+    <Compile Include="LocalPlayerPosition.cs" />
     <Compile Include="PlayerInfoDisplay.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

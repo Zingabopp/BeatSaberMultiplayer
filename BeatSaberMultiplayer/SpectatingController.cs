@@ -29,12 +29,34 @@ namespace BeatSaberMultiplayerLite
     public class SpectatingController : MonoBehaviour
     {
         public static SpectatingController Instance;
-
-        public static bool active = false;
+        private static bool _active = false;
+        public static bool active
+        {
+            get { return _active; }
+            set
+            {
+                if (_active == value) return;
+                _active = value;
+                Plugin.log.Debug($"SpectatingController.active changed to {_active}");
+            }
+        }
 
         public Dictionary<ulong, ReplayData> playerUpdates = new Dictionary<ulong, ReplayData>();
-
-        public OnlinePlayerController spectatedPlayer;
+        private OnlinePlayerController _spectatedPlayer;
+        public OnlinePlayerController spectatedPlayer
+        {
+            get { return _spectatedPlayer; }
+            set
+            {
+                if (_spectatedPlayer == value)
+                    return;
+                _spectatedPlayer = value;
+                if (_spectatedPlayer != null)
+                    Plugin.log.Debug($"Changing {nameof(spectatedPlayer)} to {(_spectatedPlayer.playerInfo?.playerId.ToString() ?? "<NULL>")}:{(_spectatedPlayer.playerInfo?.playerName ?? "<NULL>")}");
+                else
+                    Plugin.log.Debug("spectatedPlayer set to null.");
+            }
+        }
         public AudioTimeSyncController audioTimeSync;
 
         private ScoreController _scoreController;
@@ -131,15 +153,17 @@ namespace BeatSaberMultiplayerLite
                 return;
             }
             BS_Utils.Gameplay.ScoreSubmission.DisableSubmission(Plugin.PluginName);
-            StartCoroutine(Delay(5, () => {
+            StartCoroutine(Delay(5, () =>
+            {
+                Plugin.log.Info("Activating SpectatorController.");
                 active = true;
             }));
             _paused = false;
 
             DestroyAvatar();
             ReplaceControllers();
-            
-            if(_spectatingText != null)
+
+            if (_spectatingText != null)
             {
                 Destroy(_spectatingText);
             }
@@ -246,16 +270,16 @@ namespace BeatSaberMultiplayerLite
         {
             if (!Config.Instance.SpectatorMode || Client.Instance.inRadioMode)
                 return;
-            
+            Plugin.log.Debug("SpectatingController.ReplaceControllers.");
             audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
 
             _leftSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == SaberType.SaberB);
             _leftController = _leftSaber.GetField<VRController, Saber>("_vrController").gameObject.AddComponent<OnlineVRController>();
-            _leftSaber.SetField("_vrController", _leftController);
+            _leftSaber.SetField<Saber, VRController>("_vrController", _leftController);
 
             _rightSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == SaberType.SaberA);
             _rightController = _rightSaber.GetField<VRController, Saber>("_vrController").gameObject.AddComponent<OnlineVRController>();
-            _rightSaber.SetField("_vrController", _rightController);
+            _rightSaber.SetField<Saber, VRController>("_vrController", _rightController);
 
             Plugin.log.Info("Controllers replaced!");
 
@@ -321,9 +345,9 @@ namespace BeatSaberMultiplayerLite
 
                             ReplayData replay;
 
-                            if(playerUpdates.TryGetValue(playerId, out replay))
+                            if (playerUpdates.TryGetValue(playerId, out replay))
                             {
-                                if(replay.playerInfo == null)
+                                if (replay.playerInfo == null)
                                 {
                                     if (InGameOnlineController.Instance.players.TryGetValue(playerId, out OnlinePlayerController playerController))
                                     {
@@ -356,12 +380,12 @@ namespace BeatSaberMultiplayerLite
                             {
                                 replay = new ReplayData();
 
-                                if(InGameOnlineController.Instance.players.TryGetValue(playerId, out OnlinePlayerController playerController))
+                                if (InGameOnlineController.Instance.players.TryGetValue(playerId, out OnlinePlayerController playerController))
                                 {
                                     replay.playerInfo = playerController.playerInfo;
                                 }
 
-                                if(replay.playerInfo == null)
+                                if (replay.playerInfo == null)
                                 {
                                     InGameOnlineController.Instance.sendFullUpdate = true;
                                     continue;
@@ -379,12 +403,12 @@ namespace BeatSaberMultiplayerLite
                                 for (int i = 0; i < hitCount; i++)
                                 {
                                     HitData hit = new HitData(msg);
-                                    if(!replay.hits.ContainsKey(hit.objectId))
+                                    if (!replay.hits.ContainsKey(hit.objectId))
                                         replay.hits.Add(hit.objectId, hit);
                                 }
 
                                 playerUpdates.Add(playerId, replay);
-                            }                            
+                            }
                         }
                         catch (Exception e)
                         {
@@ -399,7 +423,7 @@ namespace BeatSaberMultiplayerLite
 
         public void DestroyAvatar()
         {
-            if(spectatedPlayer != null)
+            if (spectatedPlayer != null)
             {
                 Destroy(spectatedPlayer.gameObject);
             }
@@ -412,18 +436,17 @@ namespace BeatSaberMultiplayerLite
                 if (spectatedPlayer == null && _leftSaber != null && _rightSaber != null)
                 {
                     spectatedPlayer = new GameObject("SpectatedPlayerController").AddComponent<OnlinePlayerController>();
-                    //spectatedPlayer.SetAvatarState(Config.Instance.ShowAvatarsInGame);
+                    spectatedPlayer.SetAvatarState(true);
                     spectatedPlayer.SetSabers(_leftSaber, _rightSaber);
 
                     ReplacePlayerController(spectatedPlayer);
 
                     spectatedPlayer.noInterpolation = true;
 
-                    if (_leftController != null && _rightController != null)
-                    {
+                    if (_leftController != null)
                         _leftController.owner = spectatedPlayer;
+                    if (_rightController != null)
                         _rightController.owner = spectatedPlayer;
-                    }
 
                     Plugin.log.Info("Created player controller for spectated player!");
                 }
@@ -491,9 +514,9 @@ namespace BeatSaberMultiplayerLite
                     PlayerUpdate lerpTo;
                     float lerpProgress;
                     if (currentSongTime > (audioTimeSync.songLength - 0.5f))
-                            ExitSong();
+                        ExitSong();
 
-                        if (playerProgressMinMax.Item2 < currentSongTime + 2f && audioTimeSync.songLength > currentSongTime + 5f && !_paused)
+                    if (playerProgressMinMax.Item2 < currentSongTime + 2f && audioTimeSync.songLength > currentSongTime + 5f && !_paused)
                     {
                         Plugin.log.Info($"Pausing...");
                         if (playerProgressMinMax.Item2 > 2.5f)
@@ -561,7 +584,7 @@ namespace BeatSaberMultiplayerLite
                     spectatedPlayer.playerInfo.updateInfo.leftHandPos = Vector3.Lerp(lerpFrom.leftHandPos, lerpTo.leftHandPos, lerpProgress);
                     spectatedPlayer.playerInfo.updateInfo.rightHandPos = Vector3.Lerp(lerpFrom.rightHandPos, lerpTo.rightHandPos, lerpProgress);
                     spectatedPlayer.playerInfo.updateInfo.headPos = Vector3.Lerp(lerpFrom.headPos, lerpTo.headPos, lerpProgress);
-                    
+
                     spectatedPlayer.playerInfo.updateInfo.leftHandRot = Quaternion.Lerp(lerpFrom.leftHandRot, lerpTo.leftHandRot, lerpProgress);
                     spectatedPlayer.playerInfo.updateInfo.rightHandRot = Quaternion.Lerp(lerpFrom.rightHandRot, lerpTo.rightHandRot, lerpProgress);
                     spectatedPlayer.playerInfo.updateInfo.headRot = Quaternion.Lerp(lerpFrom.headRot, lerpTo.headRot, lerpProgress);
@@ -584,7 +607,7 @@ namespace BeatSaberMultiplayerLite
                         _scoreController.SetField("_combo", (int)lerpTo.playerComboBlocks);
                     }
 
-                    if(_energyCounter != null)
+                    if (_energyCounter != null)
                     {
                         _energyCounter.SetProperty("energy", lerpTo.playerEnergy / 100f);
                     }
@@ -597,9 +620,20 @@ namespace BeatSaberMultiplayerLite
         {
             Type[] typesToReplace = new Type[] { typeof(BombCutSoundEffectManager), typeof(NoteCutSoundEffectManager), typeof(MoveBackWall), typeof(NoteFloorMovement), typeof(NoteJump), typeof(NoteLineConnectionController), typeof(ObstacleController), typeof(PlayerHeadAndObstacleInteraction) };
 
-            foreach(Type type in typesToReplace)
+            foreach (Type type in typesToReplace)
             {
-                Resources.FindObjectsOfTypeAll(type).ToList().ForEach(x => x.SetField("_playerController", newPlayerController));
+                try
+                {
+                    Resources.FindObjectsOfTypeAll(type).ToList().ForEach(x =>
+                    {
+                        BS_Utils.Utilities.ReflectionUtil.SetField(x, "_playerController", newPlayerController);
+                    });
+                }
+                catch (Exception ex)
+                {
+                    Plugin.log.Error($"Unable to replace _playerController in {type.Name}: {ex.Message}");
+                    Plugin.log.Debug(ex);
+                }
             }
         }
 
@@ -612,7 +646,7 @@ namespace BeatSaberMultiplayerLite
         {
             for (int i = 0; i < infos.Count - 1; i++)
             {
-                if ((infos[i].playerProgress < targetProgress && infos[i+1].playerProgress > targetProgress) || Mathf.Abs(infos[i].playerProgress - targetProgress) < float.Epsilon)
+                if ((infos[i].playerProgress < targetProgress && infos[i + 1].playerProgress > targetProgress) || Mathf.Abs(infos[i].playerProgress - targetProgress) < float.Epsilon)
                 {
                     return i;
                 }
@@ -625,7 +659,7 @@ namespace BeatSaberMultiplayerLite
             float min = float.MaxValue;
             float max = float.MinValue;
 
-            foreach(PlayerUpdate info in infos)
+            foreach (PlayerUpdate info in infos)
             {
                 if (info.playerProgress > max)
                     max = info.playerProgress;

@@ -503,7 +503,7 @@ namespace BeatSaberMultiplayerLite.Data
             msg.Write(playerId);
 
             updateInfo.AddToMessage(msg);
-
+            //Plugin.log.Debug($"Adding position to message: {updateInfo.headPos}, {updateInfo.headRot}");
             msg.Write(HexConverter.ConvertHexToBytesX(avatarHash));
 
             msg.Write((byte)hitsLastUpdate.Count);

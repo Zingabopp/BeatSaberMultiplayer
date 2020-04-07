@@ -16,6 +16,7 @@ namespace BeatSaberMultiplayerLite
         private const int _voipDelay = 1;
 
         public PlayerInfo playerInfo;
+        //public AvatarController avatar;
         public IPlayerInfoReceiver PlayerInfoReceiver { get; set; }
         public AudioSource voipSource;
 
@@ -89,7 +90,6 @@ namespace BeatSaberMultiplayerLite
             Plugin.log.Debug("Initialized beatmap spawn controller!");
         }
 
-        [Obsolete("XWeaponTrail doesn't have these private fields.")]
         void SpawnSabers()
         {
             Plugin.log.Debug("Spawning left saber...");
@@ -100,7 +100,7 @@ namespace BeatSaberMultiplayerLite
             catch (Exception e)
             {
                 if (!(e is NullReferenceException) || !e.StackTrace.Contains("VRController.UpdatePositionAndRotation"))
-                    Plugin.log.Critical("Unable to spawn saber (Left)! Exception: "+e);
+                    Plugin.log.Critical("Unable to spawn saber (Left)! Exception: " + e);
             }
             _leftSaber.gameObject.name = "CustomLeftSaber";
             var leftController = _leftSaber.gameObject.AddComponent<OnlineVRController>();
@@ -118,7 +118,7 @@ namespace BeatSaberMultiplayerLite
 
             Plugin.log.Debug("Spawning right saber...");
             try
-            { 
+            {
                 _rightSaber = Instantiate(Resources.FindObjectsOfTypeAll<Saber>().First(x => x.name == "RightSaber"), transform, false);
             }
             catch (Exception e)
@@ -148,7 +148,7 @@ namespace BeatSaberMultiplayerLite
 
         public void SetBlocksState(bool active)
         {
-            if(active && !playerInfo.updateInfo.playerLevelOptions.characteristicName.ToLower().Contains("degree") && beatmapCallbackController == null && audioTimeController == null && beatmapSpawnController == null && beatmapObjectManager == null && _leftSaber == null && _rightSaber == null)
+            if (active && !playerInfo.updateInfo.playerLevelOptions.characteristicName.ToLower().Contains("degree") && beatmapCallbackController == null && audioTimeController == null && beatmapSpawnController == null && beatmapObjectManager == null && _leftSaber == null && _rightSaber == null)
             {
                 SpawnBeatmapControllers();
                 SpawnSabers();
@@ -174,7 +174,7 @@ namespace BeatSaberMultiplayerLite
 
             if (voipSource != null)
             {
-                if(_voipFragQueue.Length <= 0)
+                if (_voipFragQueue.Length <= 0)
                 {
                     _voipPlaying = false;
                 }
@@ -202,7 +202,7 @@ namespace BeatSaberMultiplayerLite
 
         public void FixedUpdate()
         {
-            
+
             if (playerInfo != null && playerInfo.updateInfo != default)
             {
                 if (!noInterpolation)
@@ -240,24 +240,24 @@ namespace BeatSaberMultiplayerLite
                 _headPos = playerInfo.updateInfo.headPos + avatarOffset;
                 transform.position = _headPos;
             }
-            
+
         }
 
         public void OnDestroy()
         {
-            if(playerInfo == null)
+            if (playerInfo == null)
                 Plugin.log.Debug("Destroying player controller!");
             else
                 Plugin.log.Debug($"Destroying player controller! Name: {playerInfo.playerName}, ID: {playerInfo.playerId}");
 
             destroyed = true;
-            
+
             if (PlayerInfoReceiver != null)
             {
                 PlayerInfoReceiver.DestroyReceiver();
             }
 
-            if (beatmapCallbackController != null && audioTimeController != null) // && beatmapSpawnController != null
+            if (beatmapCallbackController != null && beatmapSpawnController != null && audioTimeController != null)
             {
                 Destroy(beatmapCallbackController.gameObject);
                 Destroy(audioTimeController.gameObject);
@@ -354,19 +354,19 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
-        //public void SetAvatarState(bool enabled)
-        //{
-        //    if(enabled && (object)avatar == null)
-        //    {
-        //        avatar = new GameObject("AvatarController").AddComponent<AvatarController>();
-        //        avatar.SetPlayerInfo(playerInfo, avatarOffset, Client.Instance.playerInfo.Equals(playerInfo));
-        //    }
-        //    else if(!enabled && avatar != null)
-        //    {
-        //        Destroy(avatar.gameObject);
-        //        avatar = null;
-        //    }
-        //}
+        public void SetAvatarState(bool enabled)
+        {
+            if (PlayerInfoReceiver == null)
+            {
+                PlayerInfoReceiver = new GameObject("AvatarController").AddComponent<AvatarController>();
+                PlayerInfoReceiver.SetPlayerInfo(playerInfo, avatarOffset, Client.Instance.playerInfo.Equals(playerInfo));
+            }
+            else if (!enabled && PlayerInfoReceiver != null)
+            {
+                PlayerInfoReceiver.DestroyReceiver();
+                PlayerInfoReceiver = null;
+            }
+        }
 
         public void VoIPUpdate()
         {
@@ -380,7 +380,7 @@ namespace BeatSaberMultiplayerLite
 
         public void PlayVoIPFragment(float[] data, int fragIndex)
         {
-            if(voipSource != null && !InGameOnlineController.Instance.mutedPlayers.Contains(playerInfo.playerId))
+            if (voipSource != null && !InGameOnlineController.Instance.mutedPlayers.Contains(playerInfo.playerId))
             {
                 if ((_lastVoipFragIndex + 1) != fragIndex || _silentFrames > 15)
                 {
@@ -438,7 +438,7 @@ namespace BeatSaberMultiplayerLite
 
         public void SetVoIPVolume(float newVolume)
         {
-            if(voipSource != null)
+            if (voipSource != null)
             {
                 voipSource.volume = newVolume;
             }

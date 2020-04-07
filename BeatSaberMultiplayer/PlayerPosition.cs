@@ -8,103 +8,43 @@ using UnityEngine.XR;
 
 namespace BeatSaberMultiplayerLite
 {
-    public class PlayerPosition
+    public abstract class PlayerPosition
     {
-        public static PlayerPosition instance;
-        private bool _validPose = true;
-        public PlayerPosition()
-        {
-            instance = this;
-        }
-        public PosRot HeadPosRot
-        {
-            get { return GetXRNodeWorldPosRot(XRNode.Head); }
-        }
+        public bool ValidPose { get; protected set; }
 
-        public PosRot LeftPosRot
-        {
-            get
-            {
-                return GetXRNodeWorldPosRot(XRNode.LeftHand);
-            }
-        }
+        public abstract PosRot HeadPosRot { get; }
 
-        public PosRot RightPosRot
-        {
-            get
-            {
-                return GetXRNodeWorldPosRot(XRNode.RightHand);
-            }
-        }
+        public abstract PosRot LeftPosRot { get; }
+
+        public abstract PosRot RightPosRot { get; }
+
 
         public bool TryGetHeadPose(out Pose head)
         {
             PosRot posRot = HeadPosRot;
             head = new Pose(posRot.Position, posRot.Rotation);
-            return _validPose;
+            return ValidPose;
         }
 
         public bool TryGetLeftHandPose(out Pose leftHand)
         {
             PosRot posRot = LeftPosRot;
             leftHand = new Pose(posRot.Position, posRot.Rotation);
-            return _validPose;
+            return ValidPose;
         }
 
         public bool TryGetRightHandPose(out Pose rightHand)
         {
             PosRot posRot = RightPosRot;
             rightHand = new Pose(posRot.Position, posRot.Rotation);
-            return _validPose;
+            return ValidPose;
         }
 
-
-        private static PosRot GetXRNodeWorldPosRot(XRNode node)
-        {
-            var pos = InputTracking.GetLocalPosition(node);
-            var rot = InputTracking.GetLocalRotation(node);
-
-            var roomCenter = GetRoomCenter();
-            var roomRotation = GetRoomRotation();
-            pos = roomRotation * pos;
-            pos += roomCenter;
-            rot = roomRotation * rot;
-            return new PosRot(pos, rot);
-        }
-
-        private static PosRot GetTrackerWorldPosRot(XRNodeState tracker)
-        {
-            Vector3 pos = new Vector3();
-            Quaternion rot = new Quaternion();
-            try
-            {
-                var notes = new List<XRNodeState>();
-                InputTracking.GetNodeStates(notes);
-                foreach (XRNodeState note in notes)
-                {
-                    if (note.uniqueID != tracker.uniqueID)
-                        continue;
-                    if (note.TryGetPosition(out pos) && note.TryGetRotation(out rot))
-                    {
-                        var roomCenter = GetRoomCenter();
-                        var roomRotation = GetRoomRotation();
-                        pos = roomRotation * pos;
-                        pos += roomCenter;
-                        rot = roomRotation * rot;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Plugin.log.Error(e);
-            }
-            return new PosRot(pos, rot);
-        }
-
+        #region Static
         private static Transform _originTransform;
         private static MainSettingsModelSO _mainSettingsModel;
 
-        private static MainSettingsModelSO MainSettingsModel
+        protected static MainSettingsModelSO MainSettingsModel
         {
             get
             {
@@ -136,6 +76,7 @@ namespace BeatSaberMultiplayerLite
 
             return _originTransform.rotation;
         }
+        #endregion
     }
 
     public struct PosRot
@@ -147,6 +88,10 @@ namespace BeatSaberMultiplayerLite
         {
             Position = position;
             Rotation = rotation;
+        }
+        public override string ToString()
+        {
+            return $"{Position}|{Rotation}";
         }
     }
 }

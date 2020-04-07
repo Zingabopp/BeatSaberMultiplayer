@@ -63,7 +63,7 @@ namespace BeatSaberMultiplayerLite
         private VRPlatformHelper _vrPlatformHelper;
         private VRControllersInputManager _vrInputManager;
 
-        private PlayerPosition _avatarInput;
+        private LocalPlayerPosition _avatarInput;
 
         public Dictionary<ulong, OnlinePlayerController> players = new Dictionary<ulong, OnlinePlayerController>();
         public List<PlayerScore> playerScores;
@@ -372,7 +372,7 @@ namespace BeatSaberMultiplayerLite
 
                             if (player != null)
                             {
-                                //player.SetAvatarState(!Client.Instance.inRadioMode && IsPlayerVisible(player.playerInfo.playerId));
+                                player.SetAvatarState(true);
                                 //player.SetBlocksState(!Client.Instance.inRadioMode && _currentScene == _gameSceneName && Config.Instance.ShowOtherPlayersBlocks && !Client.Instance.playerInfo.Equals(player.playerInfo) && !Config.Instance.SpectatorMode && player.playerInfo.updateInfo.playerState == PlayerState.Game);
                             }
                         }
@@ -755,6 +755,7 @@ namespace BeatSaberMultiplayerLite
 
         public void UpdatePlayerInfo()
         {
+            //Plugin.log.Debug($"InGameOnlineController.UpdatePlayerInfo");
             if (Client.Instance.playerInfo.avatarHash == null || Client.Instance.playerInfo.avatarHash.Length == 0 || Client.Instance.playerInfo.avatarHash == PlayerInfo.avatarHashPlaceholder)
             {
 
@@ -781,10 +782,12 @@ namespace BeatSaberMultiplayerLite
 
             if (_avatarInput == null)
             {
-                _avatarInput = PlayerPosition.instance;//CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput;
+                _avatarInput = LocalPlayerPosition.instance;//CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput;
             }
 
             _avatarInput.TryGetHeadPose(out Pose head);
+
+            //Plugin.log.Debug($"Head updated");
             _avatarInput.TryGetLeftHandPose(out Pose leftHand);
             _avatarInput.TryGetRightHandPose(out Pose rightHand);
 
