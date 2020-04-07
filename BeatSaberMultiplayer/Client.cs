@@ -153,7 +153,7 @@ namespace BeatSaberMultiplayerLite
             instance = this;
             DontDestroyOnLoad(this);
             GetUserInfo.UpdateUserInfo();
-            playerInfo = new PlayerInfo(GetUserInfo.GetUserName(), GetUserInfo.GetUserID());
+            playerInfo = new PlayerInfo(Plugin.Username, Plugin.UserId);
             NetPeerConfiguration Config = new NetPeerConfiguration("BeatSaberMultiplayer") { MaximumHandshakeAttempts = 2, AutoFlushSendQueue = false };
             networkClient = new NetClient(Config);
 
@@ -193,7 +193,7 @@ namespace BeatSaberMultiplayerLite
             byte[] version = new byte[4] { (byte)assemblyVersion.Major, (byte)assemblyVersion.Minor, (byte)assemblyVersion.Build, (byte)assemblyVersion.Revision };
 
             outMsg.Write(version);
-            playerInfo = new PlayerInfo(GetUserInfo.GetUserName(), GetUserInfo.GetUserID());
+            playerInfo = new PlayerInfo(Plugin.Username, Plugin.UserId);
             playerInfo.AddToMessage(outMsg);
 
             Plugin.log.Debug($"Connecting to {ip}:{port} with player name \"{playerInfo.playerName}\" and ID {playerInfo.playerId}");

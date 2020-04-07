@@ -39,6 +39,9 @@ namespace BeatSaberMultiplayerLite
         private static string joinSecret;
         public static bool DownloaderExists { get; private set; }
 
+        public static string Username;
+        public static ulong UserId;
+
         public static void LogLocation(string message,
             [CallerFilePath] string memberPath = "",
             [CallerMemberName] string memberName = "",
@@ -71,17 +74,11 @@ namespace BeatSaberMultiplayerLite
             PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";
             log.Info($"{PluginMetadata.Name} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");
         }
+
         [OnStart]
         public void OnApplicationStart()
         {
             instance = this;
-            var votingMeta = PluginManager.GetPluginFromId("BeatSaverVoting");
-            if (votingMeta != null)
-            {
-                log.Error($"votingMeta is not null: {votingMeta.File}");
-            }
-            else
-                log.Warn($"votingMeta is null.");
             //BS_Utils.Utilities.BSEvents.OnLoad();
             BS_Utils.Utilities.BSEvents.menuSceneLoadedFresh += MenuSceneLoadedFresh;
             BS_Utils.Utilities.BSEvents.menuSceneLoaded += MenuSceneLoaded;
@@ -158,12 +155,22 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
+        public static bool ReadUserInfo()
+        {
+            UserId = GetUserInfo.GetUserID();
+            Username = GetUserInfo.GetUserName();
+            if (UserId != 0)
+                return true;
+            return false;
+        }
+
         private void MenuSceneLoadedFresh()
         {
             //ModelSaberAPI.HashAllAvatars();
             PluginUI.OnLoad();
             InGameOnlineController.OnLoad();
             SpectatingController.OnLoad();
+            BS_Utils.Gameplay.GetUserInfo.UpdateUserInfo();
             GetUserInfo.UpdateUserInfo();
             if (joinAfterRestart)
             {

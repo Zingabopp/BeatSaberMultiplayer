@@ -345,7 +345,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     byte[] version = new byte[4] { (byte)assemblyVersion.Major, (byte)assemblyVersion.Minor, (byte)assemblyVersion.Build, (byte)assemblyVersion.Revision };
                     
                     outMsg.Write(version);
-                    new PlayerInfo(GetUserInfo.GetUserName(), GetUserInfo.GetUserID()).AddToMessage(outMsg);
+                    new PlayerInfo(Plugin.Username, Plugin.UserId).AddToMessage(outMsg);
 
                     Plugin.log.Debug($"Connecting to {ip}:{port}...");
 

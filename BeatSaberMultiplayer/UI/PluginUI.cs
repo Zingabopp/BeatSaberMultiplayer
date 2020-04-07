@@ -156,6 +156,7 @@ namespace BeatSaberMultiplayerLite.UI
             {
                 try
                 {
+                    Plugin.ReadUserInfo();
                     SetLobbyDiscordActivity();
 
                     MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
@@ -166,7 +167,7 @@ namespace BeatSaberMultiplayerLite.UI
                         _noUserInfoWarning = Instantiate(dialogOrig.gameObject).GetComponent<SimpleDialogPromptViewController>();
                     }
 
-                    if (GetUserInfo.GetUserID() == 0 && string.IsNullOrWhiteSpace(GetUserInfo.GetUserName()) || GetUserInfo.GetUserID() == 0)
+                    if (Plugin.UserId == 0 && string.IsNullOrWhiteSpace(Plugin.Username) || Plugin.UserId == 0)
                     {
                         _noUserInfoWarning.Init("Invalid username and ID", $"Your username and ID are invalid\nMake sure you are logged in", "Go back", "Continue anyway",
                            (selectedButton) =>
