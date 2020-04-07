@@ -217,7 +217,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         public void SetTimer(float currentTime, float totalTime)
         {
-            timerText.text = TimeExtensions.MinSecDurationText(totalTime - currentTime);
+            timerText.text = (totalTime - currentTime).MinSecDurationText();
 
             if (!_progressBarEnabled)
             {

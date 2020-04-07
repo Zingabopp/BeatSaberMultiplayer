@@ -17,7 +17,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     public enum TopButtonsState { Select, SortBy, Search, Mode };
 
-    class SongSelectionViewController : BSMLResourceViewController, TableView.IDataSource
+    class SongSelectionViewController : HotReloadableViewController, TableView.IDataSource
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
         public RoomFlowCoordinator ParentFlowCoordinator { get; internal set; }
@@ -25,6 +25,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         private readonly IPAUtilities.FieldAccessor<TableViewScroller, float>.Accessor TableViewScrollerTargetPosition = IPAUtilities.FieldAccessor<TableViewScroller, float>.GetAccessor("_targetPosition");
         private readonly IPAUtilities.FieldAccessor<TableView, TableViewScroller>.Accessor GetTableViewScroller = IPAUtilities.FieldAccessor<TableView, TableViewScroller>.GetAccessor("_scroller");
         public event Action<IPreviewBeatmapLevel> SongSelected;
+        public event Action<IPreviewBeatmapLevel> RequestSongPressed;
         public event Action<string> SearchPressed;
         public event Action<SortMode> SortPressed;
         private ISongDownloader downloader;
@@ -33,8 +34,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         [UIParams]
         BSMLParserParams _parserParams;
 
-        [UIComponent("host-selects-song-text")]
-        TextMeshProUGUI _hostIsSelectingSongText;
+        [UIComponent("host-selects-song-rect")]
+        RectTransform _hostIsSelectingSongText;
 
         [UIComponent("song-list")]
         CustomListTableData _songsTableView;
@@ -46,11 +47,17 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         [UIComponent("sort-btns-rect")]
         RectTransform _sortBtnsRect;
 
+        [UIComponent("player-requests-rect")]
+        RectTransform _playerRequestsRect;
+
         [UIComponent("search-keyboard")]
         ModalKeyboard _searchKeyboard;
 
         [UIComponent("diff-sort-btn")]
         Button _diffButton;
+
+        [UIComponent("request-song-btn")]
+        Button _requestSongButton;
 
         [UIValue("search-value")]
         string searchValue;
@@ -68,7 +75,21 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 NotifyPropertyChanged();
             }
         }
-        
+
+        private string _requestsText = "In queue: 0";
+        [UIValue("requests-text")]
+        public string RequestsText
+        {
+            get { return _requestsText; }
+            set
+            {
+                if (_requestsText == value)
+                    return;
+                _requestsText = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private TableViewScroller _songListScroller;
         public TableViewScroller SongListScroller
         {
@@ -82,13 +103,18 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 return _songListScroller;
             }
         }
-        
+
+        public bool requestMode;
+
         private LevelListTableCell songListTableCellInstance;
         private PlayerDataModel _playerDataModel;
         private AdditionalContentModel _additionalContentModel;
         private Action _moreSongsAction;
 
+        private bool isHost;
+
         List<IPreviewBeatmapLevel> availableSongs = new List<IPreviewBeatmapLevel>();
+        private IPreviewBeatmapLevel selectedSong;
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
@@ -109,9 +135,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 }
                 else
                 {
-                    Plugin.log.Warn($"SongDownloader not found, More Songs button won't be created.");
+                    Plugin.log.Warn($"BeatSaverDownloader not found, More Songs button won't be created.");
                     MoreSongsAvailable = false;
                 }
+
                 _songsTableView.tableView.didSelectCellWithIdxEvent += SongsTableView_DidSelectRow;
                 _songsTableView.tableView.dataSource = this;
 
@@ -190,10 +217,16 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             }
         }
 
-        public void UpdateViewController(bool isHost)
+        public void UpdateViewController(bool isHost, int requestedSongs)
         {
-            _songListRect.gameObject.SetActive(isHost);
-            _hostIsSelectingSongText.gameObject.SetActive(!isHost);
+            this.isHost = isHost;
+            RequestsText = $"In queue: {requestedSongs}";
+            _songListRect.gameObject.SetActive(isHost || requestMode);
+            _hostIsSelectingSongText.gameObject.SetActive(!isHost && !requestMode);
+            _requestSongButton.gameObject.SetActive(!isHost && requestMode);
+            _requestSongButton.interactable = selectedSong != null;
+            _playerRequestsRect.gameObject.SetActive(isHost);
+            NotifyPropertyChanged();
         }
 
         public void SelectTopButtons(TopButtonsState _newState)
@@ -223,6 +256,35 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                         _sortBtnsRect.gameObject.SetActive(false);
                     }; break;
             }
+        }
+
+        [UIAction("request-song-pressed")]
+        public void RequestSongButtonPressed()
+        {
+            if(selectedSong != null)
+                RequestSongPressed?.Invoke(selectedSong);
+        }
+
+        [UIAction("request-mode-pressed")]
+        public void RequestModeButtonPressed()
+        {
+            requestMode = true;
+            UpdateViewController(isHost, 0);
+            RequestModePressed?.Invoke();
+
+            Plugin.log.Debug("Entering request mode...");
+        }
+
+        [UIAction("player-requests-pressed")]
+        public void PlayerRequestsButtonPressed()
+        {
+            PlayerRequestsPressed?.Invoke();
+        }
+
+        [UIAction("more-btn-pressed")]
+        public void MoreButtonPressed()
+        {
+            downloader?.PresentDownloaderFlowCoordinator(ParentFlowCoordinator, null);
         }
 
         [UIAction("sort-btn-pressed")]
@@ -272,21 +334,21 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         }
 
         [UIAction("def-sort-btn-pressed")]
-        public void DefaultSotrPressed()
+        public void DefaultSortPressed()
         {
             SelectTopButtons(TopButtonsState.Select);
             SortPressed?.Invoke(SortMode.Default);
         }
 
         [UIAction("new-sort-btn-pressed")]
-        public void NewestSotrPressed()
+        public void NewestSortPressed()
         {
             SelectTopButtons(TopButtonsState.Select);
             SortPressed?.Invoke(SortMode.Newest);
         }
 
         [UIAction("diff-sort-btn-pressed")]
-        public void DifficultySotrPressed()
+        public void DifficultySortPressed()
         {
             SelectTopButtons(TopButtonsState.Select);
             SortPressed?.Invoke(SortMode.Difficulty);
@@ -294,7 +356,13 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         private void SongsTableView_DidSelectRow(TableView sender, int row)
         {
-            SongSelected?.Invoke(availableSongs[row]);
+            if (requestMode && !isHost)
+            {
+                selectedSong = availableSongs[row];
+                _requestSongButton.interactable = selectedSong != null;
+            }
+            else
+                SongSelected?.Invoke(availableSongs[row]);
         }
 
         public float CellSize()

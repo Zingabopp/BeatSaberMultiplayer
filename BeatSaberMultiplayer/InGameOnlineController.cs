@@ -112,7 +112,8 @@ namespace BeatSaberMultiplayerLite
                 _messageDisplayText.enableWordWrapping = false;
                 _messageDisplayText.alignment = TextAlignmentOptions.Center;
                 DontDestroyOnLoad(_messageDisplayText.gameObject);
-                //CustomAvatar.Plugin.Instance.PlayerAvatarManager.AvatarChanged += PlayerAvatarManager_AvatarChanged;
+
+                AvatarManager.instance.avatarChanged += PlayerAvatarManager_AvatarChanged;
 
                 if (Config.Instance.EnableVoiceChat)
                 {
@@ -327,13 +328,16 @@ namespace BeatSaberMultiplayerLite
                                 if (fullUpdate)
                                 {
                                     PlayerInfo playerInfo = new PlayerInfo(msg);
+                                    player.noInterpolation = true;
                                     player.playerInfo = playerInfo;
+                                    player.UpdateInfo(playerInfo.updateInfo);
                                     _spectatorInRoom |= playerInfo.updateInfo.playerState == PlayerState.Spectating;
                                 }
                                 else
                                 {
                                     PlayerUpdate update = new PlayerUpdate(msg);
-                                    player.NewUpdateReceived(update);
+                                    player.noInterpolation = false;
+                                    player.UpdateInfo(update);
 
                                     byte hitCount = msg.ReadByte();
 
@@ -437,7 +441,7 @@ namespace BeatSaberMultiplayerLite
                                     _scoreScreen.transform.rotation = Quaternion.Euler(Config.Instance.ScoreScreenRotOffset);
                                     _scoreScreen.transform.localScale = Config.Instance.ScoreScreenScale;
 
-                                    var rotator = GameObject.FindObjectOfType<FlyingGameHUDRotation>();
+                                    var rotator = FindObjectOfType<FlyingGameHUDRotation>();
 
                                     if (rotator != null)
                                     {
@@ -753,7 +757,6 @@ namespace BeatSaberMultiplayerLite
 
         public void UpdatePlayerInfo()
         {
-
             if (Client.Instance.playerInfo.avatarHash == null || Client.Instance.playerInfo.avatarHash.Length == 0 || Client.Instance.playerInfo.avatarHash == PlayerInfo.avatarHashPlaceholder)
             {
 
@@ -783,18 +786,18 @@ namespace BeatSaberMultiplayerLite
                 _avatarInput = PlayerPosition.instance;//CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput;
             }
 
-            var head = _avatarInput.HeadPosRot;
-            var leftHand = _avatarInput.LeftPosRot;
-            var rightHand = _avatarInput.RightPosRot;
+            _avatarInput.TryGetHeadPose(out var head);
+            _avatarInput.TryGetLeftHandPose(out var leftHand);
+            _avatarInput.TryGetRightHandPose(out var rightHand);
 
-            Client.Instance.playerInfo.updateInfo.headPos = head.Position;
-            Client.Instance.playerInfo.updateInfo.headRot = head.Rotation;
+            Client.Instance.playerInfo.updateInfo.headPos = head.position;
+            Client.Instance.playerInfo.updateInfo.headRot = head.rotation;
 
-            Client.Instance.playerInfo.updateInfo.leftHandPos = leftHand.Position;
-            Client.Instance.playerInfo.updateInfo.leftHandRot = leftHand.Rotation;
+            Client.Instance.playerInfo.updateInfo.leftHandPos = leftHand.position;
+            Client.Instance.playerInfo.updateInfo.leftHandRot = leftHand.rotation;
 
-            Client.Instance.playerInfo.updateInfo.rightHandPos = rightHand.Position;
-            Client.Instance.playerInfo.updateInfo.rightHandRot = rightHand.Rotation;
+            Client.Instance.playerInfo.updateInfo.rightHandPos = rightHand.position;
+            Client.Instance.playerInfo.updateInfo.rightHandRot = rightHand.rotation;
 
             //if (CustomAvatar.Plugin.IsFullBodyTracking)
             //{
@@ -1025,14 +1028,16 @@ namespace BeatSaberMultiplayerLite
 
             audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault(x => !(x is OnlineAudioTimeController));
 
-            _pauseMenuManager = FindObjectsOfType<PauseMenuManager>().First();
-
+            _pauseMenuManager = FindObjectOfType<PauseMenuManager>();
+            
             if (_pauseMenuManager != null)
             {
                 _pauseMenuManager.GetPrivateField<Button>("_restartButton").interactable = false;
             }
 
             Plugin.log.Debug("Found pause manager");
+
+            _gameManager = FindObjectOfType<StandardLevelGameplayManager>();
 
             _loaded = true;
         }

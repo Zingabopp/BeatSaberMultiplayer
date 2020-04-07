@@ -67,6 +67,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
                 }
 
                 _missingFilesText.color = Color.red;
+                _missingFilesText.text = _missingFilesString;
 
                 if (_filesMising)
                 {
@@ -118,8 +119,11 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
 
         private void ModelSaberAPI_hashesCalculated()
         {
-            _buttonsRect.gameObject.SetActive(true); 
+            _missingFilesRect.gameObject.SetActive(_filesMising);
+            _buttonsRect.gameObject.SetActive(!_filesMising);
             _avatarsLoadingRect.gameObject.SetActive(false);
+            
+            AvatarController.LoadAvatars();
         }
 
         [UIAction("rooms-btn-pressed")]

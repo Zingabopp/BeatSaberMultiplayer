@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,8 +45,8 @@ namespace BeatSaberMultiplayerLite.Misc
             www.SetRequestHeader("User-Agent", UserAgent);
             return www;
         }
-        public static string UserAgent { get; } = $"{Plugin.PluginID}/{Plugin.PluginVersion}";
 
+        public static string UserAgent { get; } = $"{Assembly.GetExecutingAssembly().GetName().Name}/{Assembly.GetExecutingAssembly().GetName().Version}";
         public void Awake()
         {
             DontDestroyOnLoad(gameObject);
@@ -92,6 +93,7 @@ namespace BeatSaberMultiplayerLite.Misc
             try
             {
                 www = GetRequestForUrl(songInfo.downloadURL);
+
                 asyncRequest = www.SendWebRequest();
             }
             catch (Exception e)
@@ -285,7 +287,6 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public IEnumerator RequestSongByLevelIDCoroutine(string levelId, Action<Song> callback)
         {
-            Plugin.log.Debug($"Requesting song ({levelId.ToLower()}) from Beat Saver");
             UnityWebRequest wwwId = GetRequestForUrl($"{Config.Instance.BeatSaverURL}/api/maps/by-hash/" + levelId.ToLower());
             wwwId.timeout = 10;
 
@@ -306,7 +307,7 @@ namespace BeatSaberMultiplayerLite.Misc
                     yield break;
                 }
 
-                Song _tempSong = Song.FromSearchNode((JObject)jNode);
+                Song _tempSong = Song.FromSearchNode(jNode);
                 callback?.Invoke(_tempSong);
             }
         }

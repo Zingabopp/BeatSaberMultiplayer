@@ -6,6 +6,7 @@ using BeatSaberMultiplayerLite.Data;
 using BeatSaberMultiplayerLite.Misc;
 using HMUI;
 using Polyglot;
+using SongCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -159,7 +160,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             }
             else
             {
-                Plugin.log.Error("Unable to set beatmap characteristic! Not found");
+                Plugin.log.Error($"Unable to set beatmap characteristic \"{beatmapCharacteristicSO?.serializedName}\"! Not found");
             }
         }
 
@@ -173,7 +174,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             }
             else
             {
-                Plugin.log.Error("Unable to set beatmap difficulty! Not found");
+                Plugin.log.Error($"Unable to set beatmap difficulty \"{difficulty}\"! Not found");
             }
         }
 
@@ -238,6 +239,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         public void SetSelectedSong(SongInfo song)
         {
+            Plugin.log.Debug("Downloading song info!");
 
             controlsRect.gameObject.SetActive(false);
             buttonsRect.gameObject.SetActive(false);
@@ -459,7 +461,31 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
             int diffIndex = CustomExtensions.GetClosestDifficultyIndex(diffBeatmaps, _playerDataModel.playerData.lastSelectedBeatmapDifficulty);
 
-            difficultyControl.SetTexts(diffBeatmaps.Select(x => x.difficulty.ToString().Replace("Plus", "+")).ToArray());
+
+            var extraData = Collections.RetrieveExtraSongData(Collections.hashForLevelID(_selectedLevel.levelID));
+
+            if (extraData != null)
+            {
+                string[] difficultyLabels = new string[diffBeatmaps.Length];
+
+                var extraDifficulties = extraData._difficulties.Where(x => x._beatmapCharacteristicName == _beatmapCharacteristics[index].serializedName || x._beatmapCharacteristicName == _beatmapCharacteristics[index].characteristicNameLocalizationKey);
+
+                for (int i = 0; i < diffBeatmaps.Length; i++)
+                {
+                    var customDiff = extraDifficulties.FirstOrDefault(x => x._difficulty == diffBeatmaps[i].difficulty);
+
+                    if (customDiff != null && !string.IsNullOrEmpty(customDiff._difficultyLabel))
+                        difficultyLabels[i]= customDiff._difficultyLabel;
+                    else
+                        difficultyLabels[i]= diffBeatmaps[i].difficulty.ToString().Replace("Plus", "+");
+                }
+
+                difficultyControl.SetTexts(difficultyLabels);
+            }
+            else
+                difficultyControl.SetTexts(diffBeatmaps.Select(x => x.difficulty.ToString().Replace("Plus", "+")).ToArray());
+
+
             difficultyControl.SelectCellWithNumber(diffIndex);
             SetSelectedDifficulty(null, diffIndex);
         }

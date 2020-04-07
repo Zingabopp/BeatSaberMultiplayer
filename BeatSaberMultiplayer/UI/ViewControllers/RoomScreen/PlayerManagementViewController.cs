@@ -231,6 +231,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                     playerInfo.updateInfo = info.updateInfo;
                 }
 
+                playerName.color = playerInfo.updateInfo.playerNameColor;
+
                 speakerIcon.enabled = InGameOnlineController.Instance.VoiceChatIsTalking(playerInfo.playerId);
 
                 controlButtonsRect.gameObject.SetActive((state == RoomState.SelectingSong || state == RoomState.Results) && !playerInfo.Equals(Client.Instance.playerInfo));

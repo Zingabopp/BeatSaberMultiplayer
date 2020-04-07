@@ -55,22 +55,15 @@ namespace BeatSaberMultiplayerLite.Data
 
             players = msg.ReadInt32();
             maxPlayers = msg.ReadInt32();
-            try
-            {
-                if (songSelected)
-                {
-                    startLevelInfo = new LevelOptionsInfo(msg);
-                    selectedSong = new SongInfo(msg);
-                }
-                else
-                {
-                    startLevelInfo = default;
-                    selectedSong = null;
-                }
-            }
-            catch
-            {
+            startLevelInfo = new LevelOptionsInfo(msg);
 
+            if (songSelected)
+            {
+                selectedSong = new SongInfo(msg);
+            }
+            else
+            {
+                selectedSong = null;
             }
         }
 
@@ -91,10 +84,10 @@ namespace BeatSaberMultiplayerLite.Data
 
             msg.Write(players);
             msg.Write(maxPlayers);
+            startLevelInfo.AddToMessage(msg);
 
             if (songSelected)
             {
-                startLevelInfo.AddToMessage(msg);
                 selectedSong.AddToMessage(msg);
             }
         }
