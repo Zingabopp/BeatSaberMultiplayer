@@ -16,7 +16,7 @@ namespace BeatSaberMultiplayerLite.RichPresence.DiscordPresence
         private DiscordInstance discord;
         public DiscordPresence(string modId, string modName, Sprite modIcon, bool handleInvites, long appid)
         {
-            discord = DiscordManager.Instance.CreateInstance(new DiscordSettings() { modId = modId, modName = modName, modIcon = modIcon, handleInvites = handleInvites, appId = appid });
+            discord = DiscordManager.instance.CreateInstance(new DiscordSettings() { modId = modId, modName = modName, modIcon = modIcon, handleInvites = handleInvites, appId = appid });
             discord.OnActivityJoin += OnActivityJoin;
             discord.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
             discord.OnActivityInvite += ActivityManager_OnActivityInvite;

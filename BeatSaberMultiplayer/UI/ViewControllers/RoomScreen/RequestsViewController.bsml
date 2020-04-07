@@ -2,12 +2,12 @@
   <horizontal horizontal-fit='PreferredSize' spacing='12' pad-left='42'>
     <vertical id='song-list-rect' vertical-fit='Unconstrained' horizontal-fit='PreferredSize' pref-width='60' >
         <horizontal spacing='-6'>
-            <pg-button dir='Up' pref-width='8' icon='BeatSaberMultiplayer.Assets.DoubleArrowIcon.png' on-click='fast-scroll-up-pressed' />
+            <pg-button dir='Up' pref-width='8' icon='BeatSaberMultiplayerLite.Assets.DoubleArrowIcon.png' on-click='fast-scroll-up-pressed' />
             <pg-button dir='Up' click-event='song-list#PageUp'/>
         </horizontal>
         <list id='song-list' list-style='List' visible-cells='7' />
         <horizontal spacing='-6'>
-            <pg-button dir='Down' pref-width='8' icon='BeatSaberMultiplayer.Assets.DoubleArrowIcon.png' on-click='fast-scroll-down-pressed' />
+            <pg-button dir='Down' pref-width='8' icon='BeatSaberMultiplayerLite.Assets.DoubleArrowIcon.png' on-click='fast-scroll-down-pressed' />
             <pg-button dir='Down' click-event='song-list#PageDown'/>
         </horizontal>
     </vertical>

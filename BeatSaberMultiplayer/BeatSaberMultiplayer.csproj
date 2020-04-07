@@ -42,8 +42,6 @@
     <Compile Include="Data\ExtraPlayerFlags.cs" />
     <Compile Include="Interop\BeatSaverVotingInterop.cs" />
     <Compile Include="Interop\IDismissable.cs" />
-    <Compile Include="IPAUtilities\Accessor.cs" />
-    <Compile Include="IPAUtilities\ReflectionUtil.cs" />
     <Compile Include="Data\PlayerInfo.cs" />
     <Compile Include="Data\RoomInfo.cs" />
     <Compile Include="Data\RoomPreset.cs" />
@@ -119,8 +117,6 @@
     <Compile Include="UI\ViewControllers\RoomScreen\SongSelectionViewController.cs" />
     <Compile Include="UI\ViewControllers\RoomScreen\RoomNavigationController.cs" />
     <Compile Include="UI\ViewControllers\ServerHubScreen\RoomListViewController.cs" />
-    <Compile Include="IPAUtilities\Accessor.cs" />
-    <Compile Include="IPAUtilities\ReflectionUtil.cs" />
     <Compile Include="VOIP\AudioUtils.cs" />
     <Compile Include="VOIP\FifoFloatStream.cs" />
     <Compile Include="VOIP\SpeexCodex.cs" />
@@ -282,6 +278,7 @@
     <Reference Include="ScoreSaber, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\ScoreSaber.dll</HintPath>
+      <Aliases>ScoreSaberGlobal</Aliases>
     </Reference>
     <Reference Include="SemVer, Version=1.2.2.0, Culture=neutral, PublicKeyToken=a89bb7dc6f7a145c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -113,8 +113,6 @@ namespace BeatSaberMultiplayerLite
                 _messageDisplayText.alignment = TextAlignmentOptions.Center;
                 DontDestroyOnLoad(_messageDisplayText.gameObject);
 
-                AvatarManager.instance.avatarChanged += PlayerAvatarManager_AvatarChanged;
-
                 if (Config.Instance.EnableVoiceChat)
                 {
                     voiceChatListener = new GameObject("Voice Chat Listener").AddComponent<VoipListener>();
@@ -786,9 +784,9 @@ namespace BeatSaberMultiplayerLite
                 _avatarInput = PlayerPosition.instance;//CustomAvatar.Plugin.Instance.PlayerAvatarManager._playerAvatarInput;
             }
 
-            _avatarInput.TryGetHeadPose(out var head);
-            _avatarInput.TryGetLeftHandPose(out var leftHand);
-            _avatarInput.TryGetRightHandPose(out var rightHand);
+            _avatarInput.TryGetHeadPose(out Pose head);
+            _avatarInput.TryGetLeftHandPose(out Pose leftHand);
+            _avatarInput.TryGetRightHandPose(out Pose rightHand);
 
             Client.Instance.playerInfo.updateInfo.headPos = head.position;
             Client.Instance.playerInfo.updateInfo.headRot = head.rotation;

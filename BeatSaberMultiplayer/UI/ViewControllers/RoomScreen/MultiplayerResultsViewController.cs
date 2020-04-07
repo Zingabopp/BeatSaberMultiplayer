@@ -201,13 +201,11 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
                 voting?.Setup(this, PluginUI.instance.roomFlowCoordinator.levelDifficultyBeatmap.level);
             }
-            voting?.Hide();
             else
             {
                 Plugin.log.Warn("Difficulty beatmap is null, unable to set level stats!");
-
+                voting?.Hide();
             }
-
             levelCoverImage.texture = await selectedLevel.GetCoverImageTexture2DAsync(new CancellationTokenSource().Token);
 
         }

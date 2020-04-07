@@ -11,6 +11,7 @@ namespace BeatSaberMultiplayerLite
     public class PlayerPosition
     {
         public static PlayerPosition instance;
+        private bool _validPose = true;
         public PlayerPosition()
         {
             instance = this;
@@ -34,6 +35,27 @@ namespace BeatSaberMultiplayerLite
             {
                 return GetXRNodeWorldPosRot(XRNode.RightHand);
             }
+        }
+
+        public bool TryGetHeadPose(out Pose head)
+        {
+            PosRot posRot = HeadPosRot;
+            head = new Pose(posRot.Position, posRot.Rotation);
+            return _validPose;
+        }
+
+        public bool TryGetLeftHandPose(out Pose leftHand)
+        {
+            PosRot posRot = LeftPosRot;
+            leftHand = new Pose(posRot.Position, posRot.Rotation);
+            return _validPose;
+        }
+
+        public bool TryGetRightHandPose(out Pose rightHand)
+        {
+            PosRot posRot = RightPosRot;
+            rightHand = new Pose(posRot.Position, posRot.Rotation);
+            return _validPose;
         }
 
 

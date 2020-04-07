@@ -2,6 +2,7 @@
 using HMUI;
 using System;
 using System.Collections.Generic;
+using IPA.Utilities;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -17,17 +18,19 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     public enum TopButtonsState { Select, SortBy, Search, Mode };
 
-    class SongSelectionViewController : HotReloadableViewController, TableView.IDataSource
+    class SongSelectionViewController : BSMLResourceViewController, TableView.IDataSource
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
         public RoomFlowCoordinator ParentFlowCoordinator { get; internal set; }
-        private readonly IPAUtilities.PropertyAccessor<TableViewScroller, float>.Setter SetScrollPosition = IPAUtilities.PropertyAccessor<TableViewScroller, float>.GetSetter("position");
-        private readonly IPAUtilities.FieldAccessor<TableViewScroller, float>.Accessor TableViewScrollerTargetPosition = IPAUtilities.FieldAccessor<TableViewScroller, float>.GetAccessor("_targetPosition");
-        private readonly IPAUtilities.FieldAccessor<TableView, TableViewScroller>.Accessor GetTableViewScroller = IPAUtilities.FieldAccessor<TableView, TableViewScroller>.GetAccessor("_scroller");
+        private readonly PropertyAccessor<TableViewScroller, float>.Setter SetScrollPosition = PropertyAccessor<TableViewScroller, float>.GetSetter("position");
+        private readonly FieldAccessor<TableViewScroller, float>.Accessor TableViewScrollerTargetPosition = FieldAccessor<TableViewScroller, float>.GetAccessor("_targetPosition");
+        private readonly FieldAccessor<TableView, TableViewScroller>.Accessor GetTableViewScroller = FieldAccessor<TableView, TableViewScroller>.GetAccessor("_scroller");
         public event Action<IPreviewBeatmapLevel> SongSelected;
         public event Action<IPreviewBeatmapLevel> RequestSongPressed;
         public event Action<string> SearchPressed;
         public event Action<SortMode> SortPressed;
+        public event Action PlayerRequestsPressed;
+        public event Action RequestModePressed;
         private ISongDownloader downloader;
 
 #pragma warning disable CS0649
@@ -298,12 +301,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         {
             SelectTopButtons(TopButtonsState.Select);
             _searchKeyboard.modalView.Show(true);
-        }
-
-        [UIAction("more-btn-pressed")]
-        public void MoreButtonPressed()
-        {
-            downloader?.PresentDownloaderFlowCoordinator(ParentFlowCoordinator, MoreSongsFinishedCallback);
         }
 
         int LastRandomSong;

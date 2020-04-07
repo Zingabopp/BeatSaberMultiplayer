@@ -1,8 +1,9 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
-using BeatSaberMultiplayer.Data;
-using BeatSaberMultiplayer.Misc;
+using BeatSaberMultiplayerLite.Data;
+using IPA.Utilities;
+using BeatSaberMultiplayerLite.Misc;
 using HMUI;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using Image = UnityEngine.UI.Image;
 
-namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
+namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
-    public class RequestsViewController : HotReloadableViewController, TableView.IDataSource
+    public class RequestsViewController : BSMLResourceViewController, TableView.IDataSource
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
-
-        public override string ContentFilePath => @"C:\Users\andru_000\Source\Repos\BeatSaberMultiplayer\BeatSaberMultiplayer\UI\ViewControllers\RoomScreen\RequestsViewController.bsml";
 
         public event Action BackPressed;
         public event Action<SongInfo> SongSelected;
@@ -149,14 +148,14 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
             }
             else
             {
-                tableCell.GetPrivateField<TextMeshProUGUI>("_songNameText").text = string.Format("{0} <size=80%>{1}</size>", level.songName, level.songSubName);
-                tableCell.GetPrivateField<TextMeshProUGUI>("_authorText").text = level.songAuthorName;
+                tableCell.GetField<TextMeshProUGUI, LevelListTableCell>("_songNameText").text = string.Format("{0} <size=80%>{1}</size>", level.songName, level.songSubName);
+                tableCell.GetField<TextMeshProUGUI, LevelListTableCell>("_authorText").text = level.songAuthorName;
 
-                var coverImage = tableCell.GetPrivateField<RawImage>("_coverRawImage");
+                var coverImage = tableCell.GetField<RawImage, LevelListTableCell>("_coverRawImage");
                 coverImage.texture = null;
                 coverImage.color = Color.clear;
 
-                Image[] chars = tableCell.GetPrivateField<Image[]>("_beatmapCharacteristicImages");
+                Image[] chars = tableCell.GetField<Image[], LevelListTableCell>("_beatmapCharacteristicImages");
 
                 foreach(var img in chars)
                 {
@@ -165,8 +164,8 @@ namespace BeatSaberMultiplayer.UI.ViewControllers.RoomScreen
 
                 SongDownloader.Instance.RequestSongByLevelID(requestedSongs[idx].hash, (info) =>
                 {
-                    tableCell.GetPrivateField<TextMeshProUGUI>("_songNameText").text = string.Format("{0} <size=80%>{1}</size>", info.songName, info.songSubName);
-                    tableCell.GetPrivateField<TextMeshProUGUI>("_authorText").text = info.songAuthorName;
+                    tableCell.GetField<TextMeshProUGUI, LevelListTableCell>("_songNameText").text = string.Format("{0} <size=80%>{1}</size>", info.songName, info.songSubName);
+                    tableCell.GetField<TextMeshProUGUI, LevelListTableCell>("_authorText").text = info.songAuthorName;
 
                     StartCoroutine(LoadScripts.LoadSpriteCoroutine(info.coverURL, (cover) => { coverImage.texture = cover; }));
                 });

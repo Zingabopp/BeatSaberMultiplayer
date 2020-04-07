@@ -67,7 +67,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
                 }
 
                 _missingFilesText.color = Color.red;
-                _missingFilesText.text = _missingFilesString;
 
                 if (_filesMising)
                 {
@@ -115,15 +114,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
             //    _loadingProgressText.text = $"{ModelSaberAPI.calculatedHashesCount} out of {ModelSaberAPI.totalAvatarsCount}";
             //    _progressBarTop.rectTransform.sizeDelta = new Vector2(60f * (ModelSaberAPI.calculatedHashesCount / (float)ModelSaberAPI.totalAvatarsCount), 6f);
             //}
-        }
-
-        private void ModelSaberAPI_hashesCalculated()
-        {
-            _missingFilesRect.gameObject.SetActive(_filesMising);
-            _buttonsRect.gameObject.SetActive(!_filesMising);
-            _avatarsLoadingRect.gameObject.SetActive(false);
-            
-            AvatarController.LoadAvatars();
         }
 
         [UIAction("rooms-btn-pressed")]

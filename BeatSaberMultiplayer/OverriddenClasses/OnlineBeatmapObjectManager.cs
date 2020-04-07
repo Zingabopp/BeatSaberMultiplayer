@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IPA.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -6,10 +7,19 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer.OverriddenClasses
+namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
     public class OnlineBeatmapObjectManager : BeatmapObjectManager
     {
+        FieldAccessor<BeatmapObjectManager, Action<NoteController>>.Accessor GetNoteWasSpawnedEvent = FieldAccessor<BeatmapObjectManager, Action<NoteController>>.GetAccessor(nameof(BeatmapObjectManager.noteWasSpawnedEvent));
+        FieldAccessor<BeatmapObjectManager, Action<INoteController, NoteCutInfo>>.Accessor GetNoteWasCutEvent = FieldAccessor<BeatmapObjectManager, Action<INoteController, NoteCutInfo>>.GetAccessor(nameof(BeatmapObjectManager.noteWasCutEvent));
+        FieldAccessor<NoteJump, PlayerController>.Accessor NoteJumpPlayerController = FieldAccessor<NoteJump, PlayerController>.GetAccessor("_playerController");
+        FieldAccessor<NoteJump, AudioTimeSyncController>.Accessor NoteJumpAudioTimeSyncController = FieldAccessor<NoteJump, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
+        FieldAccessor<NoteFloorMovement, AudioTimeSyncController>.Accessor NoteFloorMovementAudioTimeSyncController = FieldAccessor<NoteFloorMovement, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
+        FieldAccessor<ObstacleController, PlayerController>.Accessor ObstacleControllerPlayerController = FieldAccessor<ObstacleController, PlayerController>.GetAccessor("_playerController");
+        FieldAccessor<ObstacleController, AudioTimeSyncController>.Accessor ObstacleControllerAudioTimeSyncController = FieldAccessor<ObstacleController, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
+
+        private BeatmapObjectManager _beatmapObjectManager;
         public OnlinePlayerController owner;
         public OnlineAudioTimeController onlineSyncController;
 
@@ -18,7 +28,10 @@ namespace BeatSaberMultiplayer.OverriddenClasses
 
         private List<NoteController> _activeNotes = new List<NoteController>();
         private List<ObstacleController> _activeObstacles = new List<ObstacleController>();
-
+        public OnlineBeatmapObjectManager()
+        {
+            _beatmapObjectManager = this;
+        }
         public void Init(OnlinePlayerController newOwner, OnlineAudioTimeController syncController)
         {
             BeatmapObjectManager original = FindObjectsOfType<BeatmapObjectManager>().First(x => !(x is OnlineBeatmapObjectManager));
@@ -51,7 +64,8 @@ namespace BeatSaberMultiplayer.OverriddenClasses
             {
                 noteController.Init(noteData, rotation, moveStartPos, moveEndPos, jumpEndPos, moveDuration, jumpDuration, jumpGravity, cutDirectionAngleOffset);
             }
-            this.GetPrivateField<Action<NoteController>>("noteWasSpawnedEvent")?.Invoke(noteController);
+
+            GetNoteWasSpawnedEvent(ref _beatmapObjectManager)?.Invoke(noteController);
         }
 
         public new void SpawnBombNote(NoteData noteData, Vector3 moveStartPos, Vector3 moveEndPos, Vector3 jumpEndPos, float moveDuration, float jumpDuration, float jumpGravity, float rotation)
@@ -60,7 +74,7 @@ namespace BeatSaberMultiplayer.OverriddenClasses
             SetNoteControllerEventCallbacks(noteController);
             noteController.transform.SetPositionAndRotation(moveStartPos, Quaternion.identity);
             noteController.Init(noteData, rotation, moveStartPos, moveEndPos, jumpEndPos, moveDuration, jumpDuration, jumpGravity, 0f);
-            this.GetPrivateField<Action<NoteController>>("noteWasSpawnedEvent")?.Invoke(noteController);
+            GetNoteWasSpawnedEvent(ref _beatmapObjectManager)?.Invoke(noteController);
         }
 
         public new void SpawnObstacle(ObstacleData obstacleData, Vector3 moveStartPos, Vector3 moveEndPos, Vector3 jumpEndPos, float moveDuration, float jumpDuration, float rotation, float noteLinesDistance, float obstacleHeight)
@@ -80,9 +94,10 @@ namespace BeatSaberMultiplayer.OverriddenClasses
             noteController.noteDidDissolveEvent += HandleNoteDidDissolve;
 
             var noteJump = noteController.GetComponent<NoteJump>();
-            noteJump.SetPrivateField("_playerController", owner);
-            noteJump.SetPrivateField("_audioTimeSyncController", onlineSyncController);
-            noteController.GetComponent<NoteFloorMovement>().SetPrivateField("_audioTimeSyncController", onlineSyncController);
+            NoteJumpPlayerController(ref noteJump) = owner;
+            NoteJumpAudioTimeSyncController(ref noteJump) =  onlineSyncController;
+            var noteFloorMovement = noteController.GetComponent<NoteFloorMovement>();
+            NoteFloorMovementAudioTimeSyncController(ref noteFloorMovement) = onlineSyncController;
             _activeNotes.Add(noteController);
         }
 
@@ -95,9 +110,10 @@ namespace BeatSaberMultiplayer.OverriddenClasses
             noteController.noteDidDissolveEvent -= HandleNoteDidDissolve;
 
             var noteJump = noteController.GetComponent<NoteJump>();
-            noteJump.SetPrivateField("_playerController", _localPlayer);
-            noteJump.SetPrivateField("_audioTimeSyncController", _localSyncController);
-            noteController.GetComponent<NoteFloorMovement>().SetPrivateField("_audioTimeSyncController", _localSyncController);
+            NoteJumpPlayerController(ref noteJump) = _localPlayer;
+            NoteJumpAudioTimeSyncController(ref noteJump) = _localSyncController;
+            var noteFloorMovement = noteController.GetComponent<NoteFloorMovement>();
+            NoteFloorMovementAudioTimeSyncController(ref noteFloorMovement) = _localSyncController;
 
             if (_activeNotes != null)
                 _activeNotes.Remove(noteController);
@@ -110,8 +126,8 @@ namespace BeatSaberMultiplayer.OverriddenClasses
             obstacleController.passedAvoidedMarkEvent += HandleObstaclePassedAvoidedMark;
             obstacleController.didDissolveEvent += HandleObstacleDidDissolve;
 
-            obstacleController.SetPrivateField("_playerController", owner);
-            obstacleController.SetPrivateField("_audioTimeSyncController", onlineSyncController);
+            ObstacleControllerPlayerController(ref obstacleController) = owner;
+            ObstacleControllerAudioTimeSyncController(ref obstacleController) = onlineSyncController;
             _activeObstacles.Add(obstacleController);
         }
 
@@ -122,8 +138,8 @@ namespace BeatSaberMultiplayer.OverriddenClasses
             obstacleController.passedAvoidedMarkEvent -= HandleObstaclePassedAvoidedMark;
             obstacleController.didDissolveEvent -= HandleObstacleDidDissolve;
 
-            obstacleController.SetPrivateField("_playerController", _localPlayer);
-            obstacleController.SetPrivateField("_audioTimeSyncController", _localSyncController);
+            ObstacleControllerPlayerController(ref obstacleController) = _localPlayer;
+            ObstacleControllerAudioTimeSyncController(ref obstacleController) = _localSyncController;
             if (_activeObstacles != null)
                 _activeObstacles.Remove(obstacleController);
         }
@@ -182,7 +198,8 @@ namespace BeatSaberMultiplayer.OverriddenClasses
 
         public override void HandleNoteWasCut(NoteController noteController, NoteCutInfo noteCutInfo)
         {
-            this.GetPrivateField<Action<INoteController, NoteCutInfo>>("noteWasCutEvent")?.Invoke(noteController, noteCutInfo);
+            GetNoteWasCutEvent(ref _beatmapObjectManager)?.Invoke(noteController, noteCutInfo);
+            this.GetField<Action<INoteController, NoteCutInfo>, BeatmapObjectManager>("noteWasCutEvent")?.Invoke(noteController, noteCutInfo);
             Despawn(noteController);
         }
 

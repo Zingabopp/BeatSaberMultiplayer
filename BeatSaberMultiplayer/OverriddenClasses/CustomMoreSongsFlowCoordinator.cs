@@ -4,9 +4,9 @@ using BeatSaberMarkupLanguage;
 using BeatSaverDownloader.UI.ViewControllers;
 using BeatSaverDownloader.UI;
 using HMUI;
-using BeatSaberMultiplayerLite.IPAUtilities;
+using IPA.Utilities;
 using System.Reflection;
-using BeatSaberMultiplayer.Interop;
+using BeatSaberMultiplayerLite.Interop;
 
 namespace BeatSaberMultiplayerLite.OverriddenClasses
 {

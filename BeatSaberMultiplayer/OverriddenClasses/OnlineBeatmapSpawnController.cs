@@ -24,16 +24,21 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             _initData = original.GetPrivateField<InitData>("_initData");
             _beatmapObjectCallbackController = original.GetPrivateField<BeatmapObjectCallbackController>("_beatmapObjectCallbackController");
 
-    //        //_beatmapCallbackItemDataList = new List<BeatmapObjectSpawnController.BeatmapCallbackItemData>(10);
+            owner = newOwner;
 
             onlineObjectManager = objectManager;
             _beatmapObjectCallbackController = callbackController;
             onlineSyncController = syncController;
         }
 
-    //        _activeNotes = new List<NoteController>();
-    //        _activeObstacles = new List<ObstacleController>();
-    //    }
+        public override void Start()
+        {
+            try
+            {
+                if (BS_Utils.Plugin.LevelData.IsSet)
+                {
+                    LevelOptionsInfo levelInfo = owner.playerInfo.updateInfo.playerLevelOptions;
+                    IDifficultyBeatmap diffBeatmap = BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.beatmapLevelData.difficultyBeatmapSets.First(x => x.beatmapCharacteristic.serializedName == owner.playerInfo.updateInfo.playerLevelOptions.characteristicName).difficultyBeatmaps.First(x => x.difficulty == owner.playerInfo.updateInfo.playerLevelOptions.difficulty);
 
                     _disappearingArrows = levelInfo.modifiers.disappearingArrows;
                     _ghostNotes = levelInfo.modifiers.ghostNotes;
@@ -57,11 +62,11 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             }
             catch (Exception e)
             {
-                Plugin.log.Warn("Unable to update beatmap data! Exception: " + e); 
+                Plugin.log.Warn("Unable to update beatmap data! Exception: " + e);
             }
 
             _variableBPMProcessor.SetBPM(_initData.beatsPerMinute);
-            _beatmapObjectSpawnMovementData.Init(_initData.noteLinesCount, _initData.noteJumpMovementSpeed, _initData.beatsPerMinute, _initData.noteJumpStartBeatOffset, _initData.jumpOffsetY, transform.position + transform.right * owner.avatarOffset, transform.right, transform.forward);
+            _beatmapObjectSpawnMovementData.Init(_initData.noteLinesCount, _initData.noteJumpMovementSpeed, _initData.beatsPerMinute, _initData.noteJumpStartBeatOffset, _initData.jumpOffsetY, transform.position + transform.right + owner.avatarOffset, transform.right, transform.forward);
             _beatmapCallbackItemDataList = new BeatmapCallbackItemDataList(new BeatmapCallbackItemDataList.SpawnNoteCallback(SpawnNote), new BeatmapCallbackItemDataList.SpawnObstacleCallback(SpawnObstacle), new BeatmapCallbackItemDataList.ProcessBeatmapEventCallback(ProcessEarlyBeatmapEventData), new BeatmapCallbackItemDataList.ProcessBeatmapEventCallback(ProcessLateBeatmapEventData), new Action(EarlyEventsWereProcessed), new BeatmapCallbackItemDataList.GetRelativeNoteOffsetCallback(_beatmapObjectSpawnMovementData.Get2DNoteOffset));
             _jumpOffsetY = _initData.jumpOffsetY;
             _disappearingArrows = _initData.disappearingArrows;

@@ -1,4 +1,5 @@
-﻿using CustomAvatar.Tracking;
+﻿/*
+using CustomAvatar.Tracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BeatSaberMultiplayer
+namespace BeatSaberMultiplayerLite
 {
     public class MultiplayerAvatarInput : AvatarInput
     {
@@ -64,3 +65,4 @@ namespace BeatSaberMultiplayer
         }
     }
 }
+*/

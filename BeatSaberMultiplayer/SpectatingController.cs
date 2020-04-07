@@ -250,12 +250,12 @@ namespace BeatSaberMultiplayerLite
             audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
 
             _leftSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == SaberType.SaberB);
-            _leftController = _leftSaber.GetPrivateField<VRController>("_vrController").gameObject.AddComponent<OnlineVRController>();
-            _leftSaber.SetPrivateField("_vrController", _leftController);
+            _leftController = _leftSaber.GetField<VRController, Saber>("_vrController").gameObject.AddComponent<OnlineVRController>();
+            _leftSaber.SetField("_vrController", _leftController);
 
             _rightSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == SaberType.SaberA);
-            _rightController = _rightSaber.GetPrivateField<VRController>("_vrController").gameObject.AddComponent<OnlineVRController>();
-            _rightSaber.SetPrivateField("_vrController", _rightController);
+            _rightController = _rightSaber.GetField<VRController, Saber>("_vrController").gameObject.AddComponent<OnlineVRController>();
+            _rightSaber.SetField("_vrController", _rightController);
 
             Plugin.log.Info("Controllers replaced!");
 
