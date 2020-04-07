@@ -50,6 +50,7 @@
     <Compile Include="Data\SongInfo.cs" />
     <Compile Include="Data\LevelOptionsInfo.cs" />
     <Compile Include="Interop\IVotingInterop.cs" />
+    <Compile Include="MultiplayerExceptions.cs" />
     <Compile Include="RichPresence\ActivityStructs.cs" />
     <Compile Include="RichPresence\DiscordPresence\DiscordPresence.cs" />
     <Compile Include="RichPresence\DiscordPresence\DiscordJoinRequest.cs" />
