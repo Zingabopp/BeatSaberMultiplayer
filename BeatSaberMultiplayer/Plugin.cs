@@ -28,7 +28,7 @@ namespace BeatSaberMultiplayerLite
         public static readonly string PluginName = "Beat Saber Multiplayer Lite";
         public static readonly string HarmonyId = "com.Zingabopp.BeatSaberMultiplayerLite";
         public static string PluginVersion { get; private set; }
-        public static Version ClientCompatibilityVersion = new Version(0, 7, 1, 0);
+        public static Version ClientCompatibilityVersion = new Version(0, 7, 2, 0);
         internal static PluginMetadata PluginMetadata;
         public static Plugin instance;
         public static IPA.Logging.Logger log;
