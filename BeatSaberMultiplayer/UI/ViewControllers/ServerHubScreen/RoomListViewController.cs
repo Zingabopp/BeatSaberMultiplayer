@@ -59,7 +59,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
 
             if (rooms != null)
             {
-                var availableRooms = rooms.OrderByDescending(y => y.roomInfo.players);
+                var availableRooms = rooms
+                    .OrderBy(y => y.roomInfo.usePassword)
+                    .ThenBy(y => y.roomInfo.players == y.roomInfo.maxPlayers)
+                    .ThenByDescending(y => y.roomInfo.players);
 
                 foreach (ServerHubRoom room in availableRooms)
                 {
