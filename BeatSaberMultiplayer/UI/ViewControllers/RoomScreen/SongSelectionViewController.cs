@@ -92,6 +92,17 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 NotifyPropertyChanged();
             }
         }
+        private int _requestsCount;
+        public int RequestsCount
+        {
+            get { return _requestsCount; }
+            set
+            {
+                if (_requestsCount == value) return;
+                _requestsCount = value;
+                RequestsText = $"In queue: {_requestsCount}";
+            }
+        }
 
         private TableViewScroller _songListScroller;
         public TableViewScroller SongListScroller
@@ -118,6 +129,12 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         List<IPreviewBeatmapLevel> availableSongs = new List<IPreviewBeatmapLevel>();
         private IPreviewBeatmapLevel selectedSong;
+
+        private void OnRequestedSongsChanged(object sender, int songCount)
+        {
+            Plugin.log.Debug($"Song request count changed to {songCount}");
+            RequestsCount = songCount;
+        }
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
@@ -149,12 +166,18 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 _additionalContentModel = Resources.FindObjectsOfTypeAll<AdditionalContentModel>().First();
             }
 
+            ParentFlowCoordinator.RequestedSongCountChanged -= OnRequestedSongsChanged;
+            ParentFlowCoordinator.RequestedSongCountChanged += OnRequestedSongsChanged;
+            RequestsCount = ParentFlowCoordinator.RequestedSongCount;
+            Plugin.log.Debug($"Adding OnRequestedSongsChanged");
             SelectTopButtons(TopButtonsState.Select);
         }
 
         protected override void DidDeactivate(DeactivationType deactivationType)
         {
             _parserParams.EmitEvent("closeAllMPModals");
+            ParentFlowCoordinator.RequestedSongCountChanged -= OnRequestedSongsChanged;
+            Plugin.log.Debug($"Removing OnRequestedSongsChanged");
             base.DidDeactivate(deactivationType);
         }
 
@@ -223,7 +246,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public void UpdateViewController(bool isHost, int requestedSongs)
         {
             this.isHost = isHost;
-            RequestsText = $"In queue: {requestedSongs}";
+            RequestsCount = requestedSongs;
             _songListRect.gameObject.SetActive(isHost || requestMode);
             _hostIsSelectingSongText.gameObject.SetActive(!isHost && !requestMode);
             _requestSongButton.gameObject.SetActive(!isHost && requestMode);

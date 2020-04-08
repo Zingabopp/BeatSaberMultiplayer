@@ -163,6 +163,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         private SimpleDialogPromptViewController _hostLeaveDialog;
 
         private List<SongInfo> _requestedSongs = new List<SongInfo>();
+        internal int RequestedSongCount => _requestedSongs.Count;
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
         {
@@ -582,16 +583,18 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                 //TODO: Look into this
                                 int songsCount = msg.ReadInt32();
                                 _requestedSongs.Clear();
-
+                                Plugin.log.Debug($"GetRequestedSongs packet received.");
                                 for (int i = 0; i < songsCount; i++)
                                 {
                                     _requestedSongs.Add(new SongInfo(msg));
                                 }
 
-                                if (_requestsViewController.isInViewControllerHierarchy && !_requestsViewController.GetPrivateField<bool>("_isInTransition"))
+                                if ((_requestsViewController?.isInViewControllerHierarchy ?? false) && !_requestsViewController.GetPrivateField<bool>("_isInTransition"))
                                 {
                                     _requestsViewController.SetSongs(_requestedSongs);
                                 }
+                                var handler = RequestedSongCountChanged;
+                                handler?.Invoke(this, songsCount);
                             }
                             break;
                         case CommandType.Disconnect:
@@ -607,6 +610,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 }
             }
         }
+
+        public event EventHandler<int> RequestedSongCountChanged;
 
         public void UpdateUI(RoomState state)
         {
