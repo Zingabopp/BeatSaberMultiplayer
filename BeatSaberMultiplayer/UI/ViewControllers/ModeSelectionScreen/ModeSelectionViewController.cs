@@ -80,19 +80,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
                     _missingFilesRect.gameObject.SetActive(false);
                     _buttonsRect.gameObject.SetActive(true);
                 }
-
-                //if (ModelSaberAPI.isCalculatingHashes)
-                //{
-                //    _buttonsRect.gameObject.SetActive(false);
-                //    _avatarsLoadingRect.gameObject.SetActive(true);
-                //    ModelSaberAPI.hashesCalculated += ModelSaberAPI_hashesCalculated;
-
-                //    _progressBarBG.color = new Color(1f, 1f, 1f, 0.2f);
-                //    _progressBarTop.color = new Color(1f, 1f, 1f, 1f);
-
-                //}
-                //else
-                    _avatarsLoadingRect.gameObject.SetActive(false);
+                _avatarsLoadingRect.gameObject.SetActive(false);
                 try
                 {
                     var pluginVersion = Plugin.PluginMetadata.Version.ToString();
@@ -105,15 +93,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
                     _versionText.text = "ERROR";
                 }
             }
-        }
-
-        private void Update()
-        {
-            //if (ModelSaberAPI.isCalculatingHashes)
-            //{
-            //    _loadingProgressText.text = $"{ModelSaberAPI.calculatedHashesCount} out of {ModelSaberAPI.totalAvatarsCount}";
-            //    _progressBarTop.rectTransform.sizeDelta = new Vector2(60f * (ModelSaberAPI.calculatedHashesCount / (float)ModelSaberAPI.totalAvatarsCount), 6f);
-            //}
         }
 
         [UIAction("rooms-btn-pressed")]
