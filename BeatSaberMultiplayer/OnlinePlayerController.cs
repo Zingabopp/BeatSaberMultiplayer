@@ -14,8 +14,17 @@ namespace BeatSaberMultiplayerLite
     public class OnlinePlayerController : PlayerController
     {
         private const int _voipDelay = 1;
-
-        public PlayerInfo playerInfo;
+        private PlayerInfo _playerInfo;
+        public PlayerInfo playerInfo
+        {
+            get { return _playerInfo; }
+            set
+            {
+                _playerInfo = value;
+                IsLocal = Client.Instance.playerInfo.playerId == _playerInfo.playerId;
+            }
+        }
+        public bool IsLocal { get; private set; }
         //public AvatarController avatar;
         public IPlayerInfoReceiver PlayerInfoReceiver { get; set; }
         public AudioSource voipSource;
@@ -359,7 +368,7 @@ namespace BeatSaberMultiplayerLite
             if (PlayerInfoReceiver == null)
             {
                 PlayerInfoReceiver = new GameObject("AvatarController").AddComponent<AvatarController>();
-                PlayerInfoReceiver.SetPlayerInfo(playerInfo, avatarOffset, Client.Instance.playerInfo.Equals(playerInfo));
+                PlayerInfoReceiver.SetPlayerInfo(playerInfo, avatarOffset, IsLocal);
             }
             else if (!enabled && PlayerInfoReceiver != null)
             {

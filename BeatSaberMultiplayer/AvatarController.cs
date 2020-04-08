@@ -57,8 +57,10 @@ namespace BeatSaberMultiplayerLite
             playerSpeakerIcon.rectTransform.pivot = new Vector2(0.5f, 0.5f);
             playerSpeakerIcon.rectTransform.anchoredPosition3D = new Vector3(0f, 1f, 0f);
             playerSpeakerIcon.sprite = Sprites.speakerIcon;
-
-            transform.SetParent(centerAdjust.transform, false);
+            if (centerAdjust != null) // Probably only null with FPFC on.
+                transform.SetParent(centerAdjust.transform, false);
+            else
+                Plugin.log.Error($"VRCenterAdjust is null, unable to parent the {nameof(AvatarController)} to it.");
         }
 
         void Update()
@@ -104,7 +106,9 @@ namespace BeatSaberMultiplayerLite
         void OnDestroy()
         {
             Plugin.log.Debug("Destroying avatar");
-
+            Destroy(playerNameText);
+            Destroy(playerSpeakerIcon);
+            Destroy(playerFaceText);
             //if(avatar != null && avatar.GameObject != null)
             //    Destroy(avatar.GameObject);
         }
@@ -114,6 +118,7 @@ namespace BeatSaberMultiplayerLite
             if (_playerInfo == default)
             {
                 if (playerNameText != null) playerNameText.gameObject.SetActive(false);
+                if (playerFaceText != null) playerFaceText.gameObject.SetActive(false);
                 if (playerSpeakerIcon != null) playerSpeakerIcon.gameObject.SetActive(false);
                 return;
             }
@@ -130,6 +135,7 @@ namespace BeatSaberMultiplayerLite
                     if (isLocal)
                     {
                         playerNameText.gameObject.SetActive(false);
+                        if (playerFaceText != null) playerFaceText.gameObject.SetActive(false);
                         playerSpeakerIcon.gameObject.SetActive(false);
                     }
                     else

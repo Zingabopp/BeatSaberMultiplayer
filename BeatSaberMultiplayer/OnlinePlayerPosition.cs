@@ -78,7 +78,7 @@ namespace BeatSaberMultiplayerLite
             }
             PlayerUpdate playerUpdate = playerInfo.updateInfo;
             _headPosRot = new PosRot(playerUpdate.headPos + offset, playerUpdate.headRot);
-            Plugin.log.Debug($"Received OnlinePlayer update: {_headPosRot.Position}, {_headPosRot.Rotation}");
+            //Plugin.log.Debug($"Received OnlinePlayer update: {_headPosRot.Position}, {_headPosRot.Rotation}");
             _leftPosRot = new PosRot(playerUpdate.leftHandPos + offset, playerUpdate.leftHandRot);
             _rightPosRot = new PosRot(playerUpdate.rightHandPos + offset, playerUpdate.rightHandRot);
             
