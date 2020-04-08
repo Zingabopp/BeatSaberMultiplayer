@@ -39,7 +39,8 @@ namespace BeatSaberMultiplayerLite
         private static string joinSecret;
         public static FirstPersonFlyingController fpfc;
         public static bool DownloaderExists { get; private set; }
-
+        private bool _fullMultiplayerExists = false;
+        private bool _fullMultiplayerCheckComplete = false;
         public static string Username;
         public static ulong UserId;
 
@@ -65,12 +66,25 @@ namespace BeatSaberMultiplayerLite
             }
 #endif
         }
+
+        private bool FullMultiplayerExists
+        {
+            get
+            {
+                if (!_fullMultiplayerCheckComplete)
+                {
+                    _fullMultiplayerExists = PluginManager.GetPluginFromId("BeatSaberMultiplayer") != null && PluginManager.GetDisabledPluginFromId("BeatSaberMultiplayer") == null;
+                    _fullMultiplayerCheckComplete = true;
+                }
+                return _fullMultiplayerExists;
+            }
+        }
+
         [Init]
         public void Init(IPA.Logging.Logger logger, PluginMetadata pluginMetadata)
         {
             log = logger;
             PluginMetadata = pluginMetadata;
-            _playerPosition = new LocalPlayerPosition();
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";
             log.Info($"{PluginMetadata.Name} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");
@@ -79,7 +93,14 @@ namespace BeatSaberMultiplayerLite
         [OnStart]
         public void OnApplicationStart()
         {
+
+            if (FullMultiplayerExists)
+            {
+                Plugin.log.Critical("BeatSaberMultiplayer mod detected, disabling BeatSaberMultiplayerLite.");
+                return;
+            }
             instance = this;
+            _playerPosition = new LocalPlayerPosition();
             //BS_Utils.Utilities.BSEvents.OnLoad();
             BS_Utils.Utilities.BSEvents.menuSceneLoadedFresh += MenuSceneLoadedFresh;
             BS_Utils.Utilities.BSEvents.menuSceneLoaded += MenuSceneLoaded;
