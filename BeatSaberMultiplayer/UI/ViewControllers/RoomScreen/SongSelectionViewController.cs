@@ -171,6 +171,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             RequestsCount = ParentFlowCoordinator.RequestedSongCount;
             Plugin.log.Debug($"Adding OnRequestedSongsChanged");
             SelectTopButtons(TopButtonsState.Select);
+            requestMode = false;
         }
 
         protected override void DidDeactivate(DeactivationType deactivationType)

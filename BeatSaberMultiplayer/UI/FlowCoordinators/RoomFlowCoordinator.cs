@@ -137,9 +137,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 if (_lastScrollPosition == value)
                     return;
                 _lastScrollPosition = value;
-#if DEBUG
-                Plugin.log.Debug($"{nameof(LastScrollPosition)} set to {value}");
-#endif
             }
         }
 
@@ -580,8 +577,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                             break;
                         case CommandType.GetRequestedSongs:
                             {
-                                //TODO: Look into this
                                 int songsCount = msg.ReadInt32();
+
                                 _requestedSongs.Clear();
                                 Plugin.log.Debug($"GetRequestedSongs packet received.");
                                 for (int i = 0; i < songsCount; i++)
@@ -589,12 +586,15 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                     _requestedSongs.Add(new SongInfo(msg));
                                 }
 
-                                if ((_requestsViewController?.isInViewControllerHierarchy ?? false) && !_requestsViewController.GetPrivateField<bool>("_isInTransition"))
+                                if (_requestsViewController != null && _requestsViewController.isInViewControllerHierarchy && !_requestsViewController.GetPrivateField<bool>("_isInTransition"))
                                 {
                                     _requestsViewController.SetSongs(_requestedSongs);
                                 }
-                                var handler = RequestedSongCountChanged;
-                                handler?.Invoke(this, songsCount);
+
+                                if(_songSelectionViewController != null && _songSelectionViewController.isInViewControllerHierarchy && !_songSelectionViewController.GetPrivateField<bool>("_isInTransition"))
+                                {
+                                    _songSelectionViewController.UpdateViewController(Client.Instance.isHost, _requestedSongs?.Count ?? 0);
+                                }
                             }
                             break;
                         case CommandType.Disconnect:
@@ -884,7 +884,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
 
 
-            _songSelectionViewController.UpdateViewController(Client.Instance.isHost, _requestedSongs.Count);
+            _songSelectionViewController.UpdateViewController(Client.Instance.isHost, _requestedSongs?.Count ?? 0);
         }
 
         private void RequestModePressed()
