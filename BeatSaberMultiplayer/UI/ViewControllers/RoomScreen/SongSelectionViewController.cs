@@ -166,8 +166,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 _additionalContentModel = Resources.FindObjectsOfTypeAll<AdditionalContentModel>().First();
             }
 
-            ParentFlowCoordinator.RequestedSongCountChanged -= OnRequestedSongsChanged;
-            ParentFlowCoordinator.RequestedSongCountChanged += OnRequestedSongsChanged;
             RequestsCount = ParentFlowCoordinator.RequestedSongCount;
             Plugin.log.Debug($"Adding OnRequestedSongsChanged");
             SelectTopButtons(TopButtonsState.Select);
@@ -177,7 +175,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         protected override void DidDeactivate(DeactivationType deactivationType)
         {
             _parserParams.EmitEvent("closeAllMPModals");
-            ParentFlowCoordinator.RequestedSongCountChanged -= OnRequestedSongsChanged;
             Plugin.log.Debug($"Removing OnRequestedSongsChanged");
             base.DidDeactivate(deactivationType);
         }

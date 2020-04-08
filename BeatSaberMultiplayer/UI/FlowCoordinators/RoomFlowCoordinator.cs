@@ -611,8 +611,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
         }
 
-        public event EventHandler<int> RequestedSongCountChanged;
-
         public void UpdateUI(RoomState state)
         {
             switch (state)
