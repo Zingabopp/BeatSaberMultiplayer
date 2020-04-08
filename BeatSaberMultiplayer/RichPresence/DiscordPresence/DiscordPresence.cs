@@ -13,10 +13,14 @@ namespace BeatSaberMultiplayerLite.RichPresence.DiscordPresence
     {
         public static readonly string NameKey = "Discord";
         public string Name => NameKey;
+        private long _appId = 0;
         private DiscordInstance discord;
         public DiscordPresence(string modId, string modName, Sprite modIcon, bool handleInvites, long appid)
         {
-            discord = DiscordManager.Instance.CreateInstance(new DiscordSettings() { modId = modId, modName = modName, modIcon = modIcon, handleInvites = handleInvites, appId = appid });
+            Plugin.log.Debug($"Creating DiscordPresence for {modId}: {appid}");
+            _appId = appid;
+            discord = DiscordManager.instance.CreateInstance(new DiscordSettings() { modId = modId, modName = modName, modIcon = modIcon, handleInvites = handleInvites, appId = appid });
+            discord.UpdateActivity(new Activity() { ApplicationId = appid });
             discord.OnActivityJoin += OnActivityJoin;
             discord.OnActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
             discord.OnActivityInvite += ActivityManager_OnActivityInvite;
@@ -25,16 +29,20 @@ namespace BeatSaberMultiplayerLite.RichPresence.DiscordPresence
 
         private void ActivityManager_OnActivityInvite(ActivityActionType type, ref User user, ref Activity activity)
         {
+            Plugin.log.Debug($"Discord ActivityInvite received: {type} from {user.Username}, {activity.Name}");
             ActivityInviteReceived?.Invoke(this, new ActivityInviteEventArgs(type.ToGameActivityActionType(), new DiscordUser(user), activity.ToGameActivity()));
         }
 
         private void ActivityManager_OnActivityJoinRequest(ref User user)
         {
+            Plugin.log.Debug($"Discord JoinRequestReceived from: {user.Username}");
             ActivityJoinRequest?.Invoke(this, new DiscordJoinRequest(new DiscordUser(user)));
         }
 
         public void OnActivityJoin(string secret)
         {
+            string[] sections = secret.Split('#');
+            Plugin.log.Debug($"Discord ActivityJoin received for: {string.Join("", sections.Take(sections.Length))}");
             ActivityJoinReceived?.Invoke(this, secret);
         }
 
@@ -45,11 +53,13 @@ namespace BeatSaberMultiplayerLite.RichPresence.DiscordPresence
 
         public void ClearActivity()
         {
-            discord.ClearActivity();
+            discord.UpdateActivity(new Activity() { ApplicationId = _appId });
+            //discord.ClearActivity();
         }
 
         public void Destroy()
         {
+            Plugin.log.Debug($"Destroying DiscordPresence");
             discord.OnActivityJoin -= OnActivityJoin;
             discord.OnActivityJoinRequest -= ActivityManager_OnActivityJoinRequest;
             discord.OnActivityInvite -= ActivityManager_OnActivityInvite;

@@ -53,6 +53,7 @@ namespace BeatSaberMultiplayerLite.Interop
                 votingUIHost.anchorMax = Vector2.one;
                 votingUIHost.sizeDelta = Vector2.zero;
                 votingUIHost.anchoredPosition = new Vector2(2.25f, -6f);
+                votingUIHost.SetParent(resultsView.resultsTab, true);
 
                 BSMLParser.instance.Parse(Utilities.GetResourceContent(votingAssembly, "BeatSaverVoting.UI.votingUI.bsml"), votingUIHost.gameObject, votingInstance);
 

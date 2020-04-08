@@ -233,12 +233,20 @@ namespace BeatSaberMultiplayerLite.UI
 
         public IEnumerator JoinGameWithSecret(string secret)
         {
-            yield return null;
-
+            if (Plugin.UserId == 0 || string.IsNullOrEmpty(Plugin.Username))
+                Plugin.ReadUserInfo();
+            yield return new WaitForSeconds(1);
             MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
-            mainFlow.InvokeMethod("PresentFlowCoordinator", modeSelectionFlowCoordinator, null, true, false);
-
-            modeSelectionFlowCoordinator.JoinGameWithSecret(secret);
+            try
+            {
+                mainFlow.InvokeMethod("PresentFlowCoordinator", modeSelectionFlowCoordinator, null, true, false);
+                modeSelectionFlowCoordinator.JoinGameWithSecret(secret);
+            }
+            catch (Exception ex)
+            {
+                Plugin.log.Error($"Error joining game: {ex.Message}");
+                Plugin.log.Debug(ex);
+            }
         }
         IEnumerator CheckVersion()
         {

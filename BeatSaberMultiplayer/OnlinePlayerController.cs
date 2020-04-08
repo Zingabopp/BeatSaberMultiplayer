@@ -14,13 +14,24 @@ namespace BeatSaberMultiplayerLite
     public class OnlinePlayerController : PlayerController
     {
         private const int _voipDelay = 1;
-
-        public PlayerInfo playerInfo;
+        private PlayerInfo _playerInfo;
+        public PlayerInfo playerInfo
+        {
+            get { return _playerInfo; }
+            set
+            {
+                _playerInfo = value;
+                IsLocal = Client.Instance.playerInfo.playerId == _playerInfo.playerId;
+            }
+        }
+        public bool IsLocal { get; private set; }
+        //public AvatarController avatar;
         public IPlayerInfoReceiver PlayerInfoReceiver { get; set; }
         public AudioSource voipSource;
 
         public OnlineBeatmapCallbackController beatmapCallbackController;
-        //public OnlineBeatmapSpawnController beatmapSpawnController;
+        public OnlineBeatmapSpawnController beatmapSpawnController;
+        public OnlineBeatmapObjectManager beatmapObjectManager;
         public OnlineAudioTimeController audioTimeController;
 
         public Vector3 avatarOffset { get; set; }
@@ -59,7 +70,7 @@ namespace BeatSaberMultiplayerLite
                 Plugin.log.Debug($"Starting player controller for {playerInfo.playerName}:{playerInfo.playerId}...");
 
                 _syncStartInfo = playerInfo.updateInfo;
-                _syncStartInfo = playerInfo.updateInfo;
+                _syncEndInfo = playerInfo.updateInfo;
             }
         }
 
@@ -67,23 +78,27 @@ namespace BeatSaberMultiplayerLite
         {
             Plugin.log.Debug("Creating beatmap controllers...");
 
-            beatmapCallbackController = new GameObject("OnlineBeatmapCallbackController").AddComponent<OnlineBeatmapCallbackController>();
-            Plugin.log.Debug("Created beatmap callback controller!");
-            beatmapCallbackController.Init(this);
-            Plugin.log.Debug("Initialized beatmap callback controller!");
-
             audioTimeController = new GameObject("OnlineAudioTimeController").AddComponent<OnlineAudioTimeController>();
             Plugin.log.Debug("Created audio time controller!");
             audioTimeController.Init(this);
             Plugin.log.Debug("Initialized audio time controller!");
 
-            //beatmapSpawnController = new GameObject("OnlineBeatmapSpawnController").AddComponent<OnlineBeatmapSpawnController>();
-            //Plugin.log.Debug("Created beatmap spawn controller!");
-            //beatmapSpawnController.Init(this, beatmapCallbackController, audioTimeController);
-            //Plugin.log.Debug("Initialized beatmap spawn controller!");
+            beatmapCallbackController = new GameObject("OnlineBeatmapCallbackController").AddComponent<OnlineBeatmapCallbackController>();
+            Plugin.log.Debug("Created beatmap callback controller!");
+            beatmapCallbackController.Init(this, audioTimeController);
+            Plugin.log.Debug("Initialized beatmap callback controller!");
+
+            beatmapObjectManager = new GameObject("OnlineBeatmapObjectManager").AddComponent<OnlineBeatmapObjectManager>();
+            Plugin.log.Debug("Created beatmap object manager!");
+            beatmapObjectManager.Init(this, audioTimeController);
+            Plugin.log.Debug("Initialized beatmap object manager!");
+
+            beatmapSpawnController = new GameObject("OnlineBeatmapSpawnController").AddComponent<OnlineBeatmapSpawnController>();
+            Plugin.log.Debug("Created beatmap spawn controller!");
+            beatmapSpawnController.Init(this, beatmapCallbackController, beatmapObjectManager, audioTimeController);
+            Plugin.log.Debug("Initialized beatmap spawn controller!");
         }
 
-        [Obsolete("XWeaponTrail doesn't have these private fields.")]
         void SpawnSabers()
         {
             Plugin.log.Debug("Spawning left saber...");
@@ -94,21 +109,25 @@ namespace BeatSaberMultiplayerLite
             catch (Exception e)
             {
                 if (!(e is NullReferenceException) || !e.StackTrace.Contains("VRController.UpdatePositionAndRotation"))
-                    Plugin.log.Critical("Unable to spawn saber (Left)! Exception: "+e);
+                    Plugin.log.Critical("Unable to spawn saber (Left)! Exception: " + e);
             }
             _leftSaber.gameObject.name = "CustomLeftSaber";
             var leftController = _leftSaber.gameObject.AddComponent<OnlineVRController>();
             leftController.owner = this;
             _leftSaber.SetPrivateField("_vrController", leftController);
 
+            //TODO: Check trails later
+
+            /*
             var leftTrail = leftController.GetComponentInChildren<XWeaponTrail>();
             var colorManager = Resources.FindObjectsOfTypeAll<ColorManager>().First();
             leftTrail.SetPrivateField("_colorManager", colorManager);
             leftTrail.SetPrivateField("_saberTypeObject", leftController.GetComponentInChildren<SaberTypeObject>());
+            */
 
             Plugin.log.Debug("Spawning right saber...");
             try
-            { 
+            {
                 _rightSaber = Instantiate(Resources.FindObjectsOfTypeAll<Saber>().First(x => x.name == "RightSaber"), transform, false);
             }
             catch (Exception e)
@@ -121,10 +140,12 @@ namespace BeatSaberMultiplayerLite
             rightController.owner = this;
             _rightSaber.SetPrivateField("_vrController", rightController);
 
+            /*
             var rightTrail = rightController.GetComponentInChildren<XWeaponTrail>();
             rightTrail.SetPrivateField("_colorManager", colorManager);
             rightTrail.SetPrivateField("_saberTypeObject", rightController.GetComponentInChildren<SaberTypeObject>());
-            
+            */
+
             Plugin.log.Debug("Sabers spawned!");
         }
 
@@ -134,23 +155,24 @@ namespace BeatSaberMultiplayerLite
             _rightSaber = rightSaber;
         }
 
-        //public void SetBlocksState(bool active)
-        //{
-        //    if(active && !playerInfo.updateInfo.playerLevelOptions.characteristicName.ToLower().Contains("degree") && beatmapCallbackController == null && audioTimeController == null && beatmapSpawnController == null && _leftSaber == null && _rightSaber == null)
-        //    {
-        //        SpawnBeatmapControllers();
-        //        SpawnSabers();
-        //    }
-        //    else if (!active && beatmapCallbackController != null && audioTimeController != null && beatmapSpawnController != null && _leftSaber != null && _rightSaber != null)
-        //    {
-        //        Destroy(beatmapCallbackController.gameObject);
-        //        Destroy(audioTimeController.gameObject);
-        //        Destroy(_leftSaber.gameObject);
-        //        Destroy(_rightSaber.gameObject);
-        //        beatmapSpawnController.PrepareForDestroy();
-        //        Destroy(beatmapSpawnController.gameObject, 1.4f);
-        //    }
-        //}
+        public void SetBlocksState(bool active)
+        {
+            if (active && !playerInfo.updateInfo.playerLevelOptions.characteristicName.ToLower().Contains("degree") && beatmapCallbackController == null && audioTimeController == null && beatmapSpawnController == null && beatmapObjectManager == null && _leftSaber == null && _rightSaber == null)
+            {
+                SpawnBeatmapControllers();
+                SpawnSabers();
+            }
+            else if (!active && beatmapCallbackController != null && audioTimeController != null && beatmapSpawnController != null && _leftSaber != null && _rightSaber != null)
+            {
+                Destroy(beatmapCallbackController.gameObject);
+                Destroy(audioTimeController.gameObject);
+                Destroy(beatmapSpawnController);
+                beatmapObjectManager.PrepareForDestroy();
+                Destroy(beatmapObjectManager.gameObject, 1.4f);
+                Destroy(_leftSaber.gameObject);
+                Destroy(_rightSaber.gameObject);
+            }
+        }
 
         public override void Update()
         {
@@ -161,7 +183,7 @@ namespace BeatSaberMultiplayerLite
 
             if (voipSource != null)
             {
-                if(_voipFragQueue.Length <= 0)
+                if (_voipFragQueue.Length <= 0)
                 {
                     _voipPlaying = false;
                 }
@@ -189,7 +211,7 @@ namespace BeatSaberMultiplayerLite
 
         public void FixedUpdate()
         {
-            
+
             if (playerInfo != null && playerInfo.updateInfo != default)
             {
                 if (!noInterpolation)
@@ -227,29 +249,32 @@ namespace BeatSaberMultiplayerLite
                 _headPos = playerInfo.updateInfo.headPos + avatarOffset;
                 transform.position = _headPos;
             }
-            
+
         }
 
         public void OnDestroy()
         {
-            if(playerInfo == null)
+            if (playerInfo == null)
                 Plugin.log.Debug("Destroying player controller!");
             else
                 Plugin.log.Debug($"Destroying player controller! Name: {playerInfo.playerName}, ID: {playerInfo.playerId}");
 
             destroyed = true;
-            
+
             if (PlayerInfoReceiver != null)
             {
                 PlayerInfoReceiver.DestroyReceiver();
             }
 
-            if (beatmapCallbackController != null && audioTimeController != null) // && beatmapSpawnController != null
+            if (beatmapCallbackController != null && beatmapSpawnController != null && audioTimeController != null)
             {
-                Destroy(beatmapCallbackController.gameObject, 2f);
-                Destroy(audioTimeController.gameObject, 2f);
-                //Destroy(beatmapSpawnController.gameObject, 2f);
-                //beatmapSpawnController.PrepareForDestroy();
+                Destroy(beatmapCallbackController.gameObject);
+                Destroy(audioTimeController.gameObject);
+                Destroy(beatmapSpawnController.gameObject);
+                beatmapObjectManager.PrepareForDestroy();
+                Destroy(beatmapObjectManager.gameObject, 1.4f);
+                Destroy(_leftSaber.gameObject);
+                Destroy(_rightSaber.gameObject);
             }
         }
 
@@ -258,13 +283,37 @@ namespace BeatSaberMultiplayerLite
             if (playerInfo == null)
                 return;
 
+            syncTime = 0;
+            syncDelay = Time.time - lastSynchronizationTime;
+
+            if (syncDelay > 0.5f)
+            {
+                syncDelay = 0.5f;
+            }
+
+            lastSynchronizationTime = Time.time;
+
             if (noInterpolation)
             {
                 playerInfo.updateInfo = newInfo;
                 return;
             }
-            
-            _syncStartInfo = playerInfo.updateInfo;
+            else
+            {
+                playerInfo.updateInfo.playerNameColor = newInfo.playerNameColor;
+                playerInfo.updateInfo.playerState = newInfo.playerState;
+
+                playerInfo.updateInfo.fullBodyTracking = newInfo.fullBodyTracking;
+                playerInfo.updateInfo.playerScore = newInfo.playerScore;
+                playerInfo.updateInfo.playerCutBlocks = newInfo.playerCutBlocks;
+                playerInfo.updateInfo.playerComboBlocks = newInfo.playerComboBlocks;
+                playerInfo.updateInfo.playerTotalBlocks = newInfo.playerTotalBlocks;
+                playerInfo.updateInfo.playerEnergy = newInfo.playerEnergy;
+                playerInfo.updateInfo.playerLevelOptions = newInfo.playerLevelOptions;
+                playerInfo.updateInfo.playerFlags = newInfo.playerFlags;
+            }
+
+            _syncStartInfo = _syncEndInfo;
             if (_syncStartInfo.IsRotNaN())
             {
                 _syncStartInfo.headRot = Quaternion.identity;
@@ -292,16 +341,6 @@ namespace BeatSaberMultiplayerLite
                 _syncEndInfo.pelvisRot = Quaternion.identity;
                 Plugin.log.Warn("Target rotation is NaN!");
             }
-            
-            syncTime = 0;
-            syncDelay = Time.time - lastSynchronizationTime;
-
-            if(syncDelay > 0.5f)
-            {
-                syncDelay = 0.5f;
-            }
-
-            lastSynchronizationTime = Time.time;
         }
 
         public void NewUpdateReceived(PlayerUpdate value)
@@ -324,19 +363,19 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
-        //public void SetAvatarState(bool enabled)
-        //{
-        //    if(enabled && (object)avatar == null)
-        //    {
-        //        avatar = new GameObject("AvatarController").AddComponent<AvatarController>();
-        //        avatar.SetPlayerInfo(playerInfo, avatarOffset, Client.Instance.playerInfo.Equals(playerInfo));
-        //    }
-        //    else if(!enabled && avatar != null)
-        //    {
-        //        Destroy(avatar.gameObject);
-        //        avatar = null;
-        //    }
-        //}
+        public void SetAvatarState(bool enabled)
+        {
+            if (PlayerInfoReceiver == null)
+            {
+                PlayerInfoReceiver = new GameObject("AvatarController").AddComponent<AvatarController>();
+                PlayerInfoReceiver.SetPlayerInfo(playerInfo, avatarOffset, IsLocal);
+            }
+            else if (!enabled && PlayerInfoReceiver != null)
+            {
+                PlayerInfoReceiver.DestroyReceiver();
+                PlayerInfoReceiver = null;
+            }
+        }
 
         public void VoIPUpdate()
         {
@@ -350,7 +389,7 @@ namespace BeatSaberMultiplayerLite
 
         public void PlayVoIPFragment(float[] data, int fragIndex)
         {
-            if(voipSource != null && !InGameOnlineController.Instance.mutedPlayers.Contains(playerInfo.playerId))
+            if (voipSource != null && !InGameOnlineController.Instance.mutedPlayers.Contains(playerInfo.playerId))
             {
                 if ((_lastVoipFragIndex + 1) != fragIndex || _silentFrames > 15)
                 {
@@ -408,7 +447,7 @@ namespace BeatSaberMultiplayerLite
 
         public void SetVoIPVolume(float newVolume)
         {
-            if(voipSource != null)
+            if (voipSource != null)
             {
                 voipSource.volume = newVolume;
             }

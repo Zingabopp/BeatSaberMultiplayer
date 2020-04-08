@@ -38,19 +38,6 @@ namespace BeatSaberMultiplayerLite
 
         private static FileInfo FileLocation { get; } = new FileInfo($"./UserData/{Assembly.GetExecutingAssembly().GetName().Name}.json");
 
-        private static readonly Dictionary<string, string[]> newServerHubs = new Dictionary<string, string[]>()
-        {
-            {
-                "0.7.1.0",
-                new string[] { "127.0.0.1" }
-            }
-        };
-
-        private static readonly List<string> newServerRepositories = new List<string>()
-        {
-            "https://raw.githubusercontent.com/Zingabopp/BeatSaberMultiplayerServerRepo/master/CompatibleServers.json"
-        };
-
         public static bool Load()
         {
             if (_instance != null) return false;
@@ -93,47 +80,8 @@ namespace BeatSaberMultiplayerLite
 
         public static void UpdateModVersion(Config _instance)
         {
-            SemVer.Version modVersion = Plugin.PluginMetadata.Version;
-            if (string.IsNullOrEmpty(_instance.ModVersion) || new SemVer.Range($">{_instance.ModVersion}", true).IsSatisfied(modVersion))
-            {
-                List<string> newVersions = null;
-                if (string.IsNullOrEmpty(_instance.ModVersion))
-                {
-                    newVersions = newServerHubs.Keys.ToList();
-                }
-                else
-                {
-                    newVersions = new SemVer.Range($">{_instance.ModVersion}").Satisfying(newServerHubs.Keys, true).ToList();
-                }
-
-                if (newVersions.Count > 0)
-                {
-                    List<string> hubs = new List<string>();
-
-                    foreach (string version in newVersions)
-                    {
-                        hubs.AddRange(newServerHubs[version].Where(x => !_instance.ServerHubIPs.Contains(x)));
-                    }
-
-                    _instance.ServerHubIPs = _instance.ServerHubIPs.Concat(hubs).ToArray();
-                    _instance.ServerHubPorts = _instance.ServerHubPorts.Concat(Enumerable.Repeat(3700, hubs.Count)).ToArray();
-
-                    Plugin.log.Info($"Added {hubs.Count} new ServerHubs to config!");
-
-                    List<string> repos = new List<string>();
-                    if (_instance._serverRepositories.Length != 0)
-                    {
-                        repos.AddRange(_instance._serverRepositories);
-                    }
-                    foreach (var newRepo in newServerRepositories)
-                    {
-                        Plugin.log.Info($"Adding repo: {newRepo}");
-                        repos.Add(newRepo);
-                    }
-                    _instance.ServerRepositories = repos.ToArray();
-                }
-            }
-            _instance.ModVersion = modVersion.ToString();
+            
+            _instance.ModVersion = IPA.Loader.PluginManager.GetPluginFromId(Plugin.PluginID).Version.ToString();
         }
 
         public static Config Instance {
@@ -364,7 +312,7 @@ namespace BeatSaberMultiplayerLite
         Config()
         {
             _modVersion = string.Empty;
-            _serverRepositories = new string[0];
+            _serverRepositories = new string[1] { "https://raw.githubusercontent.com/Zingabopp/BeatSaberMultiplayerServerRepo/master/CompatibleServers.json" };
             _serverHubIPs = new string[0];
             _serverHubPorts = new int[0];
             _spectatorMode = false;

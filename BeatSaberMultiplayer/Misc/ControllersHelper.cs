@@ -6,16 +6,14 @@ namespace BeatSaberMultiplayerLite.Misc
 {
     static class ControllersHelper
     {
+        //TODO: Use Unity new input system
+
         private static bool initialized = false;
-        private static bool rumbleEnahncerInstalled = false;
         private static int platform = -1;
         private static VRPlatformHelper platformHelper;
 
         public static void Init()
         {
-            rumbleEnahncerInstalled = IPA.Loader.PluginManager.AllPlugins.Any(x => x.Id.ToLower() == "rumbleenhancer");
-            Plugin.log.Debug("Rumble Enahncer installed: "+ rumbleEnahncerInstalled);
-
             if(platformHelper == null)
             {
                 platformHelper = Resources.FindObjectsOfTypeAll<VRPlatformHelper>().FirstOrDefault();
@@ -44,7 +42,7 @@ namespace BeatSaberMultiplayerLite.Misc
             switch (platform)
             {
                 case 0:
-                    return rumbleEnahncerInstalled ? OpenVRRightGripWithLock() : OpenVRRightGrip();
+                    return OpenVRRightGrip();
                 case 1:
                     return OculusRightGrip();
                 case 2:
@@ -65,7 +63,7 @@ namespace BeatSaberMultiplayerLite.Misc
             switch (platform)
             {
                 case 0:
-                    return rumbleEnahncerInstalled ? OpenVRLeftGripWithLock() : OpenVRLeftGrip();
+                    return OpenVRLeftGrip();
                 case 1:
                     return OculusLeftGrip();
                 case 2:
@@ -98,19 +96,6 @@ namespace BeatSaberMultiplayerLite.Misc
             return SteamVR_Controller.Input(_leftControllerIndex).GetPress(SteamVR_Controller.ButtonMask.Grip);
         }
 
-        private static bool OpenVRLeftGripWithLock()
-        {
-            lock (Rumbleenhancer.Plugin.asyncRumbleLock)
-            {
-                if (_leftControllerIndex == -1)
-                {
-                    _leftControllerIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Leftmost);
-                }
-
-                return SteamVR_Controller.Input(_leftControllerIndex).GetPress(SteamVR_Controller.ButtonMask.Grip);
-            }
-        }
-
         private static bool OpenVRRightGrip()
         {
             if (_rightControllerIndex == -1)
@@ -120,22 +105,6 @@ namespace BeatSaberMultiplayerLite.Misc
 
             return SteamVR_Controller.Input(_rightControllerIndex).GetPress(SteamVR_Controller.ButtonMask.Grip);
         }
-
-        private static bool OpenVRRightGripWithLock()
-        {
-            lock (Rumbleenhancer.Plugin.asyncRumbleLock)
-            {
-                if (_rightControllerIndex == -1)
-                {
-                    _rightControllerIndex = SteamVR_Controller.GetDeviceIndex(SteamVR_Controller.DeviceRelation.Rightmost);
-                }
-
-                return SteamVR_Controller.Input(_rightControllerIndex).GetPress(SteamVR_Controller.ButtonMask.Grip);
-            }
-        }
-
-
-
 
     }
 

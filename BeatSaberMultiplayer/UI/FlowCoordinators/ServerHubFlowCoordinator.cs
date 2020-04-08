@@ -13,6 +13,7 @@ using HMUI;
 using BeatSaberMarkupLanguage;
 using BS_Utils.Utilities;
 using UnityEngine.Networking;
+using System.Collections.Concurrent;
 
 namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 {
@@ -42,11 +43,11 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         public bool doNotUpdate = false;
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)
-        { 
+        {
             if (firstActivation && activationType == ActivationType.AddedToHierarchy)
             {
                 title = "Online Multiplayer";
-                
+
                 _roomListViewController = BeatSaberUI.CreateViewController<RoomListViewController>();
 
                 _roomListViewController.createRoomButtonPressed += CreateRoomPressed;
@@ -64,7 +65,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         protected override void BackButtonWasPressed(ViewController topViewController)
         {
-            if(topViewController == _roomListViewController)
+            if (topViewController == _roomListViewController)
             {
                 PluginUI.instance.modeSelectionFlowCoordinator.InvokeMethod("DismissFlowCoordinator", this, null, false);
             }
@@ -90,9 +91,10 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             try
             {
                 DismissFlowCoordinator(PluginUI.instance.roomCreationFlowCoordinator, null, immediately);
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
-                Plugin.log.Warn("Unable to dismiss flow coordinator! Exception: "+e);
+                Plugin.log.Warn("Unable to dismiss flow coordinator! Exception: " + e);
             }
         }
 
@@ -232,10 +234,10 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 }
             }
 
-            for (int i = 0; i < Config.Instance.ServerHubIPs.Length ; i++)
+            for (int i = 0; i < Config.Instance.ServerHubIPs.Length; i++)
             {
                 string ip = Config.Instance.ServerHubIPs[i];
-                
+
                 int port = 3700;
 
                 if (Config.Instance.ServerHubPorts.Length > i)
@@ -278,11 +280,55 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         public void ServerHubException(ServerHubClient sender, Exception e)
         {
+            string hubId = $"{sender.ip}:{sender.port}";
+            string hubString;
             if (!string.IsNullOrEmpty(sender.serverHubName))
-                Plugin.log.Error($"ServerHub exception \"{sender.serverHubName}\" ({sender.ip}:{sender.port}): {e}");
+                hubString = $"\"{sender.serverHubName}\" ({hubId})";
             else
-                Plugin.log.Error($"ServerHub exception ({sender.ip}:{sender.port}): {e}");
+                hubString = $"({hubId})";
+            bool logError = true;
+            IPA.Logging.Logger.Level logLevel = IPA.Logging.Logger.Level.Error;
+            ServerHubException hubException = e as ServerHubException;
+            if (hubException != null)
+            {
+                if (HubLastExceptions.TryGetValue(hubId, out ServerHubExceptionType lastException))
+                {
+                    if (lastException == hubException.ServerHubExceptionType)
+                        logError = false;
+                    else
+                        HubLastExceptions[hubId] = hubException.ServerHubExceptionType;
+                }
+                else
+                    HubLastExceptions.TryAdd(hubId, hubException.ServerHubExceptionType);
+                switch (hubException.ServerHubExceptionType)
+                {
+                    case ServerHubExceptionType.VersionMismatch:
+                        logLevel = IPA.Logging.Logger.Level.Warning;
+                        break;
+                    case ServerHubExceptionType.PlayerNotWhitelisted:
+                        logLevel = IPA.Logging.Logger.Level.Warning;
+                        break;
+                    case ServerHubExceptionType.PlayerBanned:
+                        logLevel = IPA.Logging.Logger.Level.Warning;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (logError)
+            {
+                Plugin.log.Log(logLevel, $"ServerHub exception : {hubString}: {e}");
+            }
+#if DEBUG
+            else
+            {
+
+                Plugin.log.Debug($"Suppressed log: ServerHub exception ({hubId}): {e}");
+            }
+#endif
         }
+
+        public ConcurrentDictionary<string, ServerHubExceptionType> HubLastExceptions = new ConcurrentDictionary<string, ServerHubExceptionType>();
     }
 
     public static class ServerHubExtensions
@@ -343,7 +389,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                     Version assemblyVersion = Plugin.ClientCompatibilityVersion;
                     byte[] version = new byte[4] { (byte)assemblyVersion.Major, (byte)assemblyVersion.Minor, (byte)assemblyVersion.Build, (byte)assemblyVersion.Revision };
-                    
+
                     outMsg.Write(version);
                     new PlayerInfo(Plugin.Username, Plugin.UserId).AddToMessage(outMsg);
 
@@ -352,7 +398,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     NetworkClient.Connect(ip, port, outMsg);
                 }).ConfigureAwait(false);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ServerHubException?.Invoke(this, e);
                 Abort();
@@ -366,7 +412,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 NetIncomingMessage msg;
                 while ((msg = NetworkClient.ReadMessage()) != null)
                 {
-                    if (NetworkClient.Connections.FirstOrDefault() != null) {
+                    if (NetworkClient.Connections.FirstOrDefault() != null)
+                    {
                         ping = Math.Abs(NetworkClient.Connections.First().AverageRoundtripTime);
                     }
                     switch (msg.MessageType)
@@ -399,26 +446,37 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                                     NetworkClient.SendMessage(outMsg, NetDeliveryMethod.ReliableOrdered, 0);
                                 }
-                                else if(status == NetConnectionStatus.Disconnected)
+                                else if (status == NetConnectionStatus.Disconnected)
                                 {
+                                    ServerHubExceptionType serverHubExceptionType = ServerHubExceptionType.None;
+                                    bool formatError = true;
                                     try
                                     {
                                         string reason = msg.ReadString();
+                                        formatError = false;
                                         if (reason.Contains("Version mismatch"))
                                         {
                                             serverHubCompatible = false;
                                             serverHubAvailable = true;
+                                            serverHubExceptionType = ServerHubExceptionType.VersionMismatch;
                                         }
                                         else
                                         {
                                             serverHubCompatible = false;
                                             serverHubAvailable = false;
                                         }
-                                        ServerHubException?.Invoke(this, new Exception("ServerHub refused connection! Reason: " + reason));
+                                        if (reason.Contains("not whitelisted"))
+                                            serverHubExceptionType = ServerHubExceptionType.PlayerNotWhitelisted;
+                                        else if (reason.Contains("banned"))
+                                            serverHubExceptionType = ServerHubExceptionType.PlayerBanned;
+                                        ServerHubException?.Invoke(this, new ServerHubException("ServerHub refused connection! Reason: " + reason, serverHubExceptionType));
                                     }
                                     catch (Exception e)
                                     {
-                                        ServerHubException?.Invoke(this, new Exception("ServerHub refused connection! Exception: " + e));
+                                        if (formatError)
+                                            ServerHubException?.Invoke(this, new ServerHubException("ServerHub refused connection! Exception: " + e, ServerHubExceptionType.MalformedPacket));
+                                        else
+                                            ServerHubException?.Invoke(this, new ServerHubException("ServerHub refused connection! Exception: " + e, ServerHubExceptionType.None));
                                     }
                                     Abort();
                                 }
@@ -444,9 +502,10 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                         availableRoomsCount = availableRooms.Count;
                                         playersCount = availableRooms.Sum(x => x.players);
                                         ReceivedRoomsList?.Invoke(this, availableRooms);
-                                    }catch(Exception e)
+                                    }
+                                    catch (Exception e)
                                     {
-                                        ServerHubException?.Invoke(this, new Exception("Unable to parse rooms list! Exception: "+e));
+                                        ServerHubException?.Invoke(this, new ServerHubException("Unable to parse rooms list! Exception: " + e, ServerHubExceptionType.MalformedPacket));
                                     }
                                     Abort();
                                 }

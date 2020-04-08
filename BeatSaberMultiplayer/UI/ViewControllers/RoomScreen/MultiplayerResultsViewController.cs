@@ -25,6 +25,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public IVotingInterop voting;
 
 #pragma warning disable CS0649
+        [UIComponent("results-tab")]
+        public RectTransform resultsTab;
+
         [UIComponent("level-details-rect")]
         public RectTransform levelDetailsRect;
 
@@ -198,15 +201,18 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
                 voting?.Setup(this, PluginUI.instance.roomFlowCoordinator.levelDifficultyBeatmap.level);
             }
-            voting?.Hide();
-
+            else
+            {
+                Plugin.log.Warn("Difficulty beatmap is null, unable to set level stats!");
+                voting?.Hide();
+            }
             levelCoverImage.texture = await selectedLevel.GetCoverImageTexture2DAsync(new CancellationTokenSource().Token);
 
         }
 
         public void SetTimer(int time)
         {
-            timerText.text = TimeExtensions.MinSecDurationText(time);
+            timerText.text = ((float)time).MinSecDurationText();
         }
     }
 }

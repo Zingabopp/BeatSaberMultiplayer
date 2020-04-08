@@ -4,19 +4,23 @@ using BeatSaberMarkupLanguage;
 using BeatSaverDownloader.UI.ViewControllers;
 using BeatSaverDownloader.UI;
 using HMUI;
-using BeatSaberMultiplayerLite.IPAUtilities;
+using IPA.Utilities;
 using System.Reflection;
+using BeatSaberMultiplayerLite.Interop;
 
 namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
-    public class CustomMoreSongsFlowCoordinator : MoreSongsFlowCoordinator
+    public class CustomMoreSongsFlowCoordinator : MoreSongsFlowCoordinator, IDismissable
     {
         public static bool CanCreate { get; private set; }
+        public FlowCoordinator ParentFlowCoordinator { get; set; }
+
         private static FieldAccessor<MoreSongsFlowCoordinator, SongDetailViewController>.Accessor SongDetailViewController;
         private static FieldAccessor<MoreSongsFlowCoordinator, NavigationController>.Accessor MoreSongsNavigationController;
         private static FieldAccessor<MoreSongsFlowCoordinator, MoreSongsListViewController>.Accessor MoreSongsView;
         private static FieldAccessor<MoreSongsFlowCoordinator, DownloadQueueViewController>.Accessor DownloadQueueView;
         private static MethodInfo AbortAllDownloadsMethod;
+
         static CustomMoreSongsFlowCoordinator()
         {
 
@@ -38,9 +42,13 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
                 Plugin.log.Debug(ex);
             }
         }
-        internal FlowCoordinator ParentFlowCoordinator { get; set; }
 
         protected override void BackButtonWasPressed(ViewController topViewController)
+        {
+            Dismiss(false);
+        }
+
+        public void Dismiss(bool immediately)
         {
             MoreSongsFlowCoordinator thisCoordinator = (MoreSongsFlowCoordinator)this;
             if (SongDetailViewController(ref thisCoordinator).isInViewControllerHierarchy)
@@ -49,7 +57,8 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             }
             MoreSongsView(ref thisCoordinator).Cleanup();
             AbortAllDownloadsMethod.Invoke(DownloadQueueView(ref thisCoordinator), null);
-            ParentFlowCoordinator.DismissFlowCoordinator(this);
+
+            ParentFlowCoordinator.DismissFlowCoordinator(this, null, immediately);
         }
     }
 }

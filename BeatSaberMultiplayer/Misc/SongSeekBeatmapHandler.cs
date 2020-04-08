@@ -118,9 +118,9 @@ namespace BeatSaberMultiplayerLite.Misc
             }
 
             var obstacles = _obstaclePool.activeItems.ToList();
-            foreach (var fullHeight in obstacles)
+            foreach (var obstacle in obstacles)
             {
-                _beatmapObjectManager.Despawn(fullHeight);
+                _beatmapObjectManager.Despawn(obstacle);
             }
 
             InGameOnlineController.Instance.audioTimeSync.SetPrivateField("_prevAudioSamplePos", -1);

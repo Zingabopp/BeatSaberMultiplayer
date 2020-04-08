@@ -39,9 +39,9 @@
     <Compile Include="Client.cs" />
     <Compile Include="ClientEventArgs.cs" />
     <Compile Include="Data\BeatSaverAPIResult.cs" />
-    <Compile Include="Data\ChannelInfo.cs" />
     <Compile Include="Data\ExtraPlayerFlags.cs" />
     <Compile Include="Interop\BeatSaverVotingInterop.cs" />
+    <Compile Include="Interop\IDismissable.cs" />
     <Compile Include="Data\PlayerInfo.cs" />
     <Compile Include="Data\RoomInfo.cs" />
     <Compile Include="Data\RoomPreset.cs" />
@@ -50,6 +50,9 @@
     <Compile Include="Data\SongInfo.cs" />
     <Compile Include="Data\LevelOptionsInfo.cs" />
     <Compile Include="Interop\IVotingInterop.cs" />
+    <Compile Include="OnlinePlayerPosition.cs" />
+    <Compile Include="PlayerPosition.cs" />
+    <Compile Include="MultiplayerExceptions.cs" />
     <Compile Include="RichPresence\ActivityStructs.cs" />
     <Compile Include="RichPresence\DiscordPresence\DiscordPresence.cs" />
     <Compile Include="RichPresence\DiscordPresence\DiscordJoinRequest.cs" />
@@ -78,15 +81,17 @@
     <Compile Include="Misc\SongSeekBeatmapHandler.cs" />
     <Compile Include="Misc\TableViewHelper.cs" />
     <Compile Include="Interop\ScoreSaberInterop.cs" />
+    <Compile Include="MultiplayerAvatarInput.cs" />
     <Compile Include="OverriddenClasses\CustomMoreSongsFlowCoordinator.cs" />
     <Compile Include="Misc\ZipUtilities.cs" />
     <Compile Include="OverriddenClasses\HarmonyPatches.cs" />
     <Compile Include="OverriddenClasses\OnlineAudioTimeController.cs" />
     <Compile Include="OverriddenClasses\OnlineBeatmapCallbackController.cs" />
+    <Compile Include="OverriddenClasses\OnlineBeatmapObjectManager.cs" />
     <Compile Include="OverriddenClasses\OnlineBeatmapSpawnController.cs" />
     <Compile Include="OverriddenClasses\OnlineVRController.cs" />
     <Compile Include="OnlinePlayerController.cs" />
-    <Compile Include="PlayerPosition.cs" />
+    <Compile Include="LocalPlayerPosition.cs" />
     <Compile Include="PlayerInfoDisplay.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -111,11 +116,10 @@
     <Compile Include="UI\ViewControllers\RoomScreen\LevelPacksUIViewController.cs" />
     <Compile Include="UI\ViewControllers\RoomScreen\QuickSettingsViewController.cs" />
     <Compile Include="UI\ViewControllers\RoomScreen\PlayerManagementViewController.cs" />
+    <Compile Include="UI\ViewControllers\RoomScreen\RequestsViewController.cs" />
     <Compile Include="UI\ViewControllers\RoomScreen\SongSelectionViewController.cs" />
     <Compile Include="UI\ViewControllers\RoomScreen\RoomNavigationController.cs" />
     <Compile Include="UI\ViewControllers\ServerHubScreen\RoomListViewController.cs" />
-    <Compile Include="IPAUtilities\Accessor.cs" />
-    <Compile Include="IPAUtilities\ReflectionUtil.cs" />
     <Compile Include="VOIP\AudioUtils.cs" />
     <Compile Include="VOIP\FifoFloatStream.cs" />
     <Compile Include="VOIP\SpeexCodex.cs" />
@@ -141,6 +145,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ViewControllers\RoomScreen\MultiplayerResultsViewController.bsml">
       <DependentUpon>MultiplayerResultsViewController.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\ViewControllers\RoomScreen\RequestsViewController.bsml">
+      <DependentUpon>RequestsViewController.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ViewControllers\RoomScreen\SongSelectionViewController.bsml">
       <DependentUpon>SongSelectionViewController.cs</DependentUpon>
@@ -173,7 +180,6 @@
     <EmbeddedResource Include="UI\ViewControllers\RoomScreen\PlayerManagementViewController.bsml">
       <DependentUpon>PlayerManagementViewController.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\ViewControllers\RoomScreen\RoomSettingsView.bsml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\LockedRoom.png" />
@@ -206,107 +212,88 @@
     <EmbeddedResource Include="Assets\DoubleArrowIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
+    <Reference Include="0Harmony, Version=2.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\0Harmony.dll</HintPath>
-      <Private>False</Private>
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="Colors">
-      <HintPath>..\Refs\Colors.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="BeatSaverDownloader, Version=5.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\BeatSaverDownloader.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BeatSaverVoting, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\BeatSaverVoting.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BSML, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\BSML.dll</HintPath>
+    </Reference>
+    <Reference Include="BS_Utils, Version=1.4.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\BS_Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="Colors, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\Colors.dll</HintPath>
     </Reference>
     <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\DiscordCore.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BeatSaverDownloader">
-      <HintPath>..\Refs\BeatSaverDownloader.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BeatSaverVoting">
-      <HintPath>..\Refs\BeatSaverVoting.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="BSML, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <Private>False</Private>
-      <HintPath>..\Refs\BSML.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="BS_Utils, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\BS_Utils.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\HMLib.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="HMUI, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\HMUI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="IPA.Loader, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="IPA.Loader, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\IPA.Loader.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="Lidgren.Network">
-      <HintPath>$(BeatSaberDir)\Libs\Lidgren.Network.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Lidgren.Network, Version=2012.1.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\Lidgren.Network.dll</HintPath>
     </Reference>
-    <Reference Include="Main">
+    <Reference Include="Main, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\Main.dll</HintPath>
-      <Private>False</Private>
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\Refs\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NSpeex">
-      <HintPath>$(BeatSaberDir)\Libs\NSpeex.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="NSpeex, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\NSpeex.dll</HintPath>
     </Reference>
     <Reference Include="Oculus.VR, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\Oculus.VR.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="Polyglot">
-      <HintPath>..\Refs\Polyglot.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Polyglot, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\Polyglot.dll</HintPath>
     </Reference>
-    <Reference Include="RumbleEnhancer">
-      <HintPath>..\Refs\RumbleEnhancer.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ScoreSaber">
+    <Reference Include="ScoreSaber, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\ScoreSaber.dll</HintPath>
-      <Private>False</Private>
       <Aliases>ScoreSaberGlobal</Aliases>
     </Reference>
-    <Reference Include="SemVer">
-      <HintPath>$(BeatSaberDir)\Libs\SemVer.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="SemVer, Version=1.2.2.0, Culture=neutral, PublicKeyToken=a89bb7dc6f7a145c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\SemVer.dll</HintPath>
     </Reference>
-    <Reference Include="SongCore, Version=2.7.4.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\Refs\SongCore.dll</HintPath>
+    <Reference Include="SongCore, Version=2.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
+      <HintPath>..\Refs\SongCore.dll</HintPath>
     </Reference>
     <Reference Include="SteamVR, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\SteamVR.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Steamworks.NET">
       <HintPath>..\Refs\Steamworks.NET.dll</HintPath>
@@ -320,67 +307,58 @@
     <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\Unity.TextMeshPro.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.AssetBundleModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.AudioModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>..\Refs\UnityEngine.InputLegacyModule.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.JSONSerializeModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.UIModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.UnityWebRequestModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestTextureModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
-      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.VRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\UnityEngine.VRModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.XRModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\UnityEngine.XRModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Zenject, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\Zenject.dll</HintPath>
-      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

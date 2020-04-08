@@ -28,15 +28,16 @@ namespace BeatSaberMultiplayerLite
         public static readonly string PluginName = "Beat Saber Multiplayer Lite";
         public static readonly string HarmonyId = "com.Zingabopp.BeatSaberMultiplayerLite";
         public static string PluginVersion { get; private set; }
-        public static Version ClientCompatibilityVersion = new Version(0, 7, 1, 0);
+        public static Version ClientCompatibilityVersion = new Version(0, 7, 2, 0);
         internal static PluginMetadata PluginMetadata;
         public static Plugin instance;
         public static IPA.Logging.Logger log;
         public static PresenceManager PresenceManager { get; private set; }
-        internal static PlayerPosition _playerPosition;
+        internal static LocalPlayerPosition _playerPosition;
         public static bool IsSteam { get; private set; }
         private static bool joinAfterRestart;
         private static string joinSecret;
+        public static FirstPersonFlyingController fpfc;
         public static bool DownloaderExists { get; private set; }
 
         public static string Username;
@@ -69,7 +70,7 @@ namespace BeatSaberMultiplayerLite
         {
             log = logger;
             PluginMetadata = pluginMetadata;
-            _playerPosition = new PlayerPosition();
+            _playerPosition = new LocalPlayerPosition();
             Version v = Assembly.GetExecutingAssembly().GetName().Version;
             PluginVersion = $"{v.Major}.{v.Minor}.{v.Build}";
             log.Info($"{PluginMetadata.Name} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");
@@ -151,6 +152,7 @@ namespace BeatSaberMultiplayerLite
             {
                 joinAfterRestart = true;
                 joinSecret = secret;
+                Plugin.log.Debug($"Restarting game for activity join.");
                 Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().First().RestartGame();
             }
         }
@@ -172,6 +174,12 @@ namespace BeatSaberMultiplayerLite
             SpectatingController.OnLoad();
             BS_Utils.Gameplay.GetUserInfo.UpdateUserInfo();
             GetUserInfo.UpdateUserInfo();
+            if (Environment.CommandLine.Contains("fpfc"))
+            {
+                fpfc = Resources.FindObjectsOfTypeAll<FirstPersonFlyingController>().FirstOrDefault();
+                if (fpfc == null)
+                    Plugin.log.Warn("Failed to get FirstPersonFlyingController");
+            }
             if (joinAfterRestart)
             {
                 joinAfterRestart = false;
@@ -183,15 +191,13 @@ namespace BeatSaberMultiplayerLite
         private void MenuSceneLoaded()
         {
             InGameOnlineController.Instance?.MenuSceneLoaded();
-            if (Config.Instance.SpectatorMode)
-                SpectatingController.Instance?.MenuSceneLoaded();
+            SpectatingController.Instance?.MenuSceneLoaded();
         }
 
         private void GameSceneLoaded()
         {
             InGameOnlineController.Instance?.GameSceneLoaded();
-            if (Config.Instance.SpectatorMode)
-                SpectatingController.Instance?.GameSceneLoaded();
+            SpectatingController.Instance?.GameSceneLoaded();
         }
         /*
         private void DiscordLogCallback(LogLevel level, string message)

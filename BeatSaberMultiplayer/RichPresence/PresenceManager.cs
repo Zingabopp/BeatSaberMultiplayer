@@ -20,12 +20,12 @@ namespace BeatSaberMultiplayerLite.RichPresence
             IPresenceInstance[] loadedPresences = PresenceLoader.LoadAll(modId, modName, modIcon, handleInvites, appid);
             foreach (var presence in loadedPresences)
             {
-                presence.ActivityJoinReceived -= OnActivityJoin;
+                presence.ActivityJoinReceived -= OnActivityJoinReceived;
                 presence.ActivityJoinRequest -= ActivityManager_OnActivityJoinRequest;
                 presence.ActivityInviteReceived -= ActivityManager_OnActivityInvite;
                 presence.Destroyed -= Presence_Destroyed;
 
-                presence.ActivityJoinReceived += OnActivityJoin;
+                presence.ActivityJoinReceived += OnActivityJoinReceived;
                 presence.ActivityJoinRequest += ActivityManager_OnActivityJoinRequest;
                 presence.ActivityInviteReceived += ActivityManager_OnActivityInvite;
                 presence.Destroyed += Presence_Destroyed;
@@ -116,7 +116,7 @@ namespace BeatSaberMultiplayerLite.RichPresence
                 Plugin.log.Debug($"ActivityManager_OnActivityJoinRequest: sender (type {sender?.GetType().Name ?? "<NULL>"} is not a {nameof(IPresenceInstance)}");
         }
 
-        private void OnActivityJoin(object sender, string secret)
+        private void OnActivityJoinReceived(object sender, string secret)
         {
             if (sender is IPresenceInstance presence)
                 ActivityJoinReceived?.Invoke(presence, secret);

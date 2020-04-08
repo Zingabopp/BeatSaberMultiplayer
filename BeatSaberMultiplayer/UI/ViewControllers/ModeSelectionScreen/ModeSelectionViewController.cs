@@ -116,12 +116,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
             //}
         }
 
-        private void ModelSaberAPI_hashesCalculated()
-        {
-            _buttonsRect.gameObject.SetActive(true); 
-            _avatarsLoadingRect.gameObject.SetActive(false);
-        }
-
         [UIAction("rooms-btn-pressed")]
         private void RoomsBtnPressed()
         {

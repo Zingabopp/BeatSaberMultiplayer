@@ -66,6 +66,23 @@ namespace BeatSaberMultiplayerLite.Data
                     playerFlags.Equals(other.playerFlags);
         }
 
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 3049;
+                hash *= 5039 + id.GetHashCode();
+                hash *= 883 + name.GetHashCode();
+                hash *= 107 + score.GetHashCode();
+                hash *= 3187 + color.r.GetHashCode();
+                hash *= 163 + color.g.GetHashCode();
+                hash *= 4993 + color.b.GetHashCode();
+                hash *= 1901 + color.a.GetHashCode();
+                hash *= 199 + playerFlags.GetHashCode();
+                return hash;
+            }
+        }
+
         public static bool operator ==(PlayerScore c1, PlayerScore c2)
         {
             return c1.Equals(c2);
@@ -74,6 +91,13 @@ namespace BeatSaberMultiplayerLite.Data
         public static bool operator !=(PlayerScore c1, PlayerScore c2)
         {
             return !c1.Equals(c2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is PlayerScore playerScore)
+                return Equals(playerScore);
+            return false;
         }
     }
 
@@ -479,7 +503,7 @@ namespace BeatSaberMultiplayerLite.Data
             msg.Write(playerId);
 
             updateInfo.AddToMessage(msg);
-
+            //Plugin.log.Debug($"Adding position to message: {updateInfo.headPos}, {updateInfo.headRot}");
             msg.Write(HexConverter.ConvertHexToBytesX(avatarHash));
 
             msg.Write((byte)hitsLastUpdate.Count);

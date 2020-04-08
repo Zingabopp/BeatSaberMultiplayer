@@ -54,7 +54,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
         [UIAction("hub-selected")]
         private void RoomSelected(TableView sender, ServerHubListObject obj)
         {
-            if(obj.hub.serverHubCompatible)
+            if (obj.hub.serverHubCompatible)
                 selectedServerHub?.Invoke(obj.hub);
         }
     }
