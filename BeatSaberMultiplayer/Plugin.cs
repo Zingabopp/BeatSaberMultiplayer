@@ -152,6 +152,7 @@ namespace BeatSaberMultiplayerLite
             {
                 joinAfterRestart = true;
                 joinSecret = secret;
+                Plugin.log.Debug($"Restarting game for activity join.");
                 Resources.FindObjectsOfTypeAll<MenuTransitionsHelper>().First().RestartGame();
             }
         }
