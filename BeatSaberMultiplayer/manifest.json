@@ -7,14 +7,14 @@
   "gameVersion": "1.8.0",
   "icon": "BeatSaberMultiplayerLite.Assets.OnlineIcon.png",
   "dependsOn": {
-    "BS Utils": "^1.4.0",
-    "SongCore": "^2.7.1",
-    "BeatSaberMarkupLanguage": "^1.1.5"
+    "BS Utils": "^1.4.8",
+    "SongCore": "^2.9.1",
+    "BeatSaberMarkupLanguage": "^1.2.2"
   },
   "links": {
     "project-source": "https://github.com/andruzzzhka/BeatSaberMultiplayer",
     "donate": "https://ko-fi.com/andruzzzhka"
   },
-  "version": "7.2.0",
+  "version": "7.2.1",
   "loadAfter": [ "ScoreSaber", "BeatSaverDownloader", "DiscordCore", "BeatSaverVoting" ]
 }
