@@ -591,7 +591,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                     _requestsViewController.SetSongs(_requestedSongs);
                                 }
 
-                                if(_songSelectionViewController != null && _songSelectionViewController.isInViewControllerHierarchy && !_songSelectionViewController.GetPrivateField<bool>("_isInTransition"))
+                                if (_songSelectionViewController != null && _songSelectionViewController.isInViewControllerHierarchy && !_songSelectionViewController.GetPrivateField<bool>("_isInTransition"))
                                 {
                                     _songSelectionViewController.UpdateViewController(Client.Instance.isHost, _requestedSongs?.Count ?? 0);
                                 }
@@ -751,6 +751,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 }
 
+                var scoreSaber = IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber");
                 PracticeSettings practiceSettings = null;
                 if (Config.Instance.SpectatorMode || startTime > 1f)
                 {
@@ -762,12 +763,17 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     }
                     practiceSettings.songSpeedMul = modifiers.songSpeedMul;
                 }
-
-                var scoreSaber = IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber");
-
-                if (scoreSaber != null)
+                else if (Config.Instance.SubmitScores != 0 && scoreSaber != null)
                 {
-                    ScoreSaberInterop.InitAndSignIn();
+                    try
+                    {
+                        ScoreSaberInterop.InitAndSignIn();
+                    }
+                    catch (Exception ex)
+                    {
+                        Plugin.log.Error($"Error signing into ScoreSaber, score submission unavailble: {ex.Message}");
+                        Plugin.log.Debug(ex);
+                    }
                 }
 
                 menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings: practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
@@ -1001,11 +1007,12 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             {
                 _requestsViewController = BeatSaberUI.CreateViewController<RequestsViewController>();
                 _requestsViewController.BackPressed += () => { ShowSongsList(); };
-                _requestsViewController.SongSelected += (SongInfo song) => {
-                    LastSelectedSong = song.levelId; 
+                _requestsViewController.SongSelected += (SongInfo song) =>
+                {
+                    LastSelectedSong = song.levelId;
                     Client.Instance.SetSelectedSong(song);
                     Client.Instance.RemoveRequestedSong(song);
-                    UpdateLevelOptions();  
+                    UpdateLevelOptions();
                 };
                 _requestsViewController.RemovePressed += (SongInfo info) => { Client.Instance.RemoveRequestedSong(info); };
             }
