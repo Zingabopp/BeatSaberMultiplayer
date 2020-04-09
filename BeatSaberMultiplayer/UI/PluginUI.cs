@@ -167,20 +167,18 @@ namespace BeatSaberMultiplayerLite.UI
                         _noUserInfoWarning = Instantiate(dialogOrig.gameObject).GetComponent<SimpleDialogPromptViewController>();
                     }
 
-                    if (Plugin.UserId == 0 && string.IsNullOrWhiteSpace(Plugin.Username) || Plugin.UserId == 0)
+                    if (GetUserInfo.GetUserID() == 0)
                     {
                         _noUserInfoWarning.Init("Invalid username and ID", $"Your username and ID are invalid\nMake sure you are logged in", "Go back", "Continue anyway",
-                           (selectedButton) =>
-                           {
-                               mainFlow.InvokeMethod("DismissViewController", _noUserInfoWarning, null, selectedButton == 1);
-                               if (selectedButton == 1)
-                               {
-                                   mainFlow.InvokeMethod("PresentFlowCoordinator", modeSelectionFlowCoordinator, null, true, false);
-                               }
-                           });
-
+                              (selectedButton) =>
+                              {
+                                  mainFlow.InvokeMethod("DismissViewController", _noUserInfoWarning, null, selectedButton == 1);
+                                  if (selectedButton == 1)
+                                  {
+                                      mainFlow.InvokeMethod("PresentFlowCoordinator", modeSelectionFlowCoordinator, null, true, false);
+                                  }
+                              });
                         mainFlow.InvokeMethod("PresentViewController", _noUserInfoWarning, null, false);
-
                     }
                     else
                     {
