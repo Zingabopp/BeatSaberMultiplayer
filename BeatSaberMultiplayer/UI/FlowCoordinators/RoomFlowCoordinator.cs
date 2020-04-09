@@ -765,15 +765,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 }
                 else if (Config.Instance.SubmitScores != 0 && scoreSaber != null)
                 {
-                    try
-                    {
-                        ScoreSaberInterop.InitAndSignIn();
-                    }
-                    catch (Exception ex)
-                    {
-                        Plugin.log.Error($"Error signing into ScoreSaber, score submission unavailble: {ex.Message}");
-                        Plugin.log.Debug(ex);
-                    }
+                    ScoreSaberInterop.InitAndSignIn();
                 }
 
                 menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings: practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);

@@ -15,7 +15,8 @@ namespace BeatSaberMultiplayerLite.Interop
             }
             catch(Exception e)
             {
-                Plugin.log.Warn($"Unable to sign in to ScoreSaber! Score submission may not work properly.\nException: {e}");
+                Plugin.log.Error($"Error signing into ScoreSaber, score submission unavailble: {e.Message}");
+                Plugin.log.Debug(e);
             }
         }
     }
