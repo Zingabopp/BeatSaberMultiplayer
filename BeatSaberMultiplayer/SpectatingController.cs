@@ -280,7 +280,7 @@ namespace BeatSaberMultiplayerLite
             _rightSaber = Resources.FindObjectsOfTypeAll<Saber>().First(x => x.saberType == SaberType.SaberA);
             _rightController = _rightSaber.GetField<VRController, Saber>("_vrController").gameObject.AddComponent<OnlineVRController>();
             _rightSaber.SetField<Saber, VRController>("_vrController", _rightController);
-
+            
             Plugin.log.Info("Controllers replaced!");
 
             _scoreController = FindObjectOfType<ScoreController>();

@@ -9,7 +9,7 @@ using UnityEngine.XR;
 
 namespace BeatSaberMultiplayerLite
 {
-    public class OnlinePlayerPosition : PlayerPosition, IPlayerInfoReceiver
+    public class OnlinePlayerPosition : PlayerPosition
     {
         private PosRot _headPosRot;
         private PosRot _leftPosRot;
@@ -64,7 +64,7 @@ namespace BeatSaberMultiplayerLite
             return new PosRot(pos, rot);
         }
 
-        public void SetPlayerInfo(PlayerInfo playerInfo, Vector3 offset, bool isLocal)
+        public void UpdatePlayerPosition(PlayerInfo playerInfo, Vector3 offset, bool isLocal)
         {
             if(playerInfo == null)
             {

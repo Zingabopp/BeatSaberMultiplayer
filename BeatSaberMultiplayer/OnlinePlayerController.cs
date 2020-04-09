@@ -139,7 +139,6 @@ namespace BeatSaberMultiplayerLite
             var rightController = _rightSaber.gameObject.AddComponent<OnlineVRController>();
             rightController.owner = this;
             _rightSaber.SetPrivateField("_vrController", rightController);
-
             /*
             var rightTrail = rightController.GetComponentInChildren<XWeaponTrail>();
             rightTrail.SetPrivateField("_colorManager", colorManager);
@@ -247,7 +246,10 @@ namespace BeatSaberMultiplayerLite
                 _overrideHeadPos = true;
                 _overriddenHeadPos = playerInfo.updateInfo.headPos;
                 _headPos = playerInfo.updateInfo.headPos + avatarOffset;
+                var leftPos = new PosRot(playerInfo.updateInfo.leftHandPos + avatarOffset, playerInfo.updateInfo.leftHandRot);
+                var rightPos = new PosRot(playerInfo.updateInfo.rightHandPos + avatarOffset, playerInfo.updateInfo.rightHandRot);
                 transform.position = _headPos;
+                PlayerInfoReceiver.UpdateHands(leftPos, rightPos);
             }
 
         }

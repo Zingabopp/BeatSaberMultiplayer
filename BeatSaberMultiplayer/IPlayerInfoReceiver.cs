@@ -12,6 +12,7 @@ namespace BeatSaberMultiplayerLite
     {
         bool AcceptingUpdates { get; }
         void SetPlayerInfo(PlayerInfo playerInfo, Vector3 offset, bool isLocal);
+        void UpdateHands(PosRot left, PosRot right);
         void DestroyReceiver();
     }
 }

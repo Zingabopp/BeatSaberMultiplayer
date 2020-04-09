@@ -20,6 +20,8 @@ namespace BeatSaberMultiplayerLite
 
         TextMeshPro playerNameText;
         TextMeshPro playerFaceText;
+        TextMeshPro leftHandText;
+        TextMeshPro rightHandText;
         Image playerSpeakerIcon;
 
         OnlinePlayerPosition avatarInput;
@@ -61,6 +63,46 @@ namespace BeatSaberMultiplayerLite
                 transform.SetParent(centerAdjust.transform, false);
             else
                 Plugin.log.Error($"VRCenterAdjust is null, unable to parent the {nameof(AvatarController)} to it.");
+        }
+
+        public TextMeshPro LeftController
+        {
+            get
+            {
+                if (leftHandText == null)
+                {
+                    leftHandText = CustomExtensions.CreateWorldText(null, "M");
+                    leftHandText.rectTransform.anchoredPosition3D = new Vector3(0f, 0f, 0f);
+                    leftHandText.alignment = TextAlignmentOptions.Center;
+                    leftHandText.fontSize = 2.5f;
+                }
+                return leftHandText;
+            }
+        }
+
+        public TextMeshPro RightController
+        {
+            get
+            {
+                if (rightHandText == null)
+                {
+                    rightHandText = CustomExtensions.CreateWorldText(null, "M");
+                    rightHandText.rectTransform.anchoredPosition3D = new Vector3(0f, 0f, 0f);
+                    rightHandText.alignment = TextAlignmentOptions.Center;
+                    rightHandText.fontSize = 2.5f;
+                }
+
+                return rightHandText;
+            }
+        }
+
+        public void UpdateHands(PosRot leftSaber, PosRot rightSaber)
+        {
+
+            LeftController.transform.position = leftSaber.Position;
+            LeftController.transform.rotation = leftSaber.Rotation;
+            RightController.transform.position = rightSaber.Position;
+            RightController.transform.rotation = rightSaber.Rotation;
         }
 
         void Update()
@@ -109,6 +151,10 @@ namespace BeatSaberMultiplayerLite
             Destroy(playerNameText);
             Destroy(playerSpeakerIcon);
             Destroy(playerFaceText);
+            Destroy(rightHandText);
+            Destroy(leftHandText);
+            leftHandText = null;
+            rightHandText = null;
             //if(avatar != null && avatar.GameObject != null)
             //    Destroy(avatar.GameObject);
         }
@@ -117,9 +163,11 @@ namespace BeatSaberMultiplayerLite
         {
             if (_playerInfo == default)
             {
-                if (playerNameText != null) playerNameText.gameObject.SetActive(false);
-                if (playerFaceText != null) playerFaceText.gameObject.SetActive(false);
-                if (playerSpeakerIcon != null) playerSpeakerIcon.gameObject.SetActive(false);
+                playerNameText?.gameObject.SetActive(false);
+                playerFaceText?.gameObject.SetActive(false);
+                leftHandText?.gameObject.SetActive(false);
+                rightHandText?.gameObject.SetActive(false);
+                playerSpeakerIcon?.gameObject.SetActive(false);
                 return;
             }
 
@@ -150,12 +198,15 @@ namespace BeatSaberMultiplayerLite
                     return;
                 }
 
-                avatarInput.SetPlayerInfo(_playerInfo, offset, false);
+                avatarInput.UpdatePlayerPosition(_playerInfo, offset, false);
 
                 transform.position = avatarInput.HeadPosRot.Position;
                 //Plugin.log.Debug($"Setting {playerName}'s avatar position to {avatarInput.HeadPosRot}");
                 transform.rotation = avatarInput.HeadPosRot.Rotation;
-
+                LeftController.transform.position = avatarInput.LeftPosRot.Position;
+                LeftController.transform.rotation = avatarInput.LeftPosRot.Rotation;
+                RightController.transform.position = avatarInput.RightPosRot.Position;
+                RightController.transform.rotation = avatarInput.RightPosRot.Rotation;
                 playerNameText.text = playerName;
 
                 if (playerInfo.playerFlags.rainbowName && !rainbowName)
