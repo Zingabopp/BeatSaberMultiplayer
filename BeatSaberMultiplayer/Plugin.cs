@@ -61,7 +61,7 @@ namespace BeatSaberMultiplayerLite
                 if (frameAssembly == Assembly.GetExecutingAssembly())
                 {
                     frames.Add(frame);
-                    Console.WriteLine(frame);
+                    log.Info(frame.ToString());
                 }
             }
 #endif
