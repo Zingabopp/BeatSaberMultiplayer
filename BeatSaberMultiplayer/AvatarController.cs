@@ -65,7 +65,7 @@ namespace BeatSaberMultiplayerLite
                 Plugin.log.Error($"VRCenterAdjust is null, unable to parent the {nameof(AvatarController)} to it.");
         }
 
-        public TextMeshPro LeftController
+        public TextMeshPro LeftHandText
         {
             get
             {
@@ -80,7 +80,7 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
-        public TextMeshPro RightController
+        public TextMeshPro RightHandText
         {
             get
             {
@@ -99,10 +99,10 @@ namespace BeatSaberMultiplayerLite
         public void UpdateHands(PosRot leftSaber, PosRot rightSaber)
         {
 
-            LeftController.transform.position = leftSaber.Position;
-            LeftController.transform.rotation = leftSaber.Rotation;
-            RightController.transform.position = rightSaber.Position;
-            RightController.transform.rotation = rightSaber.Rotation;
+            LeftHandText.transform.position = leftSaber.Position;
+            LeftHandText.transform.rotation = leftSaber.Rotation;
+            RightHandText.transform.position = rightSaber.Position;
+            RightHandText.transform.rotation = rightSaber.Rotation;
         }
 
         void Update()
@@ -203,10 +203,10 @@ namespace BeatSaberMultiplayerLite
                 transform.position = avatarInput.HeadPosRot.Position;
                 //Plugin.log.Debug($"Setting {playerName}'s avatar position to {avatarInput.HeadPosRot}");
                 transform.rotation = avatarInput.HeadPosRot.Rotation;
-                LeftController.transform.position = avatarInput.LeftPosRot.Position;
-                LeftController.transform.rotation = avatarInput.LeftPosRot.Rotation;
-                RightController.transform.position = avatarInput.RightPosRot.Position;
-                RightController.transform.rotation = avatarInput.RightPosRot.Rotation;
+                LeftHandText.transform.position = avatarInput.LeftPosRot.Position;
+                LeftHandText.transform.rotation = avatarInput.LeftPosRot.Rotation;
+                RightHandText.transform.position = avatarInput.RightPosRot.Position;
+                RightHandText.transform.rotation = avatarInput.RightPosRot.Rotation;
                 playerNameText.text = playerName;
 
                 if (playerInfo.playerFlags.rainbowName && !rainbowName)
