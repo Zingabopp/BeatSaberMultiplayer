@@ -36,8 +36,6 @@ namespace BeatSaberMultiplayerLite.VOIP
                     index += 3;
                     lastPos = Math.Max(Microphone.GetPosition(_usedMicrophone) - recordingBuffer.Length, 0);
                 }
-                if (_isListening == value)
-                    return;
                 _isListening = value;
             }
         }
@@ -71,6 +69,7 @@ namespace BeatSaberMultiplayerLite.VOIP
             inputFreq = AudioUtils.GetFreqForMic();
 
             encoder = SpeexCodex.Create(BandMode.Wide);
+
             var ratio = inputFreq / (float)AudioUtils.GetFrequency(encoder.mode);
             int sizeRequired = (int)(ratio * encoder.dataSize);
             recordingBuffer = new float[sizeRequired];
@@ -115,23 +114,23 @@ namespace BeatSaberMultiplayerLite.VOIP
             {
                 if (_isListening && recording.GetData(recordingBuffer, lastPos))
                 {
-                        //Send..
-                        index++;
-                        if (OnAudioGenerated != null)
+                    //Send..
+                    index++;
+                    if (OnAudioGenerated != null)
+                    {
+                        //Downsample if needed.
+                        if (recordingBuffer != resampleBuffer)
                         {
-                            //Downsample if needed.
-                            if (recordingBuffer != resampleBuffer)
-                            {
-                                AudioUtils.Resample(recordingBuffer, resampleBuffer, inputFreq, AudioUtils.GetFrequency(encoder.mode));
-                            }
-
-                            var data = encoder.Encode(resampleBuffer);
-
-                            VoipFragment frag = new VoipFragment(0, index, data, encoder.mode);
-
-                            OnAudioGenerated?.Invoke(frag);
+                            AudioUtils.Resample(recordingBuffer, resampleBuffer, inputFreq, AudioUtils.GetFrequency(encoder.mode));
                         }
+
+                        var data = encoder.Encode(resampleBuffer);
+
+                        VoipFragment frag = new VoipFragment(0, index, data, encoder.mode);
+
+                        OnAudioGenerated?.Invoke(frag);
                     }
+                }
                 length -= recordingBuffer.Length;
                 lastPos += recordingBuffer.Length;
             }

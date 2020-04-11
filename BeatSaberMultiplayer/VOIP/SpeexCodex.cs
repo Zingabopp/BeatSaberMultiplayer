@@ -57,7 +57,7 @@ namespace BeatSaberMultiplayerLite.VOIP
 
             int frequency = AudioUtils.GetFrequency(mode);
             var time = frequency / (float)dataSize;
-            UnityEngine.Debug.Log("SpeedCodex created mode:" + mode + " dataSize:" + dataSize+ " time:"+ time);
+            Plugin.log.Debug("SpeedCodex created mode:" + mode + " dataSize:" + dataSize+ " time:"+ time);
         }
 
         public float[] Decode( byte[] data )

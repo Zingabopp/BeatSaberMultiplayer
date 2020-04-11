@@ -547,6 +547,10 @@ namespace BeatSaberMultiplayerLite
                                     {
                                         player?.PlayVoIPFragment(speexDec.Decode(data.data), data.index);
                                     }
+                                    else
+                                    {
+                                        Plugin.log.Debug($"Unable to play VOIP data, playerId {data.playerId} not found.");
+                                    }
                                 }
                             }
                             catch (Exception e)
