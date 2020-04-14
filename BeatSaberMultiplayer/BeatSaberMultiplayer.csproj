@@ -34,6 +34,13 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup Condition="$(DefineConstants.Contains('CIBuild')) OR '$(NCrunch)' == '1'">
+    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(NCrunch)' == '1'">
+    <DisableCopyToPlugins>True</DisableCopyToPlugins>
+    <DisableZipRelease>True</DisableZipRelease>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="AvatarController.cs" />
     <Compile Include="Client.cs" />
@@ -360,6 +367,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\Zenject.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BSMTTasks">
+      <Version>1.0.11</Version>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>build</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildTargets.targets" />
