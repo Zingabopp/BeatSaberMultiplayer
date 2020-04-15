@@ -27,12 +27,12 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: ${{ steps.Build.outputs.filename }}
-        path: ./CITest/bin/Release/Final
+        path: ./BeatSaberMultiplayer/bin/Release/Final
     - name: CopyPDB
-      working-directory: ./CITest/bin/Release
+      working-directory: ./BeatSaberMultiplayer/bin/Release
       run: copy ${{ steps.Build.outputs.assemblyname }}.pdb Final/Plugins/${{ steps.Build.outputs.assemblyname }}.pdb
     - name: Upload Artifact With PDB
       uses: actions/upload-artifact@v1
       with:
         name: ${{ steps.Build.outputs.filename }}_WithPDB
-        path: ./CITest/bin/Release/Final
+        path: ./BeatSaberMultiplayer/bin/Release/Final
