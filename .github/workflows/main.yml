@@ -3,8 +3,10 @@ name: Build
 on:
   push:
     branches: [ MultiplayerLite ]
+    paths: 'BeatSaberMultiplayer/**'
   pull_request:
     branches: [ MultiplayerLite ]
+    paths: 'BeatSaberMultiplayer/**'
 
 jobs:
   build:
