@@ -132,6 +132,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         protected IEnumerator GetServersFromRepositories()
         {
+            Plugin.log.Debug("Starting GetServersFromRepositories");
             if (Config.Instance?.ServerRepositories == null)
                 yield break;
             List<RepositoryServer> repoServers = new List<RepositoryServer>();

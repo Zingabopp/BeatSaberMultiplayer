@@ -1,8 +1,7 @@
-﻿<stack  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
-  vertical-fit='Unconstrained'>
+﻿<stack vertical-fit='Unconstrained'>
   <vertical vertical-fit='Unconstrained'>
     <horizontal horizontal-fit='PreferredSize' spacing='2' pad-left='26'>
-      <icon-button id='refresh-btn' on-click='refresh-btn-pressed' icon='BeatSaberMultiplayer.Assets.RefreshIcon.png' stroke-type='Clean' pad='1'/>
+      <icon-button id='refresh-btn' on-click='refresh-btn-pressed' icon='BeatSaberMultiplayerLite.Assets.RefreshIcon.png' stroke-type='Clean' pad='1'/>
       <button text='Create room' on-click='create-room-btn-pressed' />
       <text id='hubs-text' text='  Hubs online: 0/0' alignment='Left' font-size='4.5' />
     </horizontal>
