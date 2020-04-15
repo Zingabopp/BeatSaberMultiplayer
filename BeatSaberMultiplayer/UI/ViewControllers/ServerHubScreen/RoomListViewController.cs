@@ -33,16 +33,25 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
 
         [UIComponent("password-keyboard")]
         ModalKeyboard _passwordKeyboard;
-#pragma warning restore CS0649
+
+        [UIComponent("hubs-text")]
+        TextMeshProUGUI _hubsCountText;
+        [UIComponent("no-rooms-text")]
+        TextMeshProUGUI _noRoomsText;
 
         [UIValue("rooms")]
         public List<object> roomInfosList = new List<object>();
-
+#pragma warning restore CS0649
         private ServerHubRoom _selectedRoom;
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
             base.DidActivate(firstActivation, type);
+
+            if (firstActivation)
+            {
+                _hubsCountText.gameObject.AddComponent<LayoutElement>().preferredWidth = 35f;
+            }
 
             roomsList.tableView.ClearSelection();
         }
@@ -70,7 +79,19 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
                 }
             }
 
+            if (rooms == null || rooms.Count == 0)
+                _noRoomsText.enabled = true;
+            else
+                _noRoomsText.enabled = false;
+
             roomsList.tableView.ReloadData();
+
+        }
+
+        public void SetServerHubsCount(int online, int total)
+        {
+            _hubsCountText.text = $"  Hubs online: {online}/{total}";
+
         }
 
         public void SetRefreshButtonState(bool enabled)
