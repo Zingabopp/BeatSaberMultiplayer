@@ -258,6 +258,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
 
             _roomListViewController.SetRooms(null);
+            _roomListViewController.SetServerHubsCount(0, _serverHubClients.Count);
             _roomListViewController.SetRefreshButtonState(false);
             _serverHubClients.ForEach(x => x.GetRooms());
 
@@ -275,7 +276,11 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 else
                     Plugin.log.Info($"Received {roomsCount} rooms from {sender.ip}:{sender.port}! Total rooms count: {_roomsList.Count}");
                 _roomListViewController.SetRooms(_roomsList);
+                _roomListViewController.SetServerHubsCount(_serverHubClients.Count(x => x.serverHubCompatible), _serverHubClients.Count);
                 _roomListViewController.SetRefreshButtonState(true);
+
+                if (PluginUI.instance.roomCreationFlowCoordinator.isActivated)
+                    PluginUI.instance.roomCreationFlowCoordinator.SetServerHubsList(_serverHubClients);
             });
         }
 
