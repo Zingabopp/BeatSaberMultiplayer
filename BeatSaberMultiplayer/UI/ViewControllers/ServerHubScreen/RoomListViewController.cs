@@ -39,11 +39,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
         [UIComponent("no-rooms-text")]
         TextMeshProUGUI _noRoomsText;
 
-        [UIComponent("hubs-text")]
-        TextMeshProUGUI _hubsCountText;
-        [UIComponent("no-rooms-text")]
-        TextMeshProUGUI _noRoomsText;
-
         [UIValue("rooms")]
         public List<object> roomInfosList = new List<object>();
 #pragma warning restore CS0649
