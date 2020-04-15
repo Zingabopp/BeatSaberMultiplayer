@@ -39,6 +39,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         List<ServerHubClient> _serverHubClients = new List<ServerHubClient>();
 
         List<ServerHubRoom> _roomsList = new List<ServerHubRoom>();
+        bool _roomsListDirty = false;
 
         public bool doNotUpdate = false;
 
@@ -60,7 +61,6 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             ProvideInitialViewControllers(_roomListViewController, null, null);
 
             StartCoroutine(GetServersFromRepositories());
-            StartCoroutine(UpdateRoomsListCoroutine());
         }
 
         protected override void BackButtonWasPressed(ViewController topViewController)
@@ -128,6 +128,17 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 yield break;
             }
             UpdateRoomsList();
+            // try up to three times, and just assume that any responses that take more than 3 seconds aren't worth showing
+            for (int i = 0; i < 3; i++)
+            {
+                yield return new WaitForSeconds(1);
+                if (_roomsListDirty)
+                {
+                    _roomsListDirty = false;
+                    UpdateRoomsListUI();
+                }
+                yield return null;
+            }
         }
 
         protected IEnumerator GetServersFromRepositories()
@@ -268,14 +279,24 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         private void ReceivedRoomsList(ServerHubClient sender, List<RoomInfo> rooms)
         {
-            _roomsList.AddRange(rooms.Select(x => new ServerHubRoom(sender.ip, sender.port, x)));
             int roomsCount = rooms.Count;
+
+            if (!string.IsNullOrEmpty(sender.serverHubName))
+                Plugin.log.Info($"Received {roomsCount} rooms from \"{sender.serverHubName}\" ({sender.ip}:{sender.port})! Total rooms count: {_roomsList.Count}. Time: {DateTime.UtcNow:ss.fff}");
+            else
+                Plugin.log.Info($"Received {roomsCount} rooms from {sender.ip}:{sender.port}! Total rooms count: {_roomsList.Count}: Time: {DateTime.UtcNow:ss.fff}");
+
+            if (roomsCount == 0) // don't bother doing more work if no rooms were received
+            {
+                return;
+            }
+            _roomsList.AddRange(rooms.Select(x => new ServerHubRoom(sender.ip, sender.port, x)));
+            _roomsListDirty = true;
+  }
+
+        private void UpdateRoomsListUI() {
             HMMainThreadDispatcher.instance.Enqueue(delegate ()
             {
-                if (!string.IsNullOrEmpty(sender.serverHubName))
-                    Plugin.log.Info($"Received {roomsCount} rooms from \"{sender.serverHubName}\" ({sender.ip}:{sender.port})! Total rooms count: {_roomsList.Count}");
-                else
-                    Plugin.log.Info($"Received {roomsCount} rooms from {sender.ip}:{sender.port}! Total rooms count: {_roomsList.Count}");
                 _roomListViewController.SetRooms(_roomsList);
                 _roomListViewController.SetServerHubsCount(_serverHubClients.Count(x => x.serverHubCompatible), _serverHubClients.Count);
                 _roomListViewController.SetRefreshButtonState(true);
