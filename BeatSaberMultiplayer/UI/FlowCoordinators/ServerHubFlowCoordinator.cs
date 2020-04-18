@@ -53,7 +53,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 _roomListViewController.createRoomButtonPressed += CreateRoomPressed;
                 _roomListViewController.selectedRoom += RoomSelected;
-                _roomListViewController.refreshPressed += RefreshPresed;
+                _roomListViewController.refreshPressed += RefreshPressed;
             }
 
             showBackButton = true;
@@ -70,9 +70,10 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 PluginUI.instance.modeSelectionFlowCoordinator.InvokeMethod("DismissFlowCoordinator", this, null, false);
             }
         }
-
-        private void RefreshPresed()
+        private bool refreshingRoomsList = false;
+        private void RefreshPressed()
         {
+            _roomsListDirty = true;
             StartCoroutine(UpdateRoomsListCoroutine());
         }
 
@@ -119,8 +120,20 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             DismissFlowCoordinator(PluginUI.instance.roomFlowCoordinator, null, false);
         }
 
+        readonly WaitForSeconds roomRefreshDelay = new WaitForSeconds(1);
         public IEnumerator UpdateRoomsListCoroutine()
         {
+#if DEBUG
+            Plugin.log.Debug("Entering UpdateRoomsListCoroutine");
+#endif
+            if (refreshingRoomsList)
+            {
+#if DEBUG
+                Plugin.log.Debug("UpdateRoomsListCoroutine already running.");
+#endif
+                yield break;
+            }
+            refreshingRoomsList = true;
             yield return null;
             if (doNotUpdate)
             {
@@ -128,17 +141,17 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 yield break;
             }
             UpdateRoomsList();
-            // try up to three times, and just assume that any responses that take more than 3 seconds aren't worth showing
-            for (int i = 0; i < 3; i++)
+
+            while (_roomsListDirty)
             {
-                yield return new WaitForSeconds(1);
-                if (_roomsListDirty)
-                {
-                    _roomsListDirty = false;
-                    UpdateRoomsListUI();
-                }
-                yield return null;
+                _roomsListDirty = false;
+                UpdateRoomsListUI();
+                yield return roomRefreshDelay;
             }
+#if DEBUG
+            Plugin.log.Debug("Exiting UpdateRoomsListCoroutine");
+#endif
+            refreshingRoomsList = false;
         }
 
         protected IEnumerator GetServersFromRepositories()
@@ -282,28 +295,32 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             int roomsCount = rooms.Count;
 
             if (!string.IsNullOrEmpty(sender.serverHubName))
-                Plugin.log.Info($"Received {roomsCount} rooms from \"{sender.serverHubName}\" ({sender.ip}:{sender.port})! Total rooms count: {_roomsList.Count}. Time: {DateTime.UtcNow:ss.fff}");
+                Plugin.log.Debug($"Received {roomsCount} rooms from \"{sender.serverHubName}\" ({sender.ip}:{sender.port})! Total rooms count: {_roomsList.Count}. Time: {DateTime.UtcNow:ss.fff}");
             else
-                Plugin.log.Info($"Received {roomsCount} rooms from {sender.ip}:{sender.port}! Total rooms count: {_roomsList.Count}: Time: {DateTime.UtcNow:ss.fff}");
+                Plugin.log.Debug($"Received {roomsCount} rooms from {sender.ip}:{sender.port}! Total rooms count: {_roomsList.Count}: Time: {DateTime.UtcNow:ss.fff}");
 
-            if (roomsCount == 0) // don't bother doing more work if no rooms were received
+            if (roomsCount > 0) // don't bother doing more work if no rooms were received
             {
-                return;
+                _roomsList.AddRange(rooms.Select(x => new ServerHubRoom(sender.ip, sender.port, x)));
+                _roomsListDirty = true;
+                HMMainThreadDispatcher.instance.Enqueue(delegate ()
+                {
+                    StartCoroutine(UpdateRoomsListCoroutine());
+                });
             }
-            _roomsList.AddRange(rooms.Select(x => new ServerHubRoom(sender.ip, sender.port, x)));
-            _roomsListDirty = true;
-  }
+        }
 
-        private void UpdateRoomsListUI() {
-            HMMainThreadDispatcher.instance.Enqueue(delegate ()
-            {
-                _roomListViewController.SetRooms(_roomsList);
-                _roomListViewController.SetServerHubsCount(_serverHubClients.Count(x => x.serverHubCompatible), _serverHubClients.Count);
-                _roomListViewController.SetRefreshButtonState(true);
+        /// <summary>
+        /// Must be called from UI context.
+        /// </summary>
+        private void UpdateRoomsListUI()
+        {
+            _roomListViewController.SetRooms(_roomsList);
+            _roomListViewController.SetServerHubsCount(_serverHubClients.Count(x => x.serverHubCompatible), _serverHubClients.Count);
+            _roomListViewController.SetRefreshButtonState(true);
 
-                if (PluginUI.instance.roomCreationFlowCoordinator.isActivated)
-                    PluginUI.instance.roomCreationFlowCoordinator.SetServerHubsList(_serverHubClients);
-            });
+            if (PluginUI.instance.roomCreationFlowCoordinator.isActivated)
+                PluginUI.instance.roomCreationFlowCoordinator.SetServerHubsList(_serverHubClients);
         }
 
         public void ServerHubException(ServerHubClient sender, Exception e)
