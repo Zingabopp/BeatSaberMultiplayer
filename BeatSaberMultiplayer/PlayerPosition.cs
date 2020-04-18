@@ -81,13 +81,15 @@ namespace BeatSaberMultiplayerLite
 
     public struct PosRot
     {
+        public bool Valid { get; }
         public Vector3 Position { get; }
         public Quaternion Rotation { get; }
 
-        public PosRot(Vector3 position, Quaternion rotation)
+        public PosRot(Vector3 position, Quaternion rotation, bool valid)
         {
             Position = position;
             Rotation = rotation;
+            Valid = valid;
         }
         public override string ToString()
         {

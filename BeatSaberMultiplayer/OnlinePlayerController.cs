@@ -246,8 +246,8 @@ namespace BeatSaberMultiplayerLite
                 _overrideHeadPos = true;
                 _overriddenHeadPos = playerInfo.updateInfo.headPos;
                 _headPos = playerInfo.updateInfo.headPos + avatarOffset;
-                var leftPos = new PosRot(playerInfo.updateInfo.leftHandPos + avatarOffset, playerInfo.updateInfo.leftHandRot);
-                var rightPos = new PosRot(playerInfo.updateInfo.rightHandPos + avatarOffset, playerInfo.updateInfo.rightHandRot);
+                var leftPos = new PosRot(playerInfo.updateInfo.leftHandPos + avatarOffset, playerInfo.updateInfo.leftHandRot, true);
+                var rightPos = new PosRot(playerInfo.updateInfo.rightHandPos + avatarOffset, playerInfo.updateInfo.rightHandRot, true);
                 transform.position = _headPos;
                 PlayerInfoReceiver.UpdateHands(leftPos, rightPos);
             }
