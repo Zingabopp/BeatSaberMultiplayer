@@ -195,9 +195,10 @@ namespace BeatSaberMultiplayerLite.UI
         }
 
 
-        internal PTTOption[] IndexedPTTOptions = new PTTOption[] {PTTOption.LeftTrigger, PTTOption.RightTrigger, PTTOption.LeftAndRightTrigger, PTTOption.AnyTrigger };
+        internal PTTOption[] IndexedPTTOptions = new PTTOption[] {PTTOption.LeftTrigger, PTTOption.RightTrigger, PTTOption.LeftAndRightTrigger, PTTOption.AnyTrigger, 
+            PTTOption.LeftGrip, PTTOption.RightGrip, PTTOption.LeftAndRightGrip, PTTOption.AnyGrip };
         [UIValue("ptt-button-options")]
-        internal List<object> pttButtonOptions = new List<object>() { "L Trigger", "R Trigger", "L+R Trigger", "Any Trigger" }; // "L Grip", "R Grip", "L+R Grip", "Any Grip", 
+        internal List<object> pttButtonOptions = new List<object>() { "L Trigger", "R Trigger", "L+R Trigger", "Any Trigger", "L Grip", "R Grip", "L+R Grip", "Any Grip", }; // 
 
         [UIValue("ptt-button-value")]
         public object pttButton
@@ -205,9 +206,11 @@ namespace BeatSaberMultiplayerLite.UI
             get 
             {
                 int currentIndex = Config.Instance.PushToTalkButton.OptionIndex() - 1;
+                
                 if (currentIndex >= pttButtonOptions.Count || currentIndex < 0)
                 {
                     Config.Instance.PushToTalkButton = PTTOption.LeftTrigger;
+                    currentIndex = 0;
                 }
                 return pttButtonOptions[currentIndex]; 
             }

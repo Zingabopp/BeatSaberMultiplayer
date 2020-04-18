@@ -38,6 +38,15 @@ namespace BeatSaberMultiplayerLite
             InitializeAvatarController();
         }
 
+        public void SetNodesEnabled(bool enabled, bool includeSpeaker = false)
+        {
+            if (playerNameText != null) playerNameText.gameObject.SetActive(enabled);
+            if (playerFaceText != null) playerFaceText.gameObject.SetActive(enabled);
+            if (includeSpeaker && playerSpeakerIcon != null) playerSpeakerIcon.gameObject.SetActive(enabled);
+            if (leftHandText != null) leftHandText.gameObject.SetActive(enabled);
+            if (rightHandText != null) rightHandText.gameObject.SetActive(enabled);
+        }
+
         void InitializeAvatarController()
         {
             centerAdjust = FindObjectOfType<VRCenterAdjust>();
@@ -148,26 +157,30 @@ namespace BeatSaberMultiplayerLite
         void OnDestroy()
         {
             Plugin.log.Debug("Destroying avatar");
+            DestroyNodes();
+            //if(avatar != null && avatar.GameObject != null)
+            //    Destroy(avatar.GameObject);
+        }
+
+        void DestroyNodes()
+        {
             Destroy(playerNameText);
             Destroy(playerSpeakerIcon);
             Destroy(playerFaceText);
             Destroy(rightHandText);
             Destroy(leftHandText);
+            playerNameText = null;
+            playerSpeakerIcon = null;
+            playerFaceText = null;
             leftHandText = null;
             rightHandText = null;
-            //if(avatar != null && avatar.GameObject != null)
-            //    Destroy(avatar.GameObject);
         }
 
         public void SetPlayerInfo(PlayerInfo _playerInfo, Vector3 offset, bool isLocal)
         {
             if (_playerInfo == default)
             {
-                playerNameText?.gameObject.SetActive(false);
-                playerFaceText?.gameObject.SetActive(false);
-                leftHandText?.gameObject.SetActive(false);
-                rightHandText?.gameObject.SetActive(false);
-                playerSpeakerIcon?.gameObject.SetActive(false);
+                SetNodesEnabled(false);
                 return;
             }
 
@@ -182,13 +195,15 @@ namespace BeatSaberMultiplayerLite
                 {
                     if (isLocal)
                     {
-                        playerNameText.gameObject.SetActive(false);
-                        if (playerFaceText != null) playerFaceText.gameObject.SetActive(false);
-                        playerSpeakerIcon.gameObject.SetActive(false);
+#if DEBUG
+                        SetNodesEnabled(true, false);
+#else
+                        SetNodesEnabled(false, true);
+#endif
                     }
                     else
                     {
-                        playerNameText.gameObject.SetActive(true);
+                        SetNodesEnabled(true, false);
                         playerNameText.alignment = TextAlignmentOptions.Center;
                         playerSpeakerIcon.gameObject.SetActive(InGameOnlineController.Instance.VoiceChatIsTalking(playerId));
                     }

@@ -635,6 +635,10 @@ namespace BeatSaberMultiplayerLite
                             currentState |= PTTOption.LeftTrigger;
                         if (_vrInputManager.TriggerValue(XRNode.RightHand) > 0.85f)
                             currentState |= PTTOption.RightTrigger;
+                        if (ControllersHelper.GetLeftGrip())
+                            currentState |= PTTOption.LeftGrip;
+                        if (ControllersHelper.GetRightGrip())
+                            currentState |= PTTOption.RightGrip;
                         isRecording = currentState.Satisfies(Config.Instance.PushToTalkButton);
                     }
                     else

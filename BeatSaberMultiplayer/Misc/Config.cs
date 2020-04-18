@@ -372,7 +372,11 @@ namespace BeatSaberMultiplayerLite
         LeftTrigger = 1 << 0,                              // 0001                              
         RightTrigger = 1 << 1,                             // 0010
         LeftAndRightTrigger = LeftTrigger | RightTrigger,  // 0011
-        AnyTrigger = 1 << 3 | LeftAndRightTrigger          // 0111
+        AnyTrigger = 1 << 3 | LeftAndRightTrigger,         // 0111
+        LeftGrip = 1 << 5,                                 // 0001 0000
+        RightGrip = 1 << 6,                                // 0010 0000
+        LeftAndRightGrip = LeftGrip | RightGrip,           // 0011 0000
+        AnyGrip = 1 << 7 | LeftAndRightGrip                // 0111 0000
     }
 
     public static class PPTOptionExtensions
@@ -381,6 +385,8 @@ namespace BeatSaberMultiplayerLite
         {
             if (checkState == PTTOption.AnyTrigger)
                 return (actualState & PTTOption.AnyTrigger) != 0;
+            if (checkState == PTTOption.AnyGrip)
+                return (actualState & PTTOption.AnyGrip) != 0;
             return actualState.HasFlag(checkState);
         }
 
@@ -398,6 +404,14 @@ namespace BeatSaberMultiplayerLite
                     return 3;
                 case PTTOption.AnyTrigger:
                     return 4;
+                case PTTOption.LeftGrip:
+                    return 5;
+                case PTTOption.RightGrip:
+                    return 6;
+                case PTTOption.LeftAndRightGrip:
+                    return 7;
+                case PTTOption.AnyGrip:
+                    return 8;
                 default:
                     return 0;
             }

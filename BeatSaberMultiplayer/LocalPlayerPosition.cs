@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BeatSaberMultiplayerLite.Misc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace BeatSaberMultiplayerLite
             {
                 if (Plugin.fpfc != null)
                 {
-                    PosRot retVal = new PosRot(Plugin.fpfc.transform.position, Plugin.fpfc.transform.rotation);
+                    PosRot retVal = new PosRot(Plugin.fpfc.transform.position, Plugin.fpfc.transform.rotation, true);
                     return retVal;
                 }
                 return GetXRNodeWorldPosRot(XRNode.Head); 
@@ -44,39 +45,50 @@ namespace BeatSaberMultiplayerLite
                 return GetXRNodeWorldPosRot(XRNode.RightHand);
             }
         }
-
         private static PosRot GetXRNodeWorldPosRot(XRNode node)
         {
-            var pos = InputTracking.GetLocalPosition(node);
-            var rot = InputTracking.GetLocalRotation(node);
-
-            var roomCenter = GetRoomCenter();
-            var roomRotation = GetRoomRotation();
-            pos = roomRotation * pos;
-            pos += roomCenter;
-            rot = roomRotation * rot;
-            return new PosRot(pos, rot);
+            InputDevice device = ControllersHelper.GetInputDevice(node);
+            bool valid = true;
+            if (!device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 pos))
+            {
+                valid = false;
+            }
+            if (!device.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion rot))
+            {
+                valid = false;
+            }
+            if (valid)
+            {
+                var roomCenter = GetRoomCenter();
+                var roomRotation = GetRoomRotation();
+                pos = roomRotation * pos;
+                pos += roomCenter;
+                rot = roomRotation * rot;
+            }
+            return new PosRot(pos, rot, valid);
         }
 
         private static PosRot GetTrackerWorldPosRot(XRNodeState tracker)
         {
             Vector3 pos = new Vector3();
             Quaternion rot = new Quaternion();
+            bool valid = false;
             try
             {
-                var notes = new List<XRNodeState>();
-                InputTracking.GetNodeStates(notes);
-                foreach (XRNodeState note in notes)
+                var nodes = new List<XRNodeState>();
+                InputTracking.GetNodeStates(nodes);
+                foreach (XRNodeState node in nodes)
                 {
-                    if (note.uniqueID != tracker.uniqueID)
+                    if (node.uniqueID != tracker.uniqueID)
                         continue;
-                    if (note.TryGetPosition(out pos) && note.TryGetRotation(out rot))
+                    if (node.TryGetPosition(out Vector3 posistion) && node.TryGetRotation(out Quaternion rotation))
                     {
                         var roomCenter = GetRoomCenter();
                         var roomRotation = GetRoomRotation();
-                        pos = roomRotation * pos;
+                        pos = roomRotation * posistion;
                         pos += roomCenter;
-                        rot = roomRotation * rot;
+                        rot = roomRotation * rotation;
+                        valid = true;
                     }
                 }
             }
@@ -84,7 +96,7 @@ namespace BeatSaberMultiplayerLite
             {
                 Plugin.log.Error(e);
             }
-            return new PosRot(pos, rot);
+            return new PosRot(pos, rot, valid);
         }
     }
 }
