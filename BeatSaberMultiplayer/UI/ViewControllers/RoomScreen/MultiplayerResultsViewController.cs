@@ -92,7 +92,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         public void UpdateLeaderboard()
         {
-            var scores = InGameOnlineController.Instance.playerScores;
+            List<PlayerScore> scores = InGameOnlineController.Instance.playerScores;
 
             if (scores == null)
                 return;

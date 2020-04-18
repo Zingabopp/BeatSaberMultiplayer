@@ -233,7 +233,8 @@ namespace BeatSaberMultiplayerLite.UI
         {
             if (Plugin.UserId == 0 || string.IsNullOrEmpty(Plugin.Username))
                 Plugin.ReadUserInfo();
-            yield return new WaitForSeconds(1);
+            yield return null;
+            yield return null;
             MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
             try
             {
