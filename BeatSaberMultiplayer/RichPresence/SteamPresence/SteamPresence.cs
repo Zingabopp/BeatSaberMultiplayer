@@ -39,7 +39,7 @@ namespace BeatSaberMultiplayerLite.RichPresence.SteamPresence
 #if DEBUG
                     Plugin.log.Debug($"Setting Steam connect string to {activity.Secrets.Join}");
 #endif
-                    SteamFriends.SetRichPresence("connect", "connect:|" + activity.Secrets.Join + "|");
+                    SteamFriends.SetRichPresence("connect", activity.Secrets.Join);
                 }
                 else
                     Plugin.log.Warn($"Connect string is null or empty.");
@@ -48,14 +48,18 @@ namespace BeatSaberMultiplayerLite.RichPresence.SteamPresence
                 SteamFriends.SetRichPresence("steam_player_group_size", activity.Party.Size.CurrentSize.ToString());
 
             }
-            //discord.UpdateActivity(activity.ToActivity());
         }
 
         public void ClearActivity()
         {
             if (SteamManager.Initialized)
             {
-                Steamworks.SteamFriends.ClearRichPresence();
+                // We can't use ClearRichPresence here because Beat Saber
+                // has rich presence data as well and will probably show
+                // "Browsing Menus" or something.
+                SteamFriends.SetRichPresence("steam_player_group", "");
+                SteamFriends.SetRichPresence("steam_player_group_size", "");
+                SteamFriends.SetRichPresence("connect", "");
             }
         }
 
