@@ -1,4 +1,4 @@
-﻿using BeatSaberMarkupLanguage;
+using BeatSaberMarkupLanguage;
 using BeatSaberMultiplayerLite.RichPresence;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMultiplayerLite.Data;
@@ -1057,20 +1057,22 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 LoadBeatmapLevelAsync(selectedLevel,
                     (status, success, level) =>
                     {
-                        if (status == AdditionalContentModel.EntitlementStatus.NotOwned)
+                        HMMainThreadDispatcher.instance.Enqueue(() =>
                         {
-                            _difficultySelectionViewController.SetSelectedSong(selectedLevel);
-                            Client.Instance.SendPlayerReady(false);
-                            Client.Instance.playerInfo.updateInfo.playerState = PlayerState.DownloadingSongs;
-                            Client.Instance.playerInfo.updateInfo.playerProgress = 0f;
-                            selectedLevel.GetPreviewAudioClipAsync(new CancellationToken()).ContinueWith(
-                                 (res) =>
-                                 {
-                                     if (!res.IsFaulted)
+                            if (status == AdditionalContentModel.EntitlementStatus.NotOwned)
+                            {
+                                _difficultySelectionViewController.SetSelectedSong(selectedLevel);
+                                Client.Instance.SendPlayerReady(false);
+                                Client.Instance.playerInfo.updateInfo.playerState = PlayerState.DownloadingSongs;
+                                Client.Instance.playerInfo.updateInfo.playerProgress = 0f;
+                                selectedLevel.GetPreviewAudioClipAsync(new CancellationToken()).ContinueWith(
+                                     (res) =>
                                      {
-                                         PreviewPlayer.CrossfadeTo(res.Result, selectedLevel.previewStartTime, res.Result.length - selectedLevel.previewStartTime);
-                                     }
-                                 });
+                                         if (!res.IsFaulted)
+                                         {
+                                             PreviewPlayer.CrossfadeTo(res.Result, selectedLevel.previewStartTime, res.Result.length - selectedLevel.previewStartTime);
+                                         }
+                                     });
 
                         }
                         else if (success)
