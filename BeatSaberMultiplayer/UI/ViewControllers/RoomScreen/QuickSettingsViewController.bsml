@@ -21,8 +21,17 @@
       <slider-setting text='Voice chat volume' value='voice-chat-volume' min='0' max='300' increment='1' integer-only='true' apply-on-change='true' />
       <checkbox text='Enable microphone' value='mic-enabled' apply-on-change='true' />
       <checkbox text='Use push to talk' value='push-to-talk' apply-on-change='true' />
-      <dropdown-list-setting text='Push to talk button' value='ptt-button-value' apply-on-change='true' options='ptt-button-options'/>
       <dropdown-list-setting id ='mic-select-setting' text='Microphone' value='mic-select-value' apply-on-change='true' options='mic-select-options' hover-hint='Select microphone to use for voice chat'  />
+    </vertical>
+  </tab>
+  <tab tags='settings-tag' tab-name='PTT Settings'>
+    <vertical pad-top='10' vertical-fit='PreferredSize'>
+      <dropdown-list-setting text='Push to talk button' value='ptt-button-value' apply-on-change='true' options='ptt-button-options' hover-hint='~ptt-hover'/>
+      <slider-setting text='Trigger Threshold' value='trigger-threshold' apply-on-change='true' min='0' max='1' increment='0.01' integer-only='false' formatter='float-percent'/>
+      <slider-setting text='Grip Threshold' value='grip-threshold' apply-on-change='true' min='0' max='1' increment='0.01' integer-only='false' formatter='float-percent'/>
+      <checkbox text='Enable Haptics' value='enable-haptics' apply-on-change='true' />
+      <slider-setting text='Haptic Amplitude' value='haptic-amplitude' apply-on-change='true' min='0' max='1' increment='0.05' integer-only='false' formatter='float-percent'/>
+      <slider-setting text='Haptic Duration' value='haptic-duration' apply-on-change='true' min='0' max='1' increment='0.05' integer-only='false' formatter='float-seconds' hover-hint='Duration of the haptic impulses. Not available on some systems (OpenVR).'/>
     </vertical>
   </tab>
 </bg>

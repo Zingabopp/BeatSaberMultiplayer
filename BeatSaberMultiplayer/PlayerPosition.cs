@@ -41,7 +41,6 @@ namespace BeatSaberMultiplayerLite
         }
 
         #region Static
-        private static Transform _originTransform;
         private static MainSettingsModelSO _mainSettingsModel;
 
         protected static MainSettingsModelSO MainSettingsModel
@@ -59,22 +58,12 @@ namespace BeatSaberMultiplayerLite
 
         public static Vector3 GetRoomCenter()
         {
-            if (_originTransform == null)
-            {
-                return MainSettingsModel == null ? Vector3.zero : MainSettingsModel.roomCenter;
-            }
-
-            return _originTransform.position;
+            return MainSettingsModel == null ? Vector3.zero : MainSettingsModel.roomCenter;
         }
 
         public static Quaternion GetRoomRotation()
         {
-            if (_originTransform == null)
-            {
-                return MainSettingsModel == null ? Quaternion.identity : Quaternion.Euler(0, MainSettingsModel.roomRotation, 0);
-            }
-
-            return _originTransform.rotation;
+            return MainSettingsModel == null ? Quaternion.identity : Quaternion.Euler(0, MainSettingsModel.roomRotation, 0);
         }
         #endregion
     }

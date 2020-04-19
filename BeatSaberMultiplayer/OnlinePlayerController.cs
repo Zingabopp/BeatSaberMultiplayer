@@ -53,16 +53,16 @@ namespace BeatSaberMultiplayerLite
         private double syncTime = 0f;
         private float lerpProgress = 0f;
 
-        public void Start()
+        public override void Start()
         {
             Plugin.log.Debug($"Player controller created!");
 
             voipSource = gameObject.AddComponent<AudioSource>();
 
             voipSource.clip = null;
-            voipSource.spatialize = Config.Instance.SpatialAudio;
+            voipSource.spatialize = Config.Instance.VoiceChatSettings.SpatialAudio;
             voipSource.loop = true;
-            voipSource.volume = Config.Instance.VoiceChatVolume;
+            voipSource.volume = Config.Instance.VoiceChatSettings.VoiceChatVolume;
             voipSource.Play();
 
             if (playerInfo != null)
@@ -419,9 +419,9 @@ namespace BeatSaberMultiplayerLite
 
                 _lastVoipFragIndex = fragIndex;
                 _silentFrames = 0;
-                if (Config.Instance.VoiceChatVolume > 1)
+                if (Config.Instance.VoiceChatSettings.VoiceChatVolume > 1)
                 {
-                    AudioUtils.ApplyGain(data, Config.Instance.VoiceChatVolume);
+                    AudioUtils.ApplyGain(data, Config.Instance.VoiceChatSettings.VoiceChatVolume);
                 }
                 _voipFragQueue.Write(data, 0, data.Length);
             }

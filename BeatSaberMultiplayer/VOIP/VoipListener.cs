@@ -42,14 +42,13 @@ namespace BeatSaberMultiplayerLite.VOIP
 
         private bool _isListening;
 
-        private bool _isRecording;
         private string _usedMicrophone;
 
         void Awake()
         {
             Settings.voiceChatMicrophoneChanged -= Instance_voiceChatMicrophoneChanged;
             Settings.voiceChatMicrophoneChanged += Instance_voiceChatMicrophoneChanged;
-            _usedMicrophone = Config.Instance.VoiceChatMicrophone;
+            _usedMicrophone = Config.Instance.VoiceChatSettings.VoiceChatMicrophone;
         }
 
         private void Instance_voiceChatMicrophoneChanged(string newMic)

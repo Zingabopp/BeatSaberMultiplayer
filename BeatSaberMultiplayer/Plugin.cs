@@ -3,6 +3,8 @@ using BeatSaberMultiplayerLite.OverriddenClasses;
 using BeatSaberMultiplayerLite.UI;
 using BS_Utils.Gameplay;
 using IPA;
+using IPA.Config;
+using IPA.Config.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,6 +92,16 @@ namespace BeatSaberMultiplayerLite
             log.Info($"{PluginMetadata.Name} v{PluginVersion} initialized. Current culture is {CultureInfo.CurrentCulture.Name}");
         }
 
+        [Init]
+        public void InitWithConfig(IPA.Config.Config conf)
+        {
+            var config = conf.Generated<Config>();
+            Config.Instance = config;
+            string oldModVersion = config.MultiplayerSettings.ModVersion;
+            config.MultiplayerSettings.ModVersion = PluginVersion;
+            log.Debug("Config loaded");
+        }
+
         [OnStart]
         public void OnApplicationStart()
         {
@@ -105,10 +117,6 @@ namespace BeatSaberMultiplayerLite
             BS_Utils.Utilities.BSEvents.menuSceneLoadedFresh += MenuSceneLoadedFresh;
             BS_Utils.Utilities.BSEvents.menuSceneLoaded += MenuSceneLoaded;
             BS_Utils.Utilities.BSEvents.gameSceneLoaded += GameSceneLoaded;
-            if (Config.Load())
-                log.Info("Loaded config!");
-            else
-                Config.Create();
 
             try
             {

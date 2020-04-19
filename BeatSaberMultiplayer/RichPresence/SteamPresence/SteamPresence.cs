@@ -18,6 +18,7 @@ namespace BeatSaberMultiplayerLite.RichPresence.SteamPresence
         /// <summary>
         /// Unused.
         /// </summary>
+#pragma warning disable CS0067 // The event is never used
         public event EventHandler<IActivityJoinRequest> ActivityJoinRequest;
         public event EventHandler<string> ActivityJoinReceived;
         /// <summary>
@@ -25,7 +26,7 @@ namespace BeatSaberMultiplayerLite.RichPresence.SteamPresence
         /// </summary>
         public event EventHandler<ActivityInviteEventArgs> ActivityInviteReceived;
         public event EventHandler Destroyed;
-
+#pragma warning restore CS0067 // The event is never used
 
         public void UpdateActivity(GameActivity activity)
         {

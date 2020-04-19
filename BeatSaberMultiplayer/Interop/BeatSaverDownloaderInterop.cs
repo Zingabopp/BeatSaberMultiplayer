@@ -18,13 +18,14 @@ namespace BeatSaberMultiplayerLite.Interop
                 {
                     CustomMoreSongsFlowCoordinator moreSongsFlow = BeatSaberUI.CreateFlowCoordinator<CustomMoreSongsFlowCoordinator>();
 
-                    moreSongsFlow.ParentFlowCoordinator = parent;
+                    moreSongsFlow.SetParentFlowCoordinator(parent);
                     _coordinator = moreSongsFlow;
                 }
-                
+
                 parent.PresentFlowCoordinator(_coordinator, dismissedCallback);
                 return _coordinator;
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Plugin.log.Error($"Error creating MoreSongsFlowCoordinator: {ex}");
                 return null;

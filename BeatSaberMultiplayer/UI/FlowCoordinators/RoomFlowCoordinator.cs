@@ -145,7 +145,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         float currentTime;
         float totalTime;
 
-        Song songToDownload;
+        protected Song songToDownload;
 
         string ip;
         int port;
@@ -303,7 +303,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             _requestedSongs.Clear();
             PopAllViewControllers();
             SetLeftScreenViewController(_playerManagementViewController);
-            PluginUI.instance.SetLobbyDiscordActivity();
+            PluginUI.instance.SetLobbyPresenceActivity();
+            //Plugin.PresenceManager.ClearActivity();
             didFinishEvent?.Invoke();
         }
 
@@ -388,7 +389,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                 lastHighscoreForLevel = 0;
                                 lastHighscoreValid = false;
 
-                                if (Config.Instance.EnableVoiceChat)
+                                if (Config.Instance.VoiceChatSettings.EnableVoiceChat)
                                     InGameOnlineController.Instance.VoiceChatStartRecording();
                             }
                             break;
@@ -652,7 +653,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     break;
             }
             _playerManagementViewController.UpdateViewController(Client.Instance.isHost, (int)state <= 1);
-            UpdateDiscordActivity(roomInfo);
+            UpdateRichPresenceActivity(roomInfo);
         }
 
         private void UpdateLevelOptions()
@@ -689,7 +690,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                             Client.Instance.playerInfo.updateInfo.playerLevelOptions = new LevelOptionsInfo(BeatmapDifficulty.Hard, _playerManagementViewController.modifiers, "Standard");
                         }
                     }
-                    UpdateDiscordActivity(roomInfo);
+                    UpdateRichPresenceActivity(roomInfo);
                 }
             }
             catch (Exception e)
@@ -730,7 +731,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
             if (menuSceneSetupData != null)
             {
-                Client.Instance.playerInfo.updateInfo.playerState = Config.Instance.SpectatorMode ? PlayerState.Spectating : PlayerState.Game;
+                Client.Instance.playerInfo.updateInfo.playerState = Config.Instance.SocialSettings.SpectatorMode ? PlayerState.Spectating : PlayerState.Game;
 
                 PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
 
@@ -758,7 +759,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 var scoreSaber = IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber");
                 PracticeSettings practiceSettings = null;
-                if (Config.Instance.SpectatorMode || startTime > 1f)
+                if (Config.Instance.SocialSettings.SpectatorMode || startTime > 1f)
                 {
                     practiceSettings = new PracticeSettings(PracticeSettings.defaultPracticeSettings);
                     if (startTime > 1f)
@@ -768,13 +769,13 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     }
                     practiceSettings.songSpeedMul = modifiers.songSpeedMul;
                 }
-                else if (Config.Instance.SubmitScores != 0 && scoreSaber != null)
+                else if (Config.Instance.SocialSettings.SubmitScores != 0 && scoreSaber != null)
                 {
                     ScoreSaberInterop.InitAndSignIn();
                 }
 
                 menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings: practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
-                UpdateDiscordActivity(roomInfo);
+                UpdateRichPresenceActivity(roomInfo);
             }
             else
             {
@@ -1441,8 +1442,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
         }
 
-        #region Discord rich presence stuff
-        public void UpdateDiscordActivity(RoomInfo roomInfo)
+        #region Rich presence stuff (Discord/Steam)
+        public void UpdateRichPresenceActivity(RoomInfo roomInfo)
         {
             GameActivityParty partyInfo = new GameActivityParty()
             {

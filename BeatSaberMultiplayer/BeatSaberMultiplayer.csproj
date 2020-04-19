@@ -58,6 +58,7 @@
     <Compile Include="Data\SongInfo.cs" />
     <Compile Include="Data\LevelOptionsInfo.cs" />
     <Compile Include="Interop\IVotingInterop.cs" />
+    <Compile Include="Misc\Config.cs" />
     <Compile Include="OnlinePlayerPosition.cs" />
     <Compile Include="PlayerPosition.cs" />
     <Compile Include="MultiplayerExceptions.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="Misc\SimpleJSON.cs" />
     <Compile Include="Interop\BeatSaverDownloaderInterop.cs" />
     <Compile Include="Misc\Sprites.cs" />
-    <Compile Include="Misc\Config.cs" />
     <Compile Include="Misc\CustomExtensions.cs" />
     <Compile Include="Misc\HexConverter.cs" />
     <Compile Include="Misc\LoadScripts.cs" />
@@ -304,9 +304,8 @@
       <HintPath>..\Refs\SteamVR.dll</HintPath>
     </Reference>
     <Reference Include="Steamworks.NET">
-      <HintPath>..\Refs\Steamworks.NET.dll</HintPath>
-      <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Refs\Steamworks.NET.dll</HintPath>
     </Reference>
     <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />

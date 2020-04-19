@@ -78,7 +78,7 @@ namespace BeatSaberMultiplayerLite.RichPresence
         public void UpdateActivity(GameActivity gameActivity)
         {
             CurrentActivity = gameActivity;
-            if (!Config.Instance.EnableRichPresence)
+            if (!Config.Instance.SocialSettings.EnableRichPresence)
                 return;
             foreach (var presence in presenceInstances.Values.ToArray())
             {
@@ -90,7 +90,7 @@ namespace BeatSaberMultiplayerLite.RichPresence
         {
             if (sender is IPresenceInstance presence)
             {
-                if (!Config.Instance.EnableRichPresence)
+                if (!Config.Instance.SocialSettings.EnableRichPresence)
                 {
                     Plugin.log.Debug($"Ignoring join request from {presence?.Name}, Rich Presence is disabled.");
                     return;
@@ -105,7 +105,7 @@ namespace BeatSaberMultiplayerLite.RichPresence
         {
             if (sender is IPresenceInstance presence)
             {
-                if (!Config.Instance.EnableRichPresence)
+                if (!Config.Instance.SocialSettings.EnableRichPresence)
                 {
                     Plugin.log.Debug($"Ignoring join request from {presence?.Name}, Rich Presence is disabled.");
                     return;

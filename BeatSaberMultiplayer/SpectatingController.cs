@@ -130,7 +130,7 @@ namespace BeatSaberMultiplayerLite
         {
             _currentScene = 0;
             active = false;
-            if (!Config.Instance.SpectatorMode)
+            if (!Config.Instance.SocialSettings.SpectatorMode)
                 return;
             DestroyAvatar();
             if (_spectatingText != null)
@@ -147,7 +147,7 @@ namespace BeatSaberMultiplayerLite
         {
             _currentScene = 1;
 
-            if (!Config.Instance.SpectatorMode || !Client.Instance.connected)
+            if (!Config.Instance.SocialSettings.SpectatorMode || !Client.Instance.connected)
             {
                 active = false;
                 return;
@@ -268,7 +268,7 @@ namespace BeatSaberMultiplayerLite
 
         void ReplaceControllers()
         {
-            if (!Config.Instance.SpectatorMode || Client.Instance.inRadioMode)
+            if (!Config.Instance.SocialSettings.SpectatorMode || Client.Instance.inRadioMode)
                 return;
             Plugin.log.Debug("SpectatingController.ReplaceControllers.");
             audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
@@ -328,7 +328,7 @@ namespace BeatSaberMultiplayerLite
 
         private void PacketReceived(NetIncomingMessage msg)
         {
-            if (Config.Instance.SpectatorMode && !Client.Instance.inRadioMode && _currentScene == 1)
+            if (Config.Instance.SocialSettings.SpectatorMode && !Client.Instance.inRadioMode && _currentScene == 1)
             {
                 msg.Position = 0;
                 CommandType commandType = (CommandType)msg.ReadByte();
@@ -410,12 +410,16 @@ namespace BeatSaberMultiplayerLite
                                 playerUpdates.Add(playerId, replay);
                             }
                         }
+#pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable CS0168 // Variable is declared but never used
                         catch (Exception e)
+#pragma warning restore CS0168 // Variable is declared but never used
                         {
 #if DEBUG
-                            Plugin.log.Critical($"Unable to parse PlayerInfo! Excpetion: {e}");
+                            Plugin.log.Critical($"Unable to parse PlayerInfo! Exception: {e}");
 #endif
                         }
+#pragma warning restore CA1031 // Do not catch general exception types
                     }
                 }
             }
@@ -431,7 +435,7 @@ namespace BeatSaberMultiplayerLite
 
         public void Update()
         {
-            if (Config.Instance.SpectatorMode && _currentScene == 1 && active)
+            if (Config.Instance.SocialSettings.SpectatorMode && _currentScene == 1 && active)
             {
                 if (spectatedPlayer == null && _leftSaber != null && _rightSaber != null)
                 {
