@@ -303,7 +303,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             _requestedSongs.Clear();
             PopAllViewControllers();
             SetLeftScreenViewController(_playerManagementViewController);
-            PluginUI.instance.SetLobbyDiscordActivity();
+            PluginUI.instance.SetLobbyPresenceActivity();
+            //Plugin.PresenceManager.ClearActivity();
             didFinishEvent?.Invoke();
         }
 
@@ -652,7 +653,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     break;
             }
             _playerManagementViewController.UpdateViewController(Client.Instance.isHost, (int)state <= 1);
-            UpdateDiscordActivity(roomInfo);
+            UpdateRichPresenceActivity(roomInfo);
         }
 
         private void UpdateLevelOptions()
@@ -689,7 +690,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                             Client.Instance.playerInfo.updateInfo.playerLevelOptions = new LevelOptionsInfo(BeatmapDifficulty.Hard, _playerManagementViewController.modifiers, "Standard");
                         }
                     }
-                    UpdateDiscordActivity(roomInfo);
+                    UpdateRichPresenceActivity(roomInfo);
                 }
             }
             catch (Exception e)
@@ -774,7 +775,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 }
 
                 menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings: practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
-                UpdateDiscordActivity(roomInfo);
+                UpdateRichPresenceActivity(roomInfo);
             }
             else
             {
@@ -1441,8 +1442,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
         }
 
-        #region Discord rich presence stuff
-        public void UpdateDiscordActivity(RoomInfo roomInfo)
+        #region Rich presence stuff (Discord/Steam)
+        public void UpdateRichPresenceActivity(RoomInfo roomInfo)
         {
             GameActivityParty partyInfo = new GameActivityParty()
             {
