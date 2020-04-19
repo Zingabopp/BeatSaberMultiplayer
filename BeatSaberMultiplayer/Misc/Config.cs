@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using IPA.Config.Stores.Attributes;
 using IPA.Config.Stores.Converters;
 using System.ComponentModel;
+using BeatSaberMultiplayerLite.Misc;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace BeatSaberMultiplayerLite
@@ -178,6 +179,85 @@ namespace BeatSaberMultiplayerLite
         [SerializedName(nameof(VoiceChatMicrophone))]
         [JsonProperty(nameof(VoiceChatMicrophone), Order = 60)]
         public string VoiceChatMicrophone { get; set; } = "";
+
+        [NonNullable]
+        [JsonProperty(nameof(InputSettings), Order = 70)]
+        public virtual InputConfig InputSettings { get; set; } = new InputConfig();
+    }
+
+    internal class InputConfig
+    {
+        private float triggerInputThreshold = 0.85f;
+        [SerializedName(nameof(TriggerInputThreshold))]
+        [JsonProperty(nameof(TriggerInputThreshold), Order = 0)]
+        public virtual float TriggerInputThreshold
+        {
+            get => triggerInputThreshold;
+            set
+            {
+                if (triggerInputThreshold == value) return;
+                if (value < 0)
+                    value = 0;
+                if (value > 1)
+                    value = 1;
+                triggerInputThreshold = value;
+            }
+        }
+
+        private float gripInputThreshold = 0.85f;
+        [SerializedName(nameof(GripInputThreshold))]
+        [JsonProperty(nameof(GripInputThreshold), Order = 10)]
+        public virtual float GripInputThreshold
+        {
+            get => gripInputThreshold;
+            set
+            {
+                if (gripInputThreshold == value) return;
+                if (value < 0)
+                    value = 0;
+                if (value > 1)
+                    value = 1;
+                gripInputThreshold = value;
+            }
+        }
+
+        [SerializedName(nameof(EnableHaptics))]
+        [JsonProperty(nameof(EnableHaptics), Order = 15)]
+        public virtual bool EnableHaptics { get; set; } = true;
+
+        private float hapticAmplitude = 0.5f;
+        [SerializedName(nameof(HapticAmplitude))]
+        [JsonProperty(nameof(HapticAmplitude), Order = 20)]
+        public virtual float HapticAmplitude
+        {
+            get => hapticAmplitude;
+            set
+            {
+                if (hapticAmplitude == value) return;
+                if (value < 0)
+                    value = 0;
+                if (value > 1)
+                    value = 1;
+                hapticAmplitude = value;
+            }
+        }
+
+        private float hapticDuration = 0.1f;
+        [SerializedName(nameof(HapticDuration))]
+        [JsonProperty(nameof(HapticDuration), Order = 30)]
+        public virtual float HapticDuration
+        {
+            get => hapticDuration;
+            set
+            {
+                if (hapticDuration == value) return;
+                if (value < 0)
+                    value = 0;
+                if (value > 1)
+                    value = 1;
+                hapticDuration = value;
+            }
+        }
     }
 
     internal class LeaderboardConfig
@@ -253,6 +333,8 @@ namespace BeatSaberMultiplayerLite
         public virtual void OnReload()
         {
             // Do stuff after config is read from disk.
+            if (VoiceChatSettings.InputSettings != null)
+                ControllersHelper.ReloadConfig(VoiceChatSettings.InputSettings);
         }
 
         /// <summary>
@@ -261,6 +343,8 @@ namespace BeatSaberMultiplayerLite
         public virtual void Changed()
         {
             // Do stuff when the config is changed.
+            if (VoiceChatSettings.InputSettings != null)
+                ControllersHelper.ReloadConfig(VoiceChatSettings.InputSettings);
         }
 
         /// <summary>

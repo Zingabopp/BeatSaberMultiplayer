@@ -18,6 +18,7 @@ namespace BeatSaberMultiplayerLite.Misc
         private static int headFailedTries = 0;
         public static float TriggerThreshold = 0.85f;
         public static float GripThreshold = 0.85f;
+        public static bool EnableHaptics = true;
         public static float HapticAmplitude = 0.5f;
         public static float HapticDuration = 0.01f;
         public static uint HapticChannel = 0;
@@ -79,6 +80,20 @@ namespace BeatSaberMultiplayerLite.Misc
             set => head = value;
         }
 
+        public static void ReloadConfig(InputConfig config)
+        {
+            if (config == null)
+            {
+                Plugin.log.Warn($"Unable to reload config, it's null.");
+                return;
+            }
+            TriggerThreshold = config.TriggerInputThreshold;
+            GripThreshold = config.GripInputThreshold;
+            EnableHaptics = config.EnableHaptics;
+            HapticAmplitude = config.HapticAmplitude;
+            HapticDuration = config.HapticDuration;
+        }
+
         public static InputDevice GetInputDevice(XRNode node)
         {
             InputDevice device;
@@ -113,6 +128,7 @@ namespace BeatSaberMultiplayerLite.Misc
         {
             if (initialized)
                 return;
+            ReloadConfig(Config.Instance?.VoiceChatSettings?.InputSettings);
             InputDevices.deviceConnected += OnDeviceConnected;
             InputDevices.deviceDisconnected += OnDeviceDisconnected;
             LeftController = GetInputDevice(XRNode.LeftHand);
@@ -212,12 +228,14 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public static void TriggerShortRumble(InputDevice device)
         {
-            if (device.isValid)
+            if (EnableHaptics && device.isValid)
                 device.SendHapticImpulse(HapticChannel, HapticAmplitude, HapticDuration);
         }
 
         public static void TriggerShortRumble(XRNode node)
         {
+            if (!EnableHaptics)
+                return;
             if (node == XRNode.LeftHand)
             {
                 InputDevice device = LeftController;
