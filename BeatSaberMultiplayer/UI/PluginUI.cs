@@ -157,7 +157,7 @@ namespace BeatSaberMultiplayerLite.UI
                 try
                 {
                     Plugin.ReadUserInfo();
-                    SetLobbyDiscordActivity();
+                    SetLobbyPresenceActivity();
 
                     MainFlowCoordinator mainFlow = Resources.FindObjectsOfTypeAll<MainFlowCoordinator>().First();
 
@@ -213,7 +213,7 @@ namespace BeatSaberMultiplayerLite.UI
             screen.SetRootViewController(discordView, false);
         }
 
-        public void SetLobbyDiscordActivity()
+        public void SetLobbyPresenceActivity()
         {
 
             Plugin.PresenceManager.UpdateActivity(new GameActivity
