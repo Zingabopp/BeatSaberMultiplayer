@@ -1,14 +1,16 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components.Settings;
+using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMultiplayerLite.Misc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace BeatSaberMultiplayerLite.UI
 {
-    class Settings : MonoBehaviour
+    class Settings : MonoBehaviour, INotifiableHost
     {
         public static event Action<string> voiceChatMicrophoneChanged;
 
@@ -120,7 +122,7 @@ namespace BeatSaberMultiplayerLite.UI
             get { return Config.Instance.SpectatorMode; }
             set { Config.Instance.SpectatorMode = value; }
         }
-        
+
         [UIValue("submit-scores-options")]
         public List<object> submitScoresOptions = new List<object>() { "Never", "Only ranked", "Always" };
 
@@ -195,7 +197,7 @@ namespace BeatSaberMultiplayerLite.UI
         }
 
 
-        internal PTTOption[] IndexedPTTOptions = new PTTOption[] {PTTOption.LeftTrigger, PTTOption.RightTrigger, PTTOption.LeftAndRightTrigger, PTTOption.AnyTrigger, 
+        internal PTTOption[] IndexedPTTOptions = new PTTOption[] {PTTOption.LeftTrigger, PTTOption.RightTrigger, PTTOption.LeftAndRightTrigger, PTTOption.AnyTrigger,
             PTTOption.LeftGrip, PTTOption.RightGrip, PTTOption.LeftAndRightGrip, PTTOption.AnyGrip };
         [UIValue("ptt-button-options")]
         internal List<object> pttButtonOptions = new List<object>() { "L Trigger", "R Trigger", "L+R Trigger", "Any Trigger", "L Grip", "R Grip", "L+R Grip", "Any Grip", }; // 
@@ -203,20 +205,53 @@ namespace BeatSaberMultiplayerLite.UI
         [UIValue("ptt-button-value")]
         public object pttButton
         {
-            get 
+            get
             {
                 int currentIndex = Config.Instance.PushToTalkButton.OptionIndex() - 1;
-                
+
                 if (currentIndex >= pttButtonOptions.Count || currentIndex < 0)
                 {
                     Config.Instance.PushToTalkButton = PTTOption.LeftTrigger;
                     currentIndex = 0;
                 }
-                return pttButtonOptions[currentIndex]; 
+                return pttButtonOptions[currentIndex];
             }
-            set { Config.Instance.PushToTalkButton = IndexedPTTOptions[pttButtonOptions.IndexOf(value)]; }
+            set
+            {
+                PTTOption newValue = IndexedPTTOptions[pttButtonOptions.IndexOf(value)];
+                if (Config.Instance.PushToTalkButton == newValue)
+                    return;
+                PttHoverHint = GetPttHoverHintForOption(newValue);
+                Config.Instance.PushToTalkButton = newValue;
+            }
         }
 
+        private string GetPttHoverHintForOption(PTTOption option)
+        {
+            if ((option & PTTOption.AnyGrip) > 0)
+                return "When using SteamVR, you may have to set custom bindings for the grips to work.";
+            else
+                return "Button(s) to active Push-To-Talk.";
+        }
+
+        private string pttHoverHint = null;
+        [UIValue("ptt-hover")]
+        public string PttHoverHint
+        {
+            get
+            {
+                if (pttHoverHint == null)
+                    pttHoverHint = GetPttHoverHintForOption(Config.Instance.PushToTalkButton);
+                return pttHoverHint;
+            }
+            set
+            {
+                if (pttHoverHint == value)
+                    return;
+                pttHoverHint = value;
+                NotifyPropertyChanged();
+            }
+        }
         [UIValue("mic-select-options")]
         public List<object> micSelectOptions = new List<object>() { "DEFAULT MIC" };
 
@@ -225,7 +260,7 @@ namespace BeatSaberMultiplayerLite.UI
         {
             get
             {
-                if(!string.IsNullOrEmpty(Config.Instance.VoiceChatMicrophone) && micSelectOptions.Contains((object)Config.Instance.VoiceChatMicrophone))
+                if (!string.IsNullOrEmpty(Config.Instance.VoiceChatMicrophone) && micSelectOptions.Contains((object)Config.Instance.VoiceChatMicrophone))
                 {
                     return (object)Config.Instance.VoiceChatMicrophone;
                 }
@@ -245,6 +280,13 @@ namespace BeatSaberMultiplayerLite.UI
             }
         }
 
+
         #endregion
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var action = PropertyChanged;
+            action?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }
