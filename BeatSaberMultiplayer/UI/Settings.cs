@@ -283,6 +283,53 @@ namespace BeatSaberMultiplayerLite.UI
 
 
         #endregion
+
+        #region Input Settings
+        [UIValue("trigger-threshold")]
+        public float TriggerInputThreshold
+        {
+            get { return Config.Instance.VoiceChatSettings.InputSettings.TriggerInputThreshold; }
+            set { Config.Instance.VoiceChatSettings.InputSettings.TriggerInputThreshold = value; }
+        }
+        [UIValue("grip-threshold")]
+        public float GripInputThreshold
+        {
+            get { return Config.Instance.VoiceChatSettings.InputSettings.GripInputThreshold; }
+            set { Config.Instance.VoiceChatSettings.InputSettings.GripInputThreshold = value; }
+        }
+        [UIValue("enable-haptics")]
+        public bool EnableHaptics
+        {
+            get { return Config.Instance.VoiceChatSettings.InputSettings.EnableHaptics; }
+            set { Config.Instance.VoiceChatSettings.InputSettings.EnableHaptics = value; }
+        }
+        [UIValue("haptic-amplitude")]
+        public float HapticAmplitude
+        {
+            get { return Config.Instance.VoiceChatSettings.InputSettings.HapticAmplitude; }
+            set { Config.Instance.VoiceChatSettings.InputSettings.HapticAmplitude = value; }
+        }
+        [UIValue("haptic-duration")]
+        public float HapticDuration
+        {
+            get { return Config.Instance.VoiceChatSettings.InputSettings.HapticDuration; }
+            set { Config.Instance.VoiceChatSettings.InputSettings.HapticDuration = value; }
+        }
+
+        [UIAction("float-percent")]
+        public string FloatToPercent(float val)
+        {
+            return val.ToString("P0");
+        }
+
+        [UIAction("float-seconds")]
+        public string FloatToSeconds(float val)
+        {
+            return val + "s";
+        }
+
+        #endregion
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {

@@ -23,6 +23,16 @@
       <checkbox text='Use push to talk' value='push-to-talk' apply-on-change='true' />
       <dropdown-list-setting text='Push to talk button' value='ptt-button-value' apply-on-change='true' options='ptt-button-options' hover-hint='~ptt-hover'/>
       <dropdown-list-setting text='Microphone' value='mic-select-value' apply-on-change='true' options='mic-select-options' hover-hint='Select microphone to use for voice chat'  />
+      <settings-submenu text='Input Settings'>
+        <scrollable-settings-container>
+          <clickable-text text='Back' click-event='back' />
+          <slider-setting text='Trigger Threshold' value='trigger-threshold' apply-on-change='true' min='0' max='1' increment='0.05' integer-only='false' formatter='float-percent'/>
+          <slider-setting text='Grip Threshold' value='grip-threshold' apply-on-change='true' min='0' max='1' increment='0.05' integer-only='false' formatter='float-percent'/>
+          <checkbox text='Enable Haptics' value='enable-haptics' apply-on-change='true' />
+          <slider-setting text='Haptic Amplitude' value='haptic-amplitude' apply-on-change='true' min='0' max='1' increment='0.05' integer-only='false' formatter='float-percent'/>
+          <slider-setting text='Haptic Duration' value='haptic-duration' apply-on-change='true' min='0' max='1' increment='0.05' integer-only='false' formatter='float-seconds'/>
+        </scrollable-settings-container>
+      </settings-submenu>
     </scrollable-settings-container>
   </settings-submenu>
 </settings-container>
