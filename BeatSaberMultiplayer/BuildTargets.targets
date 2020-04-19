@@ -28,9 +28,10 @@
     </GetCommitHash>
     <!-- Set up directory to zip-->
     <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayerLite.dll" />
+    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayerLite.pdb" />
     <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayer.dll" />
+    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayer.pdb" />
     <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).dll" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).pdb" />
 
     <GetManifestInfo ErrorOnMismatch="False">
       <Output TaskParameter="PluginVersion" PropertyName="PluginVersion" />
