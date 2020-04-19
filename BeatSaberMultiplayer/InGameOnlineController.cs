@@ -618,37 +618,42 @@ namespace BeatSaberMultiplayerLite
                 }
             }
 
-            if (_vrInputManager == null)
-            {
-                _vrInputManager = Resources.FindObjectsOfTypeAll<VRController>().FirstOrDefault(x => !(x is OnlineVRController)).GetPrivateField<VRControllersInputManager>("_vrControllersInputManager");
-            }
+            //if (_vrInputManager == null)
+            //{
+            //    _vrInputManager = Resources.FindObjectsOfTypeAll<VRController>().FirstOrDefault(x => !(x is OnlineVRController)).GetPrivateField<VRControllersInputManager>("_vrControllersInputManager");
+            //}
 
             if (Config.Instance.EnableVoiceChat)
             {
                 if (Config.Instance.MicEnabled)
                     if (!Config.Instance.PushToTalk)
                         isRecording = true;
-                    else if(_vrInputManager != null)
-                    {
-                        PTTOption currentState = PTTOption.None;
-                        if (_vrInputManager.TriggerValue(XRNode.LeftHand) > 0.85f)
-                            currentState |= PTTOption.LeftTrigger;
-                        if (_vrInputManager.TriggerValue(XRNode.RightHand) > 0.85f)
-                            currentState |= PTTOption.RightTrigger;
-                        if (ControllersHelper.GetLeftGrip())
-                            currentState |= PTTOption.LeftGrip;
-                        if (ControllersHelper.GetRightGrip())
-                            currentState |= PTTOption.RightGrip;
-                        isRecording = currentState.Satisfies(Config.Instance.PushToTalkButton);
-                    }
                     else
-                        isRecording = false;
+                    {
+                        PTTOption option = Config.Instance.PushToTalkButton;
+                        PTTOption currentState = PTTOption.None;
+                        if ((int)option < 16)
+                        {
+                            if (ControllersHelper.GetLeftTrigger() > 0.85f)
+                                currentState |= PTTOption.LeftTrigger;
+                            if (ControllersHelper.GetRightTrigger() > 0.85f)
+                                currentState |= PTTOption.RightTrigger;
+                        }
+                        else
+                        {
+                            if (ControllersHelper.GetLeftGrip())
+                                currentState |= PTTOption.LeftGrip;
+                            if (ControllersHelper.GetRightGrip())
+                                currentState |= PTTOption.RightGrip;
+                        }
+                        isRecording = currentState.Satisfies(option);
+                    }
 
 #if DEBUG
-                if ((_vrInputManager.TriggerValue(XRNode.LeftHand) > 0.85f && ControllersHelper.GetRightGrip() && _vrInputManager.TriggerValue(XRNode.RightHand) > 0.85f && ControllersHelper.GetLeftGrip()) || Input.GetKey(KeyCode.P))
+                if ((ControllersHelper.GetLeftTrigger() > 0.85f && ControllersHelper.GetRightGrip() && ControllersHelper.GetRightTrigger() > 0.85f && ControllersHelper.GetLeftGrip()) || Input.GetKey(KeyCode.P))
 
 #else
-                if (_vrInputManager.TriggerValue(XRNode.LeftHand) > 0.85f && ControllersHelper.GetRightGrip() && _vrInputManager.TriggerValue(XRNode.RightHand) > 0.85f && ControllersHelper.GetLeftGrip())
+                if (ControllersHelper.GetLeftTrigger() > 0.85f && ControllersHelper.GetRightGrip() && ControllersHelper.GetRightTrigger() > 0.85f && ControllersHelper.GetLeftGrip())
 #endif
                 {
                     _colorCounter += Time.deltaTime;

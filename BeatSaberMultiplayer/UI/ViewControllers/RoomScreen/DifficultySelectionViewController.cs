@@ -210,12 +210,14 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             charactertisticControlBlocker.gameObject.SetActive(!isHost);
             difficultyControlBlocker.gameObject.SetActive(!isHost && !perPlayerDifficulty);
             buttonsRect.gameObject.SetActive(isHost);
+            playButton.interactable = true;
         }
 
         public void SetSelectedSong(IPreviewBeatmapLevel selectedLevel)
         {
             loadingRect.gameObject.SetActive(false);
             buttonsRect.gameObject.SetActive(isHost);
+            playButton.interactable = true;
 
             if (selectedLevel is IBeatmapLevel)
             {
@@ -226,6 +228,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 SetContent(_selectedLevel);
                 playButtonGlow.SetGlow("#5DADE2");
                 playButton.SetButtonText("PLAY");
+                playButton.interactable = true;
             }
             else
             {
@@ -233,6 +236,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 controlsRect.gameObject.SetActive(false);
                 SetContent(selectedLevel);
                 playButtonGlow.SetGlow("#F73431");
+                playButton.interactable = false;
                 playButton.SetButtonText("NOT BOUGHT");
             }
         }
@@ -242,7 +246,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             Plugin.log.Debug("Downloading song info!");
 
             controlsRect.gameObject.SetActive(false);
-            buttonsRect.gameObject.SetActive(false);
+            //buttonsRect.gameObject.SetActive(false);
+            playButton.interactable = false;
             loadingRect.gameObject.SetActive(true);
 
             songNameText.text = song.songName;
@@ -266,8 +271,14 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
             SetLoadingState(false);
 
-            SongDownloader.Instance.RequestSongByLevelID(song.hash, (info) =>
+            SongDownloader.Instance.RequestSongByLevelID(song.hash, (info, errorMsg) =>
             {
+                // TODO: Better null handling?
+                if(info == null)
+                {
+                    Plugin.log.Warn($"Error in RequestSongByLevelId: {errorMsg}");
+                    return;
+                }
                 songNameText.text = info.songName;
                 durationText.text = info.duration.MinSecDurationText();
                 bpmText.text = info.bpm.ToString();
@@ -433,7 +444,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         {
             if (enabled)
             {
-                buttonsRect.gameObject.SetActive(false);
+                //buttonsRect.gameObject.SetActive(false);
+                playButton.interactable = false;
                 controlsRect.gameObject.SetActive(false);
                 loadingRect.gameObject.SetActive(true);
 

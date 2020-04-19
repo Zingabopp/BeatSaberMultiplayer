@@ -67,13 +67,17 @@ namespace BeatSaberMultiplayerLite.Misc
             _alreadyDownloadedSongs = levels.Values.Select(x => new Song(x)).ToList();
         }
 
-        public void DownloadSong(Song songInfo, Action<bool> downloadedCallback, Action<float> progressChangedCallback)
+        public void DownloadSong(Song songInfo, Action<bool, string> downloadedCallback, Action<float> progressChangedCallback)
         {
             StartCoroutine(DownloadSongCoroutine(songInfo, downloadedCallback, progressChangedCallback));
         }
 
-        public IEnumerator DownloadSongCoroutine(Song songInfo, Action<bool> downloadedCallback, Action<float> progressChangedCallback)
+        public IEnumerator DownloadSongCoroutine(Song songInfo, Action<bool, string> downloadedCallback, Action<float> progressChangedCallback)
         {
+            if (!string.IsNullOrEmpty(songInfo?.songName))
+                Plugin.log.Info($"Attempting to download song: {songInfo.songName}");
+            else
+                Plugin.log.Info($"Attempting to download song: {songInfo?.hash}");
             songInfo.songQueueState = SongQueueState.Downloading;
 
             if (SongCore.Collections.songWithHashPresent(songInfo.hash.ToUpper()))
@@ -82,7 +86,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 yield return new WaitForSeconds(0.1f);
                 songInfo.songQueueState = SongQueueState.Downloaded;
                 songDownloaded?.Invoke(songInfo);
-                downloadedCallback?.Invoke(true);
+                downloadedCallback?.Invoke(true, "Finished");
                 yield break;
             }
             UnityWebRequest www;
@@ -100,8 +104,10 @@ namespace BeatSaberMultiplayerLite.Misc
             {
                 Plugin.log.Error(e);
                 songInfo.songQueueState = SongQueueState.Error;
-                songInfo.downloadingProgress = 1f;
-                downloadedCallback?.Invoke(false);
+                songInfo.downloadingProgress = 0f;
+                downloadedCallback?.Invoke(false, "Error downloading song");
+                Plugin.log.Error($"Error downloading song: {e}");
+                Plugin.log.Debug(e);
                 yield break;
             }
 
@@ -129,7 +135,10 @@ namespace BeatSaberMultiplayerLite.Misc
             {
                 songInfo.songQueueState = SongQueueState.Error;
                 Plugin.log.Error("Unable to download song! " + (www.isNetworkError ? $"Network error: {www.error}" : (www.isHttpError ? $"HTTP error: {www.error}" : "Unknown error")));
-                downloadedCallback?.Invoke(false);
+                if(www.responseCode == 404)
+                    downloadedCallback?.Invoke(false, "Song not found on Beat Saver.");
+                else
+                    downloadedCallback?.Invoke(false, "Network error downloading song.");
             }
             else
             {
@@ -154,7 +163,9 @@ namespace BeatSaberMultiplayerLite.Misc
                 {
                     Plugin.log.Critical(e);
                     songInfo.songQueueState = SongQueueState.Error;
-                    downloadedCallback?.Invoke(false);
+                    downloadedCallback?.Invoke(false, "Error extracting zip.");
+                    Plugin.log.Error($"Error extracting zip: {e.Message}");
+                    Plugin.log.Debug(e);
                     yield break;
                 }
 
@@ -177,7 +188,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 else
                     Plugin.log.Debug($"{nameof(songDownloaded)} has no handlers to invoke.");
                 if (downloadedCallback != null)
-                    downloadedCallback.Invoke(true);
+                    downloadedCallback.Invoke(true, string.Empty);
                 else
                     Plugin.log.Debug($"No callbacks assigned to {downloadedCallback}");
             }
@@ -251,7 +262,7 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public static CustomPreviewBeatmapLevel GetLevel(string levelId)
         {
-            if(_beatmapLevelsModel == null)
+            if (_beatmapLevelsModel == null)
             {
                 _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
             }
@@ -280,12 +291,12 @@ namespace BeatSaberMultiplayerLite.Misc
             }
         }
 
-        public void RequestSongByLevelID(string levelId, Action<Song> callback)
+        public void RequestSongByLevelID(string levelId, Action<Song, string> callback)
         {
             StartCoroutine(RequestSongByLevelIDCoroutine(levelId, callback));
         }
 
-        public IEnumerator RequestSongByLevelIDCoroutine(string levelId, Action<Song> callback)
+        public IEnumerator RequestSongByLevelIDCoroutine(string levelId, Action<Song, string> callback)
         {
             UnityWebRequest wwwId = GetRequestForUrl($"{Config.Instance.BeatSaverURL}/api/maps/by-hash/" + levelId.ToLower());
             wwwId.timeout = 10;
@@ -296,19 +307,24 @@ namespace BeatSaberMultiplayerLite.Misc
             if (wwwId.isNetworkError || wwwId.isHttpError)
             {
                 Plugin.log.Error($"Unable to fetch song by hash! {wwwId.error}\nURL:" + $"{Config.Instance.BeatSaverURL}/api/maps/by-hash/" + levelId.ToLower());
+                if (wwwId.responseCode == 404)
+                    callback?.Invoke(null, "Song not found on Beat Saver.");
+                else
+                    callback?.Invoke(null, "Network error downloading song.");
             }
             else
             {
                 JObject jNode = JObject.Parse(wwwId.downloadHandler.text);
                 if (jNode.Children().Count() == 0)
                 {
-                    Plugin.log.Error($"Song {levelId} doesn't exist on BeatSaver!");
-                    callback?.Invoke(null);
+                    string message = $"Song {levelId} doesn't exist on BeatSaver!";
+                    Plugin.log.Error(message);
+                    callback?.Invoke(null, message);
                     yield break;
                 }
 
                 Song _tempSong = Song.FromSearchNode(jNode);
-                callback?.Invoke(_tempSong);
+                callback?.Invoke(_tempSong, string.Empty);
             }
         }
 
