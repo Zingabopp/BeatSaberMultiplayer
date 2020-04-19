@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.XR;
 
 namespace BeatSaberMultiplayerLite
@@ -86,7 +83,7 @@ namespace BeatSaberMultiplayerLite
                 return LeftController;
             else
             {
-                var device = GetInputDevice(XRNode.LeftHand);
+                InputDevice device = GetInputDevice(XRNode.LeftHand);
                 LeftController = device;
                 return device;
             }
@@ -97,7 +94,7 @@ namespace BeatSaberMultiplayerLite
                 return RightController;
             else
             {
-                var device = GetInputDevice(XRNode.RightHand);
+                InputDevice device = GetInputDevice(XRNode.RightHand);
                 RightController = device;
                 return device;
             }
@@ -108,7 +105,7 @@ namespace BeatSaberMultiplayerLite
                 return Head;
             else
             {
-                var device = GetInputDevice(XRNode.Head);
+                InputDevice device = GetInputDevice(XRNode.Head);
                 Head = device;
                 return device;
             }
@@ -192,20 +189,22 @@ namespace BeatSaberMultiplayerLite
             if (!inputDevices[0].isValid)
             {
                 inputDevices[0] = GetRightController();
+                PrintDeviceInfo(inputDevices[0]);
                 Plugin.log.Debug($"Got new RightController");
             }
             if (!inputDevices[1].isValid)
             {
                 inputDevices[1] = GetLeftController();
+                PrintDeviceInfo(inputDevices[1]);
                 Plugin.log.Debug($"Got new LeftController");
             }
             for (int i = 0; i < 2; i++)
             {
-                var device = inputDevices[i];
+                InputDevice device = inputDevices[i];
                 inputFeatures.Clear();
                 if (device.TryGetFeatureUsages(inputFeatures))
                 {
-                    foreach (var feature in inputFeatures)
+                    foreach (InputFeatureUsage feature in inputFeatures)
                     {
                         string key = $"{feature.name}|{device.name}";
                         if (feature.type == typeof(bool))
@@ -230,7 +229,7 @@ namespace BeatSaberMultiplayerLite
                         else if (feature.type == typeof(float))
                         {
                             float featureValue;
-                            if (device.TryGetFeatureValue(feature.As<float>(), out featureValue))
+                            if (device.TryGetFeatureValue(feature.As<float>(), out featureValue) && featureValue > 0.001f)
                             {
                                 if (LastFeatureValues.TryGetValue(key, out FeatureValue value) && value is FeatureValue<float> v)
                                 {
@@ -325,6 +324,43 @@ namespace BeatSaberMultiplayerLite
                     }
                 }
             }
+        }
+        public static void PrintDeviceInfo(InputDevice device)
+        {
+            Plugin.log.Error($"{device.name}");
+            Plugin.log.Info($"Characteristics: {device.characteristics}");
+            Plugin.log.Info($"isValid: {device.isValid}");
+            Plugin.log.Info($"Role: {device.role}");
+            List<InputFeatureUsage> featureList = new List<InputFeatureUsage>();
+
+            if (device.TryGetFeatureUsages(featureList))
+            {
+                Plugin.log.Info($"Features: {string.Join(", ", featureList.Select(f => $"{f.name}|{f.type}"))}");
+            }
+            else
+                Plugin.log.Error("Unable to get features");
+            if (device.TryGetHapticCapabilities(out HapticCapabilities hcap))
+            {
+                Plugin.log.Info($"HapticCapabilities: {hcap.HapticFeaturesString()}");
+                Plugin.log.Info($"BufferValues: {hcap.HapticBufferValues()}");
+            }
+            else
+                Plugin.log.Warn("Unable to get HapticCapabilities");
+        }
+
+
+    }
+
+    public static class InputExtensions
+    {
+        public static string HapticFeaturesString(this HapticCapabilities hcap)
+        {
+            return $"{nameof(hcap.numChannels)}: {hcap.numChannels} | {nameof(hcap.supportsBuffer)}: {hcap.supportsBuffer} | {nameof(hcap.supportsImpulse)}: {hcap.supportsImpulse}";
+        }
+
+        public static string HapticBufferValues(this HapticCapabilities hcap)
+        {
+            return $"bufferFrequencyHz: {hcap.bufferFrequencyHz} | {nameof(hcap.bufferMaxSize)}: {hcap.bufferMaxSize} | {nameof(hcap.bufferOptimalSize)}: {hcap.bufferOptimalSize}";
         }
     }
 }
