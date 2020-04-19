@@ -120,7 +120,11 @@ namespace BeatSaberMultiplayerLite
             }
 
             Sprites.ConvertSprites();
-
+#if DEBUG
+            //var thing = new GameObject().AddComponent<InputTestController>();
+            //GameObject.DontDestroyOnLoad(thing);
+#endif
+            ControllersHelper.Init();
             ScrappedData.Instance.DownloadScrappedData(null);
             if (IPA.Loader.PluginManager.GetPluginFromId("BeatSaverDownloader") != null)
                 DownloaderExists = true;
@@ -186,7 +190,7 @@ namespace BeatSaberMultiplayerLite
                 return true;
             return false;
         }
-
+        
         private void MenuSceneLoadedFresh()
         {
             //ModelSaberAPI.HashAllAvatars();

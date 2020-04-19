@@ -8,31 +8,71 @@ namespace BeatSaberMultiplayerLite.Misc
 {
     static class ControllersHelper
     {
-        private static bool initialized = false;
-        internal static InputDevice LeftController;
-        internal static InputDevice RightController;
-        internal static InputDevice Head;
+        private static bool initialized;
+        private static InputDevice leftController;
+        private static InputDevice rightController;
+        private static InputDevice head;
 
-        public static InputDevice GetLeftController()
+        private static int rightFailedTries = 0;
+        private static int leftFailedTries = 0;
+        private static int headFailedTries = 0;
+
+        internal static InputDevice LeftController
         {
-            if (LeftController.isValid && LeftController.characteristics.HasFlag(InputDeviceCharacteristics.Left))
-                return LeftController;
-            else
-                return GetInputDevice(XRNode.LeftHand);
+            get
+            {
+                if (leftController.isValid)
+                {
+                    leftFailedTries = 0;
+                    return leftController;
+                }
+                leftFailedTries++;
+                if (leftFailedTries > 100)
+                {
+                    leftController = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
+                    leftFailedTries = 0;
+                }
+                return leftController;
+            }
+            set => leftController = value;
         }
-        public static InputDevice GetRightController()
+        internal static InputDevice RightController
         {
-            if (RightController.isValid && RightController.characteristics.HasFlag(InputDeviceCharacteristics.Right))
-                return RightController;
-            else
-                return GetInputDevice(XRNode.RightHand);
+            get
+            {
+                if (rightController.isValid)
+                {
+                    rightFailedTries = 0;
+                    return rightController;
+                }
+                rightFailedTries++;
+                if (rightFailedTries > 100)
+                {
+                    rightController = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
+                    rightFailedTries = 0;
+                }
+                return rightController;
+            }
+            set => rightController = value;
         }
-        public static InputDevice GetHead()
+        internal static InputDevice Head
         {
-            if (Head.isValid && Head.characteristics.HasFlag(InputDeviceCharacteristics.HeadMounted))
-                return Head;
-            else
-                return GetInputDevice(XRNode.Head);
+            get
+            {
+                if (head.isValid)
+                {
+                    headFailedTries = 0;
+                    return head;
+                }
+                headFailedTries++;
+                if (headFailedTries > 100)
+                {
+                    head = InputDevices.GetDeviceAtXRNode(XRNode.Head);
+                    headFailedTries = 0;
+                }
+                return head;
+            }
+            set => head = value;
         }
 
         public static InputDevice GetInputDevice(XRNode node)
@@ -40,33 +80,12 @@ namespace BeatSaberMultiplayerLite.Misc
             InputDevice device;
             switch (node)
             {
-                case XRNode.Head:
-                    if (!Head.isValid || !Head.characteristics.HasFlag(InputDeviceCharacteristics.HeadMounted))
-                    {
-                        Head = InputDevices.GetDeviceAtXRNode(node);
-#if DEBUG
-                        Plugin.log.Debug($"Had to get {node} from InputDevices.");
-#endif
-                    }
-                    return Head;
                 case XRNode.LeftHand:
-                    if (!LeftController.isValid || !LeftController.characteristics.HasFlag(InputDeviceCharacteristics.Left))
-                    {
-                        LeftController = InputDevices.GetDeviceAtXRNode(node);
-#if DEBUG
-                        Plugin.log.Debug($"Had to get {node} from InputDevices.");
-#endif
-                    }
                     return LeftController;
                 case XRNode.RightHand:
-                    if (!RightController.isValid || !RightController.characteristics.HasFlag(InputDeviceCharacteristics.Right))
-                    {
-                        RightController = InputDevices.GetDeviceAtXRNode(node);
-#if DEBUG
-                        Plugin.log.Debug($"Had to get {node} from InputDevices.");
-#endif
-                    }
                     return RightController;
+                case XRNode.Head:
+                    return Head;
                 //case XRNode.LeftEye:
                 //    break;
                 //case XRNode.RightEye:
@@ -83,48 +102,155 @@ namespace BeatSaberMultiplayerLite.Misc
                     device = InputDevices.GetDeviceAtXRNode(node);
                     break;
             }
-            
             return device;
         }
 
         public static void Init()
         {
+            if (initialized)
+                return;
+            InputDevices.deviceConnected += OnDeviceConnected;
+            InputDevices.deviceDisconnected += OnDeviceDisconnected;
             LeftController = GetInputDevice(XRNode.LeftHand);
             RightController = GetInputDevice(XRNode.RightHand);
 
             initialized = true;
         }
 
+        private static void OnDeviceDisconnected(InputDevice device)
+        {
+            if (device.characteristics.HasFlag(InputDeviceCharacteristics.Right))
+            {
+                Plugin.log.Info("Right controller disconnected.");
+            }
+            else if (device.characteristics.HasFlag(InputDeviceCharacteristics.Left))
+            {
+                Plugin.log.Info("Left controller disconnected.");
+            }
+        }
+
+        private static void OnDeviceConnected(InputDevice device)
+        {
+
+            if (device.characteristics.HasFlag(InputDeviceCharacteristics.Right))
+            {
+                RightController = device;
+                Plugin.log.Info("Right controller connected.");
+            }
+            else if (device.characteristics.HasFlag(InputDeviceCharacteristics.Left))
+            {
+                LeftController = device;
+                Plugin.log.Info("Left controller connected.");
+            }
+        }
+
+        public static float GetRightTrigger()
+        {
+            if (RightController.isValid)
+            {
+                if (RightController.TryGetFeatureValue(CommonUsages.trigger, out float value))
+                {
+                    return value;
+                }
+#if DEBUG
+                else
+                {
+                    Plugin.log.Warn("RightController failed to get feature.");
+                }
+#endif
+            }
+#if DEBUG
+            //else
+            //{
+            //    Plugin.log.Warn("RightController not valid.");
+            //}
+#endif
+            return 0;
+        }
+
         public static bool GetRightGrip()
         {
-            if (!initialized)
-            {
-                Init();
-            }
             if (RightController.isValid)
             {
                 if (RightController.TryGetFeatureValue(CommonUsages.gripButton, out bool value))
                 {
                     return value;
                 }
+#if DEBUG
+                else
+                {
+                    Plugin.log.Warn("RightController failed to get feature.");
+                }
+#endif
             }
+#if DEBUG
+            //else
+            //{
+            //    Plugin.log.Warn("RightController not valid.");
+            //}
+#endif
             return false;
         }
-
+        public static float GetLeftTrigger()
+        {
+            if (LeftController.isValid)
+            {
+                if (LeftController.TryGetFeatureValue(CommonUsages.trigger, out float value))
+                {
+                    return value;
+                }
+#if DEBUG
+                else
+                {
+                    Plugin.log.Warn("LeftController failed to get feature.");
+                }
+#endif
+            }
+#if DEBUG
+            //else
+            //{
+            //    Plugin.log.Warn("LeftController not valid.");
+            //}
+#endif
+            return 0;
+        }
         public static bool GetLeftGrip()
         {
-            if (!initialized)
-            {
-                Init();
-            }
             if (LeftController.isValid)
             {
                 if (LeftController.TryGetFeatureValue(CommonUsages.gripButton, out bool value))
                 {
                     return value;
                 }
+#if DEBUG
+                else
+                {
+                    Plugin.log.Warn("LeftController failed to get feature.");
+                }
+#endif
             }
+#if DEBUG
+            //else
+            //{
+            //    Plugin.log.Warn("LeftController not valid.");
+            //}
+#endif
             return false;
+        }
+        public static  void PrintDeviceInfo(InputDevice device)
+        {
+            Plugin.log.Error($"{device.name}");
+            Plugin.log.Info($"Characteristics: {device.characteristics}");
+            Plugin.log.Info($"isValid: {device.isValid}");
+            Plugin.log.Info($"Role: {device.role}");
+            var featureList = new List<InputFeatureUsage>();
+
+            if (device.TryGetFeatureUsages(featureList))
+            {
+                Plugin.log.Info($"Features: {string.Join(", ", featureList.Select(f => $"{f.name}|{f.type}"))}");
+            }
+            else
+                Plugin.log.Error("Unable to get features");
         }
     }
 
