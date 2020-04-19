@@ -303,9 +303,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             _requestedSongs.Clear();
             PopAllViewControllers();
             SetLeftScreenViewController(_playerManagementViewController);
-            PluginUI.instance.SetLobbyDiscordActivity();
-            if(SteamManager.Initialized)
-                SteamRichPresence.ClearSteamRichPresence();
+            PluginUI.instance.SetLobbyPresenceActivity();
+            //Plugin.PresenceManager.ClearActivity();
             didFinishEvent?.Invoke();
         }
 
@@ -654,7 +653,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     break;
             }
             _playerManagementViewController.UpdateViewController(Client.Instance.isHost, (int)state <= 1);
-            UpdateDiscordActivity(roomInfo);
+            UpdateRichPresenceActivity(roomInfo);
         }
 
         private void UpdateLevelOptions()
@@ -691,7 +690,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                             Client.Instance.playerInfo.updateInfo.playerLevelOptions = new LevelOptionsInfo(BeatmapDifficulty.Hard, _playerManagementViewController.modifiers, "Standard");
                         }
                     }
-                    UpdateDiscordActivity(roomInfo);
+                    UpdateRichPresenceActivity(roomInfo);
                 }
             }
             catch (Exception e)
@@ -776,7 +775,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 }
 
                 menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings: practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
-                UpdateRichPresence(roomInfo);
+                UpdateRichPresenceActivity(roomInfo);
             }
             else
             {
@@ -1444,7 +1443,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         }
 
         #region Rich presence stuff (Discord/Steam)
-        public void UpdateRichPresence(RoomInfo roomInfo)
+        public void UpdateRichPresenceActivity(RoomInfo roomInfo)
         {
             GameActivityParty partyInfo = new GameActivityParty()
             {
@@ -1463,7 +1462,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
             GameActivitySecrets secrets = new GameActivitySecrets()
             {
-                Join = joinSecret
+                Join = usePassword ? $"{ip}:{port}?{roomId}#{password}" : $"{ip}:{port}?{roomId}#"
             };
 
             GameActivityAssets assets = new GameActivityAssets()
