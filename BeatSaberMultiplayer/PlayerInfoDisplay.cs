@@ -20,7 +20,6 @@ namespace BeatSaberMultiplayerLite
         private uint _previousScore;
         private uint _currentScore;
         private float _progress;
-        private HSBColor _color;
 
         void Update()
         {
