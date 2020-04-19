@@ -276,6 +276,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 // TODO: Better null handling?
                 if(info == null)
                 {
+                    Plugin.log.Warn($"Error in RequestSongByLevelId: {errorMsg}");
                     return;
                 }
                 songNameText.text = info.songName;
