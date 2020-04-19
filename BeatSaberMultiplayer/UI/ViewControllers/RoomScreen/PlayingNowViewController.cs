@@ -143,8 +143,13 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             playNowButton.SetButtonText("DOWNLOAD"); 
             playNowButtonGlow.SetGlow("#5DADE2");
 
-            SongDownloader.Instance.RequestSongByLevelID(info.hash, (song) =>
+            SongDownloader.Instance.RequestSongByLevelID(info.hash, (song, errorMsg) =>
             {
+                // TODO: Better null handling?
+                if (song == null)
+                {
+                    return;
+                }
                 songNameText.text = info.songName;
 
                 StartCoroutine(LoadScripts.LoadSpriteCoroutine(song.coverURL, (cover) => { levelCoverImage.texture = cover; }));

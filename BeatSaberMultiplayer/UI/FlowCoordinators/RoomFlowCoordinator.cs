@@ -1,4 +1,4 @@
-using BeatSaberMarkupLanguage;
+﻿using BeatSaberMarkupLanguage;
 using BeatSaberMultiplayerLite.RichPresence;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMultiplayerLite.Data;
@@ -1074,33 +1074,34 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                          }
                                      });
 
-                        }
-                        else if (success)
-                        {
-                            _difficultySelectionViewController.SetSelectedSong(level);
-
-                            if (level.beatmapLevelData.audioClip != null)
+                            }
+                            else if (success)
                             {
-                                PreviewPlayer.CrossfadeTo(level.beatmapLevelData.audioClip, selectedLevel.previewStartTime, level.beatmapLevelData.audioClip.length - selectedLevel.previewStartTime, 1f);
-                                _difficultySelectionViewController.playButton.interactable = true;
-                                Client.Instance.SendPlayerReady(true);
+                                _difficultySelectionViewController.SetSelectedSong(level);
+
+                                if (level.beatmapLevelData.audioClip != null)
+                                {
+                                    PreviewPlayer.CrossfadeTo(level.beatmapLevelData.audioClip, selectedLevel.previewStartTime, level.beatmapLevelData.audioClip.length - selectedLevel.previewStartTime, 1f);
+                                    _difficultySelectionViewController.playButton.interactable = true;
+                                    Client.Instance.SendPlayerReady(true);
+                                }
+                                else
+                                {
+                                    _difficultySelectionViewController.playButton.interactable = false;
+                                    Client.Instance.SendPlayerReady(false);
+                                }
+
+                                Client.Instance.playerInfo.updateInfo.playerState = PlayerState.Room;
+
                             }
                             else
                             {
+                                _difficultySelectionViewController.SetSelectedSong(song);
                                 _difficultySelectionViewController.playButton.interactable = false;
                                 Client.Instance.SendPlayerReady(false);
+                                Client.Instance.playerInfo.updateInfo.playerState = PlayerState.Room;
                             }
-
-                            Client.Instance.playerInfo.updateInfo.playerState = PlayerState.Room;
-
-                        }
-                        else
-                        {
-                            _difficultySelectionViewController.SetSelectedSong(song);
-                            _difficultySelectionViewController.playButton.interactable = false;
-                            Client.Instance.SendPlayerReady(false);
-                            Client.Instance.playerInfo.updateInfo.playerState = PlayerState.Room;
-                        }
+                        });
                     });
             }
             else
@@ -1109,15 +1110,19 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 Client.Instance.playerInfo.updateInfo.playerState = PlayerState.DownloadingSongs;
                 Client.Instance.SendPlayerReady(false);
                 _difficultySelectionViewController.playButton.interactable = false;
-                SongDownloader.Instance.RequestSongByLevelID(song.hash, (info) =>
+                _difficultySelectionViewController.SetProgressBarState(true, 0f);
+                SongDownloader.Instance.RequestSongByLevelID(song.hash, (songToDownload, errorMsg) =>
                 {
                     Plugin.log.Debug($"Starting callback for RequestSongByLevelID.");
+                    if(songToDownload == null)
+                    {
+                        _difficultySelectionViewController.SetProgressBarState(true, 0f, errorMsg);
+                        return;
+                    }
                     Client.Instance.playerInfo.updateInfo.playerState = PlayerState.DownloadingSongs;
 
-                    songToDownload = info;
-
                     SongDownloader.Instance.DownloadSong(songToDownload,
-                        (success) =>
+                        (success, message) =>
                     {
                         Plugin.log.Debug($"Starting callback for DownloadSong");
                         if (success)
@@ -1169,7 +1174,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                         else
                         {
                             Plugin.log.Error($"Unable to download song! An error occurred");
-                            _difficultySelectionViewController.SetProgressBarState(true, 0f, "An error occurred!");
+                            _difficultySelectionViewController.SetProgressBarState(true, 0f, message);
                             Client.Instance.playerInfo.updateInfo.playerProgress = -100f;
                             Client.Instance.SendPlayerReady(false);
                         }
@@ -1371,10 +1376,10 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             {
                 _playingNowViewController.playNowButton.interactable = false;
                 SongDownloader.Instance.RequestSongByLevelID(info.hash,
-                (song) =>
+                (song, errorMsg) =>
                 {
                     SongDownloader.Instance.DownloadSong(song,
-                    (success) =>
+                    (success, message) =>
                     {
                         if (success)
                         {
@@ -1383,6 +1388,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                         }
                         else
                         {
+                            // TODO: Show error message?
                             _playingNowViewController.SetProgressBarState(true, -1f);
                         }
                     },

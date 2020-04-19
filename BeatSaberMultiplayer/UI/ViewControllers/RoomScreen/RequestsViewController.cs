@@ -176,8 +176,13 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                     img.enabled = false;
                 }
 
-                SongDownloader.Instance.RequestSongByLevelID(requestedSongs[idx].hash, (info) =>
+                SongDownloader.Instance.RequestSongByLevelID(requestedSongs[idx].hash, (info, errorMsg) =>
                 {
+                    // TODO: Better null handling?
+                    if (info == null)
+                    {
+                        return;
+                    }
                     songNameText.text = string.Format("{0} <size=80%>{1}</size>", info.songName, info.songSubName);
                     authorNameText.text = info.songAuthorName;
 

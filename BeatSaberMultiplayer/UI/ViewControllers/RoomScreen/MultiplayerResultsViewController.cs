@@ -146,8 +146,13 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 scoreChangeValue.color = Color.white;
                 scoreChangeIcon.gameObject.SetActive(false);
 
-                SongDownloader.Instance.RequestSongByLevelID(info.hash, (song) =>
+                SongDownloader.Instance.RequestSongByLevelID(info.hash, (song, errorMsg) =>
                 {
+                    // TODO: Better null handling?
+                    if (song == null)
+                    {
+                        return;
+                    }
                     songNameText.text = info.songName;
 
                     StartCoroutine(LoadScripts.LoadSpriteCoroutine(song.coverURL, (cover) => { levelCoverImage.texture = cover; }));
