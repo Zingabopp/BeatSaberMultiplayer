@@ -1,4 +1,5 @@
-﻿using BeatSaberMultiplayerLite.Data;
+﻿using Assets.OVR.Scripts;
+using BeatSaberMultiplayerLite.Data;
 using BeatSaberMultiplayerLite.Misc;
 using BeatSaberMultiplayerLite.OverriddenClasses;
 using BeatSaberMultiplayerLite.UI;
@@ -602,6 +603,8 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
+        InputDevice[] devices = new InputDevice[2];
+        bool recordingLastState = false;
         public void Update()
         {
             if (!Client.Instance.connected)
@@ -632,28 +635,55 @@ namespace BeatSaberMultiplayerLite
                     {
                         PTTOption option = Config.Instance.PushToTalkButton;
                         PTTOption currentState = PTTOption.None;
-                        if ((int)option < 16)
+                        bool leftUsed = false;
+                        bool rightUsed = false;
+                        if (option.HasFlag(PTTOption.LeftGrip) || option.HasFlag(PTTOption.LeftTrigger))
                         {
-                            if (ControllersHelper.GetLeftTrigger() > 0.85f)
+                            if (option.HasFlag(PTTOption.LeftTrigger) && ControllersHelper.LeftTriggerActive)
+                            {
                                 currentState |= PTTOption.LeftTrigger;
-                            if (ControllersHelper.GetRightTrigger() > 0.85f)
-                                currentState |= PTTOption.RightTrigger;
-                        }
-                        else
-                        {
-                            if (ControllersHelper.GetLeftGrip())
+                                leftUsed = true;
+                            }
+                            if (option.HasFlag(PTTOption.LeftGrip) && ControllersHelper.LeftGripActive)
+                            {
                                 currentState |= PTTOption.LeftGrip;
-                            if (ControllersHelper.GetRightGrip())
-                                currentState |= PTTOption.RightGrip;
+                                leftUsed = true;
+                            }
+                            if (leftUsed && !devices[0].isValid)
+                                devices[0] = ControllersHelper.LeftController;
                         }
-                        isRecording = currentState.Satisfies(option);
+                        if (option.HasFlag(PTTOption.RightGrip) || option.HasFlag(PTTOption.RightTrigger))
+                        {
+                            if (option.HasFlag(PTTOption.RightGrip) && ControllersHelper.RightGripActive)
+                            {
+                                currentState |= PTTOption.RightGrip;
+                                rightUsed = true;
+                            }
+                            if (option.HasFlag(PTTOption.RightTrigger) && ControllersHelper.RightTriggerActive)
+                            {
+                                currentState |= PTTOption.RightTrigger;
+                                rightUsed = true;
+                            }
+                        }
+                        bool satisfied = currentState.Satisfies(option);
+                        if (isRecording != recordingLastState && satisfied)
+                        {
+                            recordingLastState = isRecording;
+                            if (leftUsed)
+                                ControllersHelper.TriggerShortRumble(XRNode.LeftHand);
+                            if (rightUsed)
+                                ControllersHelper.TriggerShortRumble(XRNode.RightHand);
+                        }
+                        isRecording = satisfied;
                     }
 
 #if DEBUG
-                if ((ControllersHelper.GetLeftTrigger() > 0.85f && ControllersHelper.GetRightGrip() && ControllersHelper.GetRightTrigger() > 0.85f && ControllersHelper.GetLeftGrip()) || Input.GetKey(KeyCode.P))
+                if ((ControllersHelper.LeftTriggerActive && ControllersHelper.RightGripActive 
+                && ControllersHelper.RightTriggerActive && ControllersHelper.LeftGripActive) || Input.GetKey(KeyCode.P))
 
 #else
-                if (ControllersHelper.GetLeftTrigger() > 0.85f && ControllersHelper.GetRightGrip() && ControllersHelper.GetRightTrigger() > 0.85f && ControllersHelper.GetLeftGrip())
+                if (ControllersHelper.LeftTriggerActive && ControllersHelper.RightGripActive 
+                    && ControllersHelper.RightTriggerActive && ControllersHelper.LeftGripActive)
 #endif
                 {
                     _colorCounter += Time.deltaTime;

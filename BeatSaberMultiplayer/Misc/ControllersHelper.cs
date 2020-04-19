@@ -16,7 +16,11 @@ namespace BeatSaberMultiplayerLite.Misc
         private static int rightFailedTries = 0;
         private static int leftFailedTries = 0;
         private static int headFailedTries = 0;
-
+        public static float TriggerThreshold = 0.85f;
+        public static float GripThreshold = 0.85f;
+        public static float HapticAmplitude = 0.5f;
+        public static float HapticDuration = 0.01f;
+        public static uint HapticChannel = 0;
         internal static InputDevice LeftController
         {
             get
@@ -143,6 +147,94 @@ namespace BeatSaberMultiplayerLite.Misc
                 Plugin.log.Info("Left controller connected.");
             }
         }
+        static bool rightTriggerPrevious;
+        static bool leftTriggerPrevious;
+        static bool leftGripPrevious;
+        static bool rightGripPrevious;
+        public static bool RightTriggerActive
+        {
+            get
+            {
+                InputDevice device = RightController;
+                if (device.isValid)
+                {
+                    if (device.TryGetFeatureValue(CommonUsages.trigger, out float value))
+                    {
+                        return value > TriggerThreshold;
+                    }
+                }
+                return false;
+            }
+        }
+        public static bool RightGripActive
+        {
+            get
+            {
+                InputDevice device = RightController;
+                if (device.isValid)
+                {
+                    if (device.TryGetFeatureValue(CommonUsages.grip, out float value))
+                    {
+                        return value > GripThreshold;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public static bool LeftTriggerActive
+        {
+            get
+            {
+                InputDevice device = LeftController;
+                if (device.isValid)
+                {
+                    if (device.TryGetFeatureValue(CommonUsages.trigger, out float value))
+                    {
+                        return value > TriggerThreshold;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public static bool LeftGripActive
+        {
+            get
+            {
+                InputDevice device = LeftController;
+                if (device.isValid)
+                {
+                    if (device.TryGetFeatureValue(CommonUsages.grip, out float value))
+                    {
+                        return value > GripThreshold;
+                    }
+                }
+                return false;
+            }
+        }
+
+        public static void TriggerShortRumble(InputDevice device)
+        {
+            if (device.isValid)
+                device.SendHapticImpulse(HapticChannel, HapticAmplitude, HapticDuration);
+        }
+
+        public static void TriggerShortRumble(XRNode node)
+        {
+            if (node == XRNode.LeftHand)
+            {
+                InputDevice device = LeftController;
+                if (device.isValid)
+                    device.SendHapticImpulse(HapticChannel, HapticAmplitude, HapticDuration);
+            }
+            else if (node == XRNode.RightHand)
+            {
+                InputDevice device = RightController;
+                if (device.isValid)
+                    device.SendHapticImpulse(HapticChannel, HapticAmplitude, HapticDuration);
+            }
+        }
 
         public static float GetRightTrigger()
         {
@@ -168,11 +260,11 @@ namespace BeatSaberMultiplayerLite.Misc
             return 0;
         }
 
-        public static bool GetRightGrip()
+        public static float GetRightGrip()
         {
             if (RightController.isValid)
             {
-                if (RightController.TryGetFeatureValue(CommonUsages.gripButton, out bool value))
+                if (RightController.TryGetFeatureValue(CommonUsages.grip, out float value))
                 {
                     return value;
                 }
@@ -189,7 +281,7 @@ namespace BeatSaberMultiplayerLite.Misc
             //    Plugin.log.Warn("RightController not valid.");
             //}
 #endif
-            return false;
+            return 0;
         }
         public static float GetLeftTrigger()
         {
@@ -214,11 +306,11 @@ namespace BeatSaberMultiplayerLite.Misc
 #endif
             return 0;
         }
-        public static bool GetLeftGrip()
+        public static float GetLeftGrip()
         {
             if (LeftController.isValid)
             {
-                if (LeftController.TryGetFeatureValue(CommonUsages.gripButton, out bool value))
+                if (LeftController.TryGetFeatureValue(CommonUsages.grip, out float value))
                 {
                     return value;
                 }
@@ -235,9 +327,9 @@ namespace BeatSaberMultiplayerLite.Misc
             //    Plugin.log.Warn("LeftController not valid.");
             //}
 #endif
-            return false;
+            return 0;
         }
-        public static  void PrintDeviceInfo(InputDevice device)
+        public static void PrintDeviceInfo(InputDevice device)
         {
             Plugin.log.Error($"{device.name}");
             Plugin.log.Info($"Characteristics: {device.characteristics}");
@@ -251,6 +343,23 @@ namespace BeatSaberMultiplayerLite.Misc
             }
             else
                 Plugin.log.Error("Unable to get features");
+            if (device.TryGetHapticCapabilities(out HapticCapabilities hcap))
+            {
+                Plugin.log.Info($"HapticCapabilities: {hcap.HapticFeaturesString()}");
+                Plugin.log.Info($"BufferValues: {hcap.HapticBufferValues()}");
+            }
+            else
+                Plugin.log.Warn("Unable to get HapticCapabilities");
+        }
+
+        public static string HapticFeaturesString(this HapticCapabilities hcap)
+        {
+            return $"{nameof(hcap.numChannels)}: {hcap.numChannels} | {nameof(hcap.supportsBuffer)}: {hcap.supportsBuffer} | {nameof(hcap.supportsImpulse)}: {hcap.supportsImpulse}";
+        }
+
+        public static string HapticBufferValues(this HapticCapabilities hcap)
+        {
+            return $"bufferFrequencyHz: {hcap.bufferFrequencyHz} | {nameof(hcap.bufferMaxSize)}: {hcap.bufferMaxSize} | {nameof(hcap.bufferOptimalSize)}: {hcap.bufferOptimalSize}";
         }
     }
 
