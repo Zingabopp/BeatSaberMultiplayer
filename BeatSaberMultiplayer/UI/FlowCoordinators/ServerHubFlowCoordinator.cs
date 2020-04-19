@@ -206,7 +206,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     }
                     catch (Exception ex)
                     {
-                        Plugin.log.Warn($"Error parsing ServerRepository from {serverRepoPath}");
+                        Plugin.log.Warn($"Error parsing ServerRepository from {serverRepoPath}: {ex.Message}");
+                        Plugin.log.Debug(ex);
                     }
                 }
             }

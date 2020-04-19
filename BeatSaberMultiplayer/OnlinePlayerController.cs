@@ -53,7 +53,7 @@ namespace BeatSaberMultiplayerLite
         private double syncTime = 0f;
         private float lerpProgress = 0f;
 
-        public void Start()
+        public override void Start()
         {
             Plugin.log.Debug($"Player controller created!");
 

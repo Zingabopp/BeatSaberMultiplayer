@@ -13,7 +13,6 @@ namespace BeatSaberMultiplayerLite
         Quaternion targetRot;
 
         VRPlatformHelper _platformHelper;
-        VRControllerTransformOffset _transformOffset;
 
         Vector3 _localPos;
         Quaternion _localRot;

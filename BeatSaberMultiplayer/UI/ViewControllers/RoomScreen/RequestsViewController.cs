@@ -25,13 +25,19 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public event Action<SongInfo> SongSelected;
         public event Action<SongInfo> RemovePressed;
 
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable CS0169 // Field is never used
+#pragma warning disable CS0649 // Field is never assigned to
         [UIComponent("song-list")]
-        CustomListTableData _songsTableView;
+        private CustomListTableData _songsTableView;
 
         [UIComponent("play-btn")]
-        Button _playButton;
+        private Button _playButton;
         [UIComponent("remove-btn")]
-        Button _removeButton;
+        private Button _removeButton;
+#pragma warning restore CS0649 // Field is never assigned to
+#pragma warning restore CS0169 // Field is never used
+#pragma warning restore IDE0044 // Add readonly modifier
 
         private LevelListTableCell songListTableCellInstance;
         private AdditionalContentModel _additionalContentModel;

@@ -145,7 +145,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         float currentTime;
         float totalTime;
 
-        Song songToDownload;
+        protected Song songToDownload;
 
         string ip;
         int port;

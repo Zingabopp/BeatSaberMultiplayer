@@ -26,6 +26,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
 
 
 #pragma warning disable CS0649
+#pragma warning disable CS0169
         [UIComponent("rooms-button")]
         Button _roomsButton;
         [UIComponent("radio-button")]
@@ -48,6 +49,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
         RawImage _progressBarTop;
         [UIComponent("progress-bar-bg")]
         RawImage _progressBarBG;
+#pragma warning restore CS0169
 #pragma warning restore CS0649
 
         protected override void DidActivate(bool firstActivation, ActivationType activationType)

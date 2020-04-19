@@ -16,7 +16,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
     {
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
-        public event Action didFinishEvent;
         public event Action<ServerHubClient> selectedServerHub;
 
 #pragma warning disable CS0649

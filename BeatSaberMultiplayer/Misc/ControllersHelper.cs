@@ -348,7 +348,9 @@ namespace BeatSaberMultiplayerLite.Misc
             Plugin.log.Error($"{device.name}");
             Plugin.log.Info($"Characteristics: {device.characteristics}");
             Plugin.log.Info($"isValid: {device.isValid}");
+#pragma warning disable CS0618 // Type or member is obsolete
             Plugin.log.Info($"Role: {device.role}");
+#pragma warning restore CS0618 // Type or member is obsolete
             var featureList = new List<InputFeatureUsage>();
 
             if (device.TryGetFeatureUsages(featureList))

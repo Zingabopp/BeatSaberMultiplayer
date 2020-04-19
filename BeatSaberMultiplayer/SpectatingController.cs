@@ -410,12 +410,16 @@ namespace BeatSaberMultiplayerLite
                                 playerUpdates.Add(playerId, replay);
                             }
                         }
+#pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable CS0168 // Variable is declared but never used
                         catch (Exception e)
+#pragma warning restore CS0168 // Variable is declared but never used
                         {
 #if DEBUG
-                            Plugin.log.Critical($"Unable to parse PlayerInfo! Excpetion: {e}");
+                            Plugin.log.Critical($"Unable to parse PlayerInfo! Exception: {e}");
 #endif
                         }
+#pragma warning restore CA1031 // Do not catch general exception types
                     }
                 }
             }

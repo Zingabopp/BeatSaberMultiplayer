@@ -13,7 +13,7 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
     public class CustomMoreSongsFlowCoordinator : MoreSongsFlowCoordinator, IDismissable
     {
         public static bool CanCreate { get; private set; }
-        public FlowCoordinator ParentFlowCoordinator { get; set; }
+        FlowCoordinator IDismissable.ParentFlowCoordinator { get => ParentFlowCoordinator; set => ParentFlowCoordinator = value; }
 
         private static FieldAccessor<MoreSongsFlowCoordinator, SongDetailViewController>.Accessor SongDetailViewController;
         private static FieldAccessor<MoreSongsFlowCoordinator, NavigationController>.Accessor MoreSongsNavigationController;
@@ -43,10 +43,10 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
             }
         }
 
-        protected override void BackButtonWasPressed(ViewController topViewController)
-        {
-            Dismiss(false);
-        }
+        //protected override void BackButtonWasPressed(ViewController topViewController)
+        //{
+        //    Dismiss(false);
+        //}
 
         public void Dismiss(bool immediately)
         {

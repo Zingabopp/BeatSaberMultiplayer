@@ -62,7 +62,6 @@ namespace BeatSaberMultiplayerLite
         private GameEnergyCounter _energyController;
         private PauseMenuManager _pauseMenuManager;
         private VRPlatformHelper _vrPlatformHelper;
-        private VRControllersInputManager _vrInputManager;
 
         private LocalPlayerPosition _avatarInput;
 
@@ -553,12 +552,16 @@ namespace BeatSaberMultiplayerLite
                                     }
                                 }
                             }
+#pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable CS0168 // Variable is declared but never used
                             catch (Exception e)
+#pragma warning restore CS0168 // Variable is declared but never used
                             {
 #if DEBUG
                                 Plugin.log.Error($"Unable to parse VoIP fragment! Excpetion: {e}");
 #endif
                             }
+#pragma warning restore CA1031 // Do not catch general exception types
                         }
                     }
                     break;

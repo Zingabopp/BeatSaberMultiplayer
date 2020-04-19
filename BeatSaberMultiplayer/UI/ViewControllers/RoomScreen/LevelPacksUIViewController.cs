@@ -24,7 +24,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         //[UIComponent("packs-collections-control")]
         //TextSegmentedControl packsCollectionsControl;
 
-        private bool _initialized;
         private BeatmapLevelsModel _beatmapLevelsModel;
         private IAnnotatedBeatmapLevelCollection[] _visiblePacks;
 
@@ -99,27 +98,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
             if (_beatmapLevelsModel == null)
                 _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
-            //GetPlaylists();
-            //List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
-            //levelPacksAndPlaylists.AddRange(_beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks);
-            //var playlistViewControllers = Resources.FindObjectsOfTypeAll<PlaylistsViewController>();
-            //Plugin.log.Info($"Found {playlistViewControllers?.Length ?? 0} PlaylistsViewControllers");
-            //var playlistController = playlistViewControllers?.FirstOrDefault();
-            //if (playlistController != null)
-            //{
-            //    IAnnotatedBeatmapLevelCollection[] playlists = playlistController.GetPrivateField<IAnnotatedBeatmapLevelCollection[]>("_playlists");
-            //    if (playlists == null)
-            //        Plugin.log.Info($"Found _playlists is null.");
-            //    else
-            //    {
-            //        Plugin.log.Info($"Found {playlists.Length} playlists.");
-            //        if (playlists.Length > 0)
-            //            levelPacksAndPlaylists.AddRange(playlists);
-            //    }
-            //}
-            //else
-            //    Plugin.log.Warn("Couldn't find the PlaylistsViewController.");
-            //_visiblePacks = levelPacksAndPlaylists.ToArray();
+
             _visiblePacks = GetPlaylists();
             try
             {
@@ -145,7 +124,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 }
                 if (!packWasSelected && _visiblePacks.Length > 0)
                     SelectPack(0);
-                this._initialized = true;
             }
             catch (Exception ex)
             {

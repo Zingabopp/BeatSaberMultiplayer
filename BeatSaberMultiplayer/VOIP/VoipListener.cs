@@ -42,7 +42,6 @@ namespace BeatSaberMultiplayerLite.VOIP
 
         private bool _isListening;
 
-        private bool _isRecording;
         private string _usedMicrophone;
 
         void Awake()

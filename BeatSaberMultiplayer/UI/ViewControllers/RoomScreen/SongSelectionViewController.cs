@@ -34,6 +34,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         private ISongDownloader downloader;
 
 #pragma warning disable CS0649
+#pragma warning disable CS0169 // The field is never used
+#pragma warning disable IDE0044 // Add readonly modifier
         [UIParams]
         BSMLParserParams _parserParams;
 
@@ -64,6 +66,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         [UIValue("search-value")]
         string searchValue;
+#pragma warning restore IDE0044 // Add readonly modifier
+#pragma warning restore CS0169
 #pragma warning restore CS0649
         private bool _moreSongsAvailable = true;
         [UIValue("more-btn-active")]
@@ -123,7 +127,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         private LevelListTableCell songListTableCellInstance;
         private PlayerDataModel _playerDataModel;
         private AdditionalContentModel _additionalContentModel;
-        private Action _moreSongsAction;
 
         private bool isHost;
 
