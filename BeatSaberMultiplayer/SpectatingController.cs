@@ -130,7 +130,7 @@ namespace BeatSaberMultiplayerLite
         {
             _currentScene = 0;
             active = false;
-            if (!Config.Instance.SpectatorMode)
+            if (!Config.Instance.SocialSettings.SpectatorMode)
                 return;
             DestroyAvatar();
             if (_spectatingText != null)
@@ -147,7 +147,7 @@ namespace BeatSaberMultiplayerLite
         {
             _currentScene = 1;
 
-            if (!Config.Instance.SpectatorMode || !Client.Instance.connected)
+            if (!Config.Instance.SocialSettings.SpectatorMode || !Client.Instance.connected)
             {
                 active = false;
                 return;
@@ -268,7 +268,7 @@ namespace BeatSaberMultiplayerLite
 
         void ReplaceControllers()
         {
-            if (!Config.Instance.SpectatorMode || Client.Instance.inRadioMode)
+            if (!Config.Instance.SocialSettings.SpectatorMode || Client.Instance.inRadioMode)
                 return;
             Plugin.log.Debug("SpectatingController.ReplaceControllers.");
             audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault();
@@ -328,7 +328,7 @@ namespace BeatSaberMultiplayerLite
 
         private void PacketReceived(NetIncomingMessage msg)
         {
-            if (Config.Instance.SpectatorMode && !Client.Instance.inRadioMode && _currentScene == 1)
+            if (Config.Instance.SocialSettings.SpectatorMode && !Client.Instance.inRadioMode && _currentScene == 1)
             {
                 msg.Position = 0;
                 CommandType commandType = (CommandType)msg.ReadByte();
@@ -431,7 +431,7 @@ namespace BeatSaberMultiplayerLite
 
         public void Update()
         {
-            if (Config.Instance.SpectatorMode && _currentScene == 1 && active)
+            if (Config.Instance.SocialSettings.SpectatorMode && _currentScene == 1 && active)
             {
                 if (spectatedPlayer == null && _leftSaber != null && _rightSaber != null)
                 {

@@ -74,8 +74,8 @@ namespace BeatSaberMultiplayerLite.Misc
             hash = (string)jsonNode["hash"];
             hash = hash.ToLower();
             uploaded = (string)jsonNode["uploaded"];
-            downloadURL = Config.Instance.BeatSaverURL + (string)jsonNode["downloadURL"];
-            coverURL = Config.Instance.BeatSaverURL + (string)jsonNode["coverURL"];
+            downloadURL = Config.Instance.MultiplayerSettings.BeatSaverURL + (string)jsonNode["downloadURL"];
+            coverURL = Config.Instance.MultiplayerSettings.BeatSaverURL + (string)jsonNode["coverURL"];
         }
 
         public void ConstructFromScoreSaber(JObject jsonNode)
@@ -99,7 +99,7 @@ namespace BeatSaberMultiplayerLite.Misc
             levelAuthorName = (string)jsonNode["levelAuthorName"];
             songAuthorName = (string)jsonNode["songAuthorName"];
             bpm = (int)jsonNode["bpm"];
-            coverURL = Config.Instance.BeatSaverURL + jsonNode["image"];
+            coverURL = Config.Instance.MultiplayerSettings.BeatSaverURL + jsonNode["image"];
             hash = (string)jsonNode["id"];
             hash = hash.ToLower();
         }
@@ -127,8 +127,8 @@ namespace BeatSaberMultiplayerLite.Misc
             buffer.hash = (string)jsonNode["hash"];
             buffer.hash = buffer.hash.ToLower();
             buffer.uploaded = (string)jsonNode["uploaded"];
-            buffer.downloadURL = Config.Instance.BeatSaverURL + (string)jsonNode["downloadURL"];
-            buffer.coverURL = Config.Instance.BeatSaverURL + (string)jsonNode["coverURL"];
+            buffer.downloadURL = Config.Instance.MultiplayerSettings.BeatSaverURL + (string)jsonNode["downloadURL"];
+            buffer.coverURL = Config.Instance.MultiplayerSettings.BeatSaverURL + (string)jsonNode["coverURL"];
             return buffer;
         }
 

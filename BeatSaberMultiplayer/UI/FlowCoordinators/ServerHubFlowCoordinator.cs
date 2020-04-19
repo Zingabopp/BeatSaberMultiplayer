@@ -157,12 +157,12 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         protected IEnumerator GetServersFromRepositories()
         {
             Plugin.log.Debug("Starting GetServersFromRepositories");
-            if (Config.Instance?.ServerRepositories == null)
+            if (Config.Instance?.MultiplayerSettings.ServerRepositories == null)
                 yield break;
             List<RepositoryServer> repoServers = new List<RepositoryServer>();
             int repositoriesUsed = 0;
             int serversAdded = 0;
-            foreach (string serverRepoPath in Config.Instance.ServerRepositories)
+            foreach (string serverRepoPath in Config.Instance.MultiplayerSettings.ServerRepositories)
             {
                 Uri repoUri = null;
                 try
@@ -260,18 +260,17 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 }
             }
 
-            for (int i = 0; i < Config.Instance.ServerHubIPs.Length; i++)
+            foreach (ServerHub hub in Config.Instance.MultiplayerSettings.ServerHubs)
             {
-                string ip = Config.Instance.ServerHubIPs[i];
-
-                int port = 3700;
-
-                if (Config.Instance.ServerHubPorts.Length > i)
+                string ip = hub.Address;
+                if (string.IsNullOrEmpty(ip))
                 {
-                    port = Config.Instance.ServerHubPorts[i];
+                    Plugin.log.Warn($"ServerHub entry with empty address in Config.");
+                    continue;
                 }
+                int port = hub.Port;
                 string fullAddress = ip + ":" + port.ToString();
-                if (serverAddresses.Contains(fullAddress) || port < 1 || port > 65535)
+                if (serverAddresses.Contains(fullAddress))
                     continue;
                 serverAddresses.Add(fullAddress);
                 ServerHubClient client = new GameObject("ServerHubClient").AddComponent<ServerHubClient>();

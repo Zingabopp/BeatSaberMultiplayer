@@ -388,7 +388,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                 lastHighscoreForLevel = 0;
                                 lastHighscoreValid = false;
 
-                                if (Config.Instance.EnableVoiceChat)
+                                if (Config.Instance.VoiceChatSettings.EnableVoiceChat)
                                     InGameOnlineController.Instance.VoiceChatStartRecording();
                             }
                             break;
@@ -730,7 +730,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
             if (menuSceneSetupData != null)
             {
-                Client.Instance.playerInfo.updateInfo.playerState = Config.Instance.SpectatorMode ? PlayerState.Spectating : PlayerState.Game;
+                Client.Instance.playerInfo.updateInfo.playerState = Config.Instance.SocialSettings.SpectatorMode ? PlayerState.Spectating : PlayerState.Game;
 
                 PlayerData playerData = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault().playerData;
 
@@ -758,7 +758,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
                 var scoreSaber = IPA.Loader.PluginManager.GetPluginFromId("ScoreSaber");
                 PracticeSettings practiceSettings = null;
-                if (Config.Instance.SpectatorMode || startTime > 1f)
+                if (Config.Instance.SocialSettings.SpectatorMode || startTime > 1f)
                 {
                     practiceSettings = new PracticeSettings(PracticeSettings.defaultPracticeSettings);
                     if (startTime > 1f)
@@ -768,7 +768,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     }
                     practiceSettings.songSpeedMul = modifiers.songSpeedMul;
                 }
-                else if (Config.Instance.SubmitScores != 0 && scoreSaber != null)
+                else if (Config.Instance.SocialSettings.SubmitScores != 0 && scoreSaber != null)
                 {
                     ScoreSaberInterop.InitAndSignIn();
                 }

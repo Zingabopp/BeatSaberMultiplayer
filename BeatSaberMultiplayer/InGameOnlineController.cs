@@ -114,14 +114,14 @@ namespace BeatSaberMultiplayerLite
                 _messageDisplayText.alignment = TextAlignmentOptions.Center;
                 DontDestroyOnLoad(_messageDisplayText.gameObject);
 
-                if (Config.Instance.EnableVoiceChat)
+                if (Config.Instance.VoiceChatSettings.EnableVoiceChat)
                 {
                     voiceChatListener = new GameObject("Voice Chat Listener").AddComponent<VoipListener>();
 
                     voiceChatListener.OnAudioGenerated -= ProcesVoiceFragment;
                     voiceChatListener.OnAudioGenerated += ProcesVoiceFragment;
-                    Config.Instance.VoiceChatVolumeChanged -= Config_VoiceChatVolumeChanged;
-                    Config.Instance.VoiceChatVolumeChanged += Config_VoiceChatVolumeChanged;
+                    Config.Instance.VoiceChatSettings.VoiceChatVolumeChanged -= Config_VoiceChatVolumeChanged;
+                    Config.Instance.VoiceChatSettings.VoiceChatVolumeChanged += Config_VoiceChatVolumeChanged;
 
                     DontDestroyOnLoad(voiceChatListener.gameObject);
 
@@ -138,8 +138,7 @@ namespace BeatSaberMultiplayerLite
 
         public void ToggleVoiceChat(bool enabled)
         {
-            Config.Instance.EnableVoiceChat = enabled;
-            Config.Instance.Save();
+            Config.Instance.VoiceChatSettings.EnableVoiceChat = enabled;
             if (enabled && !isVoiceChatActive)
             {
                 voiceChatListener = new GameObject("Voice Chat Listener").AddComponent<VoipListener>();
@@ -208,7 +207,7 @@ namespace BeatSaberMultiplayerLite
 
         public bool VoiceChatIsTalking(ulong playerId)
         {
-            if (Config.Instance.EnableVoiceChat && players != null)
+            if (Config.Instance.VoiceChatSettings.EnableVoiceChat && players != null)
                 if (playerId == Client.Instance.playerInfo.playerId)
                     return isRecording;
                 else
@@ -230,7 +229,7 @@ namespace BeatSaberMultiplayerLite
             {
                 return false;
                 /*
-                return  (player.playerInfo.updateInfo.playerState == PlayerState.Game && _currentScene == _gameSceneName && Config.Instance.ShowAvatarsInGame && !Config.Instance.SpectatorMode) ||
+                return  (player.playerInfo.updateInfo.playerState == PlayerState.Game && _currentScene == _gameSceneName && Config.Instance.ShowAvatarsInGame && !Config.Instance.SocialSettings.SpectatorMode) ||
                         (player.playerInfo.updateInfo.playerState == PlayerState.Room && _currentScene == _menuSceneName && Config.Instance.ShowAvatarsInRoom) ||
                         (player.playerInfo.updateInfo.playerState == PlayerState.DownloadingSongs && _currentScene == _menuSceneName && Config.Instance.ShowAvatarsInRoom);
                 */
@@ -267,7 +266,7 @@ namespace BeatSaberMultiplayerLite
             {
                 StartCoroutine(WaitForControllers());
                 needToSendUpdates = true;
-                if (Config.Instance.SubmitScores == 0 || Config.Instance.SpectatorMode || Client.disableScoreSubmission)
+                if (Config.Instance.SocialSettings.SubmitScores == 0 || Config.Instance.SocialSettings.SpectatorMode || Client.disableScoreSubmission)
                     BS_Utils.Gameplay.ScoreSubmission.DisableSubmission($"{Plugin.PluginName}");
             }
         }
@@ -374,7 +373,7 @@ namespace BeatSaberMultiplayerLite
                             if (player != null)
                             {
                                 player.SetAvatarState(true);
-                                //player.SetBlocksState(!Client.Instance.inRadioMode && _currentScene == _gameSceneName && Config.Instance.ShowOtherPlayersBlocks && !Client.Instance.playerInfo.Equals(player.playerInfo) && !Config.Instance.SpectatorMode && player.playerInfo.updateInfo.playerState == PlayerState.Game);
+                                //player.SetBlocksState(!Client.Instance.inRadioMode && _currentScene == _gameSceneName && Config.Instance.ShowOtherPlayersBlocks && !Client.Instance.playerInfo.Equals(player.playerInfo) && !Config.Instance.SocialSettings.SpectatorMode && player.playerInfo.updateInfo.playerState == PlayerState.Game);
                             }
                         }
 
@@ -436,9 +435,9 @@ namespace BeatSaberMultiplayerLite
                                 if (_scoreScreen == null)
                                 {
                                     _scoreScreen = new GameObject("ScoreScreen", typeof(RectTransform));
-                                    _scoreScreen.transform.position = new Vector3(0f, 5f, 12f) + Config.Instance.ScoreScreenPosOffset;
-                                    _scoreScreen.transform.rotation = Quaternion.Euler(Config.Instance.ScoreScreenRotOffset);
-                                    _scoreScreen.transform.localScale = Config.Instance.ScoreScreenScale;
+                                    _scoreScreen.transform.position = new Vector3(0f, 5f, 12f) + Config.Instance.LeaderboardSettings.ScoreScreenPositionOffset;
+                                    _scoreScreen.transform.rotation = Quaternion.Euler(Config.Instance.LeaderboardSettings.ScoreScreenRotationOffset);
+                                    _scoreScreen.transform.localScale = Config.Instance.LeaderboardSettings.ScoreScreenScale;
 
                                     var rotator = FindObjectOfType<FlyingGameHUDRotation>();
 
@@ -516,7 +515,7 @@ namespace BeatSaberMultiplayerLite
                     break;
                 case CommandType.UpdateVoIPData:
                     {
-                        if (!Config.Instance.EnableVoiceChat)
+                        if (!Config.Instance.VoiceChatSettings.EnableVoiceChat)
                             return;
 
                         foreach (var playerPair in players)
@@ -626,14 +625,14 @@ namespace BeatSaberMultiplayerLite
             //    _vrInputManager = Resources.FindObjectsOfTypeAll<VRController>().FirstOrDefault(x => !(x is OnlineVRController)).GetPrivateField<VRControllersInputManager>("_vrControllersInputManager");
             //}
 
-            if (Config.Instance.EnableVoiceChat)
+            if (Config.Instance.VoiceChatSettings.EnableVoiceChat)
             {
-                if (Config.Instance.MicEnabled)
-                    if (!Config.Instance.PushToTalk)
+                if (Config.Instance.VoiceChatSettings.MicEnabled)
+                    if (!Config.Instance.VoiceChatSettings.PushToTalk)
                         isRecording = true;
                     else
                     {
-                        PTTOption option = Config.Instance.PushToTalkButton;
+                        PTTOption option = Config.Instance.VoiceChatSettings.PushToTalkButton;
                         PTTOption currentState = PTTOption.None;
                         bool leftUsed = false;
                         bool rightUsed = false;
@@ -678,7 +677,7 @@ namespace BeatSaberMultiplayerLite
                     }
 
 #if DEBUG
-                if ((ControllersHelper.LeftTriggerActive && ControllersHelper.RightGripActive 
+                if ((ControllersHelper.LeftTriggerActive && ControllersHelper.RightGripActive
                 && ControllersHelper.RightTriggerActive && ControllersHelper.LeftGripActive) || Input.GetKey(KeyCode.P))
 
 #else
@@ -805,9 +804,9 @@ namespace BeatSaberMultiplayerLite
 
                 //if (Config.Instance.SeparateAvatarForMultiplayer)
                 //{
-                if (!string.IsNullOrEmpty(Config.Instance.PublicAvatarHash))
+                if (!string.IsNullOrEmpty(Config.Instance.SocialSettings.PublicAvatarHash))
                 {
-                    Client.Instance.playerInfo.avatarHash = Config.Instance.PublicAvatarHash;
+                    Client.Instance.playerInfo.avatarHash = Config.Instance.SocialSettings.PublicAvatarHash;
                     sendFullUpdate = true;
 #if DEBUG
                     if (Client.Instance.playerInfo.avatarHash != PlayerInfo.avatarHashPlaceholder)
@@ -894,7 +893,7 @@ namespace BeatSaberMultiplayerLite
                 Client.Instance.playerInfo.updateInfo.playerProgress = 0;
             }
 
-            if (Config.Instance.SpectatorMode)
+            if (Config.Instance.SocialSettings.SpectatorMode)
             {
                 Client.Instance.playerInfo.updateInfo.playerScore = 0;
                 Client.Instance.playerInfo.updateInfo.playerEnergy = 0f;
@@ -972,11 +971,11 @@ namespace BeatSaberMultiplayerLite
                 Plugin.log.Debug("Set level results!");
             }
 
-            if (Config.Instance.SpectatorMode || Client.disableScoreSubmission || ScoreSubmission.Disabled || ScoreSubmission.ProlongedDisabled || sceneData.practiceSettings != null)
+            if (Config.Instance.SocialSettings.SpectatorMode || Client.disableScoreSubmission || ScoreSubmission.Disabled || ScoreSubmission.ProlongedDisabled || sceneData.practiceSettings != null)
             {
                 List<string> reasons = new List<string>();
 
-                if (Config.Instance.SpectatorMode) reasons.Add("Spectator mode");
+                if (Config.Instance.SocialSettings.SpectatorMode) reasons.Add("Spectator mode");
                 if (Client.disableScoreSubmission) reasons.Add("Multiplayer score submission disabled by another mod");
                 if (ScoreSubmission.Disabled) reasons.Add("Score submission is disabled by " + ScoreSubmission.ModString);
                 if (ScoreSubmission.ProlongedDisabled) reasons.Add("Score submission is disabled for a prolonged time by " + ScoreSubmission.ProlongedModString);
@@ -986,12 +985,12 @@ namespace BeatSaberMultiplayerLite
                 return;
             }
 
-            if (Config.Instance.SubmitScores == 0)
+            if (Config.Instance.SocialSettings.SubmitScores == 0)
             {
                 Plugin.log.Warn("Score submission is disabled!");
                 return;
             }
-            else if (Config.Instance.SubmitScores == 1)
+            else if (Config.Instance.SocialSettings.SubmitScores == SubmitScoreMode.OnlyRanked)
             {
                 bool submitScore = false;
                 if (ScrappedData.Downloaded)
@@ -1073,7 +1072,7 @@ namespace BeatSaberMultiplayerLite
             audioTimeSync = Resources.FindObjectsOfTypeAll<AudioTimeSyncController>().FirstOrDefault(x => !(x is OnlineAudioTimeController));
 
             _pauseMenuManager = FindObjectOfType<PauseMenuManager>();
-            
+
             if (_pauseMenuManager != null)
             {
                 _pauseMenuManager.GetPrivateField<Button>("_restartButton").interactable = false;

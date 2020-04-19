@@ -49,7 +49,7 @@ namespace BeatSaberMultiplayerLite.VOIP
         {
             Settings.voiceChatMicrophoneChanged -= Instance_voiceChatMicrophoneChanged;
             Settings.voiceChatMicrophoneChanged += Instance_voiceChatMicrophoneChanged;
-            _usedMicrophone = Config.Instance.VoiceChatMicrophone;
+            _usedMicrophone = Config.Instance.VoiceChatSettings.VoiceChatMicrophone;
         }
 
         private void Instance_voiceChatMicrophoneChanged(string newMic)

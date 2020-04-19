@@ -51,7 +51,7 @@ namespace BeatSaberMultiplayerLite.UI
 
         //CustomAvatar.CustomAvatar GetSelectedAvatar()
         //{
-        //    if (ModelSaberAPI.cachedAvatars.TryGetValue(Config.Instance.PublicAvatarHash, out CustomAvatar.CustomAvatar avatar))
+        //    if (ModelSaberAPI.cachedAvatars.TryGetValue(Config.Instance.SocialSettings.PublicAvatarHash, out CustomAvatar.CustomAvatar avatar))
         //    {
         //        return avatar;
         //    }
@@ -119,18 +119,19 @@ namespace BeatSaberMultiplayerLite.UI
         [UIValue("spectator-mode")]
         public bool spectatorMode
         {
-            get { return Config.Instance.SpectatorMode; }
-            set { Config.Instance.SpectatorMode = value; }
+            get { return Config.Instance.SocialSettings.SpectatorMode; }
+            set { Config.Instance.SocialSettings.SpectatorMode = value; }
         }
 
         [UIValue("submit-scores-options")]
         public List<object> submitScoresOptions = new List<object>() { "Never", "Only ranked", "Always" };
+        private SubmitScoreMode[] IndexedSubmitScoreMods = new SubmitScoreMode[] { SubmitScoreMode.Never, SubmitScoreMode.OnlyRanked, SubmitScoreMode.Always };
 
         [UIValue("submit-scores-value")]
         public object submitScores
         {
-            get { return submitScoresOptions[Config.Instance.SubmitScores]; }
-            set { Config.Instance.SubmitScores = submitScoresOptions.IndexOf(value); }
+            get { return submitScoresOptions[(int)Config.Instance.SocialSettings.SubmitScores]; }
+            set { Config.Instance.SocialSettings.SubmitScores = IndexedSubmitScoreMods[submitScoresOptions.IndexOf(value)]; }
         }
         #endregion
 
@@ -139,8 +140,8 @@ namespace BeatSaberMultiplayerLite.UI
         [UIValue("enable-rich-presence")]
         public bool enableRichPresence
         {
-            get { return Config.Instance.EnableRichPresence; }
-            set { Config.Instance.EnableRichPresence = value; }
+            get { return Config.Instance.SocialSettings.EnableRichPresence; }
+            set { Config.Instance.SocialSettings.EnableRichPresence = value; }
         }
 
         #endregion
@@ -162,7 +163,7 @@ namespace BeatSaberMultiplayerLite.UI
                 micSelectSetting.ReceiveValue();
             }
 
-            voiceChatMicrophoneChanged?.Invoke(Config.Instance.VoiceChatMicrophone);
+            voiceChatMicrophoneChanged?.Invoke(Config.Instance.VoiceChatSettings.VoiceChatMicrophone);
         }
 
         [UIComponent("mic-select-setting")]
@@ -171,29 +172,29 @@ namespace BeatSaberMultiplayerLite.UI
         [UIValue("enable-voice-chat")]
         public bool enableVoiceChat
         {
-            get { return Config.Instance.EnableVoiceChat; }
-            set { Config.Instance.EnableVoiceChat = value; }
+            get { return Config.Instance.VoiceChatSettings.EnableVoiceChat; }
+            set { Config.Instance.VoiceChatSettings.EnableVoiceChat = value; }
         }
 
         [UIValue("voice-chat-volume")]
         public int voiceChatVolume
         {
-            get { return Mathf.RoundToInt(Config.Instance.VoiceChatVolume * 100); }
-            set { Config.Instance.VoiceChatVolume = (value / 100f); }
+            get { return Mathf.RoundToInt(Config.Instance.VoiceChatSettings.VoiceChatVolume * 100); }
+            set { Config.Instance.VoiceChatSettings.VoiceChatVolume = (value / 100f); }
         }
 
         [UIValue("mic-enabled")]
         public bool micEnabled
         {
-            get { return Config.Instance.MicEnabled; }
-            set { Config.Instance.MicEnabled = value; }
+            get { return Config.Instance.VoiceChatSettings.MicEnabled; }
+            set { Config.Instance.VoiceChatSettings.MicEnabled = value; }
         }
 
         [UIValue("push-to-talk")]
         public bool pushToTalk
         {
-            get { return Config.Instance.PushToTalk; }
-            set { Config.Instance.PushToTalk = value; }
+            get { return Config.Instance.VoiceChatSettings.PushToTalk; }
+            set { Config.Instance.VoiceChatSettings.PushToTalk = value; }
         }
 
 
@@ -207,11 +208,11 @@ namespace BeatSaberMultiplayerLite.UI
         {
             get
             {
-                int currentIndex = Config.Instance.PushToTalkButton.OptionIndex() - 1;
+                int currentIndex = Config.Instance.VoiceChatSettings.PushToTalkButton.OptionIndex() - 1;
 
                 if (currentIndex >= pttButtonOptions.Count || currentIndex < 0)
                 {
-                    Config.Instance.PushToTalkButton = PTTOption.LeftTrigger;
+                    Config.Instance.VoiceChatSettings.PushToTalkButton = PTTOption.LeftTrigger;
                     currentIndex = 0;
                 }
                 return pttButtonOptions[currentIndex];
@@ -219,10 +220,10 @@ namespace BeatSaberMultiplayerLite.UI
             set
             {
                 PTTOption newValue = IndexedPTTOptions[pttButtonOptions.IndexOf(value)];
-                if (Config.Instance.PushToTalkButton == newValue)
+                if (Config.Instance.VoiceChatSettings.PushToTalkButton == newValue)
                     return;
                 PttHoverHint = GetPttHoverHintForOption(newValue);
-                Config.Instance.PushToTalkButton = newValue;
+                Config.Instance.VoiceChatSettings.PushToTalkButton = newValue;
             }
         }
 
@@ -241,7 +242,7 @@ namespace BeatSaberMultiplayerLite.UI
             get
             {
                 if (pttHoverHint == null)
-                    pttHoverHint = GetPttHoverHintForOption(Config.Instance.PushToTalkButton);
+                    pttHoverHint = GetPttHoverHintForOption(Config.Instance.VoiceChatSettings.PushToTalkButton);
                 return pttHoverHint;
             }
             set
@@ -260,9 +261,9 @@ namespace BeatSaberMultiplayerLite.UI
         {
             get
             {
-                if (!string.IsNullOrEmpty(Config.Instance.VoiceChatMicrophone) && micSelectOptions.Contains((object)Config.Instance.VoiceChatMicrophone))
+                if (!string.IsNullOrEmpty(Config.Instance.VoiceChatSettings.VoiceChatMicrophone) && micSelectOptions.Contains((object)Config.Instance.VoiceChatSettings.VoiceChatMicrophone))
                 {
-                    return (object)Config.Instance.VoiceChatMicrophone;
+                    return (object)Config.Instance.VoiceChatSettings.VoiceChatMicrophone;
                 }
                 else
                     return "DEFAULT MIC";
@@ -271,12 +272,12 @@ namespace BeatSaberMultiplayerLite.UI
             {
                 if (string.IsNullOrEmpty(value as string) || (value as string) == "DEFAULT MIC")
                 {
-                    Config.Instance.VoiceChatMicrophone = null;
+                    Config.Instance.VoiceChatSettings.VoiceChatMicrophone = null;
                 }
                 else
-                    Config.Instance.VoiceChatMicrophone = (value as string);
+                    Config.Instance.VoiceChatSettings.VoiceChatMicrophone = (value as string);
 
-                voiceChatMicrophoneChanged?.Invoke(Config.Instance.VoiceChatMicrophone);
+                voiceChatMicrophoneChanged?.Invoke(Config.Instance.VoiceChatSettings.VoiceChatMicrophone);
             }
         }
 

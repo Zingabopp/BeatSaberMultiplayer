@@ -250,7 +250,7 @@ namespace BeatSaberMultiplayerLite
                     }
                 }
 
-                if (Config.Instance.SpectatorMode)
+                if (Config.Instance.SocialSettings.SpectatorMode)
                 {
                     for (int i = 0; i < _receivedMessages.Count; i++)
                     {

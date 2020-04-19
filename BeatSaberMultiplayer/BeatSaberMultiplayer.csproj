@@ -58,6 +58,7 @@
     <Compile Include="Data\SongInfo.cs" />
     <Compile Include="Data\LevelOptionsInfo.cs" />
     <Compile Include="Interop\IVotingInterop.cs" />
+    <Compile Include="Misc\Config.cs" />
     <Compile Include="OnlinePlayerPosition.cs" />
     <Compile Include="PlayerPosition.cs" />
     <Compile Include="MultiplayerExceptions.cs" />
@@ -79,7 +80,6 @@
     <Compile Include="Misc\SimpleJSON.cs" />
     <Compile Include="Interop\BeatSaverDownloaderInterop.cs" />
     <Compile Include="Misc\Sprites.cs" />
-    <Compile Include="Misc\Config.cs" />
     <Compile Include="Misc\CustomExtensions.cs" />
     <Compile Include="Misc\HexConverter.cs" />
     <Compile Include="Misc\LoadScripts.cs" />
