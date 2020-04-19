@@ -304,6 +304,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             PopAllViewControllers();
             SetLeftScreenViewController(_playerManagementViewController);
             PluginUI.instance.SetLobbyDiscordActivity();
+            if(SteamManager.Initialized)
+                SteamRichPresence.ClearSteamRichPresence();
             didFinishEvent?.Invoke();
         }
 
@@ -774,7 +776,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 }
 
                 menuSceneSetupData.StartStandardLevel(difficultyBeatmap, environmentOverrideSettings, colorSchemesSettings, modifiers, playerSettings, practiceSettings: practiceSettings, "Lobby", false, () => { }, InGameOnlineController.Instance.SongFinished);
-                UpdateDiscordActivity(roomInfo);
+                UpdateRichPresence(roomInfo);
             }
             else
             {
@@ -1441,8 +1443,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
         }
 
-        #region Discord rich presence stuff
-        public void UpdateDiscordActivity(RoomInfo roomInfo)
+        #region Rich presence stuff (Discord/Steam)
+        public void UpdateRichPresence(RoomInfo roomInfo)
         {
             GameActivityParty partyInfo = new GameActivityParty()
             {
@@ -1461,7 +1463,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
             GameActivitySecrets secrets = new GameActivitySecrets()
             {
-                Join = usePassword ? $"{ip}:{port}?{roomId}#{password}" : $"{ip}:{port}?{roomId}#"
+                Join = joinSecret
             };
 
             GameActivityAssets assets = new GameActivityAssets()
