@@ -147,10 +147,6 @@ namespace BeatSaberMultiplayerLite.Misc
                 Plugin.log.Info("Left controller connected.");
             }
         }
-        static bool rightTriggerPrevious;
-        static bool leftTriggerPrevious;
-        static bool leftGripPrevious;
-        static bool rightGripPrevious;
         public static bool RightTriggerActive
         {
             get
