@@ -74,14 +74,19 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public IEnumerator DownloadSongCoroutine(Song songInfo, Action<bool, string> downloadedCallback, Action<float> progressChangedCallback)
         {
-            if (!string.IsNullOrEmpty(songInfo?.songName))
-                Plugin.log.Info($"Attempting to download song: {songInfo.songName}");
-            else
-                Plugin.log.Info($"Attempting to download song: {songInfo?.hash}");
+            if(songInfo == null)
+            {
+                Plugin.log.Error($"songInfo is null on DownloadSongCoroutine, this shouldn't happen.");
+                yield break;
+            }
+            string songIdentifier = songInfo?.songName;
+            if (string.IsNullOrEmpty(songIdentifier))
+                songIdentifier = songInfo?.hash;
             songInfo.songQueueState = SongQueueState.Downloading;
 
             if (SongCore.Collections.songWithHashPresent(songInfo.hash.ToUpper()))
             {
+                Plugin.log.Debug($"Song already downloaded: {songIdentifier}");
                 songInfo.downloadingProgress = 1f;
                 yield return new WaitForSeconds(0.1f);
                 songInfo.songQueueState = SongQueueState.Downloaded;
@@ -89,6 +94,7 @@ namespace BeatSaberMultiplayerLite.Misc
                 downloadedCallback?.Invoke(true, "Finished");
                 yield break;
             }
+            Plugin.log.Info($"Attempting to download song '{songIdentifier}' from {songInfo.downloadURL}");
             UnityWebRequest www;
             bool timeout = false;
             float time = 0f;
@@ -135,7 +141,7 @@ namespace BeatSaberMultiplayerLite.Misc
             {
                 songInfo.songQueueState = SongQueueState.Error;
                 Plugin.log.Error("Unable to download song! " + (www.isNetworkError ? $"Network error: {www.error}" : (www.isHttpError ? $"HTTP error: {www.error}" : "Unknown error")));
-                if(www.responseCode == 404)
+                if (www.responseCode == 404)
                     downloadedCallback?.Invoke(false, "Song not found on Beat Saver.");
                 else
                     downloadedCallback?.Invoke(false, "Network error downloading song.");
