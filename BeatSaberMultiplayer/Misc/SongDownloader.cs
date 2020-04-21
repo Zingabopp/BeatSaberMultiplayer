@@ -39,9 +39,9 @@ namespace BeatSaberMultiplayerLite.Misc
 
         private static BeatmapLevelsModel _beatmapLevelsModel;
 
-        public static UnityWebRequest GetRequestForUrl(string url)
+        public static UnityWebRequest GetRequestForUri(Uri uri)
         {
-            UnityWebRequest www = UnityWebRequest.Get(url);
+            UnityWebRequest www = UnityWebRequest.Get(uri);
             www.SetRequestHeader("User-Agent", UserAgent);
             return www;
         }
@@ -74,7 +74,7 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public IEnumerator DownloadSongCoroutine(Song songInfo, Action<bool, string> downloadedCallback, Action<float> progressChangedCallback)
         {
-            if(songInfo == null)
+            if (songInfo == null)
             {
                 Plugin.log.Error($"songInfo is null on DownloadSongCoroutine, this shouldn't happen.");
                 yield break;
@@ -102,18 +102,18 @@ namespace BeatSaberMultiplayerLite.Misc
 
             try
             {
-                www = GetRequestForUrl(songInfo.downloadURL);
+                Uri uri = new Uri(songInfo.downloadURL);
+                www = GetRequestForUri(uri);
 
                 asyncRequest = www.SendWebRequest();
             }
             catch (Exception e)
             {
-                Plugin.log.Error(e);
+                Plugin.log.Error($"Error downloading song from '{songInfo.downloadURL}': {e.Message}");
+                Plugin.log.Debug(e);
                 songInfo.songQueueState = SongQueueState.Error;
                 songInfo.downloadingProgress = 0f;
                 downloadedCallback?.Invoke(false, "Error downloading song");
-                Plugin.log.Error($"Error downloading song: {e}");
-                Plugin.log.Debug(e);
                 yield break;
             }
 
@@ -304,8 +304,22 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public IEnumerator RequestSongByLevelIDCoroutine(string levelId, Action<Song, string> callback)
         {
-            UnityWebRequest wwwId = GetRequestForUrl($"{Config.Instance.MultiplayerSettings.BeatSaverURL}/api/maps/by-hash/" + levelId.ToLower());
-            wwwId.timeout = 10;
+            string requestUrl = $"{Config.Instance.MultiplayerSettings.BeatSaverURL}/api/maps/by-hash/{levelId.ToLower()}";
+            Uri uri;
+            UnityWebRequest wwwId;
+            try
+            {
+                uri = new Uri(requestUrl);
+                wwwId = GetRequestForUri(uri);
+                wwwId.timeout = 10;
+            }
+            catch (Exception ex)
+            {
+                Plugin.log.Error($"Error downloading song by levelId from '{requestUrl}': {ex.Message}");
+                Plugin.log.Debug(ex);
+                callback?.Invoke(null, "Error downloading song.");
+                yield break;
+            }
 
             yield return wwwId.SendWebRequest();
 
@@ -341,8 +355,20 @@ namespace BeatSaberMultiplayerLite.Misc
 
         public IEnumerator RequestSongByKeyCoroutine(string key, Action<Song> callback)
         {
-            UnityWebRequest wwwId = GetRequestForUrl($"{Config.Instance.MultiplayerSettings.BeatSaverURL}/api/maps/detail/" + key.ToLower());
-            wwwId.timeout = 10;
+            UnityWebRequest wwwId;
+            string url = $"{Config.Instance.MultiplayerSettings.BeatSaverURL}/api/maps/detail/{key.ToLower()}";
+            try
+            {
+                Uri uri = new Uri(url);
+                wwwId = GetRequestForUri(uri);
+                wwwId.timeout = 10;
+            }
+            catch (Exception ex)
+            {
+                Plugin.log.Error($"Error requesting song by key using '{url}': {ex.Message}");
+                Plugin.log.Debug(ex);
+                yield break;
+            }
 
             yield return wwwId.SendWebRequest();
 
