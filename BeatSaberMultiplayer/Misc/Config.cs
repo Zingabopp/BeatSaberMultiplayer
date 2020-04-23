@@ -37,19 +37,39 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
-        private List<string> _serverRepositories = new List<string> { "https://raw.githubusercontent.com/Zingabopp/BeatSaberMultiplayerServerRepo/master/CompatibleServers.json" };
+        private List<ServerRepositoryEntry> _serverRepositories = new List<ServerRepositoryEntry> { 
+                new ServerRepositoryEntry() { 
+                    RepositoryAddress = "https://raw.githubusercontent.com/Zingabopp/BeatSaberMultiplayerServerRepo/master/CompatibleServers.json",
+                    RepositoryMirrors = new List<string>()} 
+        };
 
         [NonNullable]
-        [UseConverter(typeof(ListConverter<string>))]
+        [UseConverter(typeof(ListConverter<ServerRepositoryEntry>))]
         [SerializedName(nameof(ServerRepositories))]
         [JsonProperty(nameof(ServerRepositories), Order = 10, IsReference = true)]
-        public virtual List<string> ServerRepositories { get => _serverRepositories; set => _serverRepositories = value; }
+        public virtual List<ServerRepositoryEntry> ServerRepositories { get => _serverRepositories; set => _serverRepositories = value; }
 
         [NonNullable]
         [UseConverter(typeof(ListConverter<ServerHub>))]
         [SerializedName(nameof(ServerHubs))]
         [JsonProperty(nameof(ServerHubs), Order = 15, IsReference = true)]
-        public virtual List<ServerHub> ServerHubs { get; set; } = new List<ServerHub>() { new ServerHub() { Address = "127.0.0.1", Port = 3700 } };
+        public virtual List<ServerHub> ServerHubs { get; set; } = new List<ServerHub>() { 
+            new ServerHub() { Address = "127.0.0.1", Port = 3700 } };
+    }
+
+    internal class ServerRepositoryEntry
+    {
+        [NonNullable]
+        [SerializedName(nameof(RepositoryAddress))]
+        [JsonProperty(nameof(RepositoryAddress), Order = 0)]
+        public virtual string RepositoryAddress { get; set; }
+
+        [NonNullable]
+        [UseConverter(typeof(ListConverter<string>))]
+        [SerializedName(nameof(RepositoryMirrors))]
+        [JsonProperty(nameof(RepositoryMirrors), Order = 10, IsReference = true)]
+        public virtual List<string> RepositoryMirrors { get; set; } = new List<string>();
+
     }
 
     internal class ServerHub
