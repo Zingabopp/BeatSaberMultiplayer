@@ -183,17 +183,17 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 repoCache = new ServerRepositoryCache();
             int repositoriesUsed = 0;
             int serversAdded = 0;
-            foreach (string serverRepoPath in Config.Instance.MultiplayerSettings.ServerRepositories)
+            foreach (ServerRepositoryEntry repoEntry in Config.Instance.MultiplayerSettings.ServerRepositories)
             {
                 Uri repoUri = null;
                 ServerRepository repo = null;
                 try
                 {
-                    repoUri = new Uri(serverRepoPath, UriKind.Absolute);
+                    repoUri = new Uri(repoEntry.RepositoryAddress, UriKind.Absolute);
                 }
                 catch (Exception ex)
                 {
-                    Plugin.log.Warn($"Invalid server repository URL: {serverRepoPath}");
+                    Plugin.log.Warn($"Invalid server repository URL: {repoEntry}");
                     Plugin.log.Debug(ex);
                     continue;
                 }
@@ -201,7 +201,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 yield return www.SendWebRequest();
                 if (www.isNetworkError || www.isHttpError)
                 {
-                    Plugin.log.Warn($"Error getting Server Repository: {serverRepoPath}");
+                    Plugin.log.Warn($"Error getting Server Repository: {repoEntry}");
                     Plugin.log.Debug(www.error);
                 }
                 else
@@ -212,21 +212,21 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                         repo = ServerRepository.FromJson(serverRepoJsonStr);
                         if (repo != null)
                         {
-                            if (repoCache.ServerRepositories.ContainsKey(serverRepoPath))
-                                repoCache.ServerRepositories[serverRepoPath] = repo;
+                            if (repoCache.ServerRepositories.ContainsKey(repoEntry))
+                                repoCache.ServerRepositories[repoEntry] = repo;
                             else
-                                repoCache.ServerRepositories.Add(serverRepoPath, repo);
+                                repoCache.ServerRepositories.Add(repoEntry, repo);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Plugin.log.Warn($"Error parsing ServerRepository from {serverRepoPath}: {ex.Message}");
+                        Plugin.log.Warn($"Error parsing ServerRepository from {repoEntry}: {ex.Message}");
                         Plugin.log.Debug(ex);
                     }
                 }
-                if (repo == null && repoCache.ServerRepositories.TryGetValue(serverRepoPath, out repo))
+                if (repo == null && repoCache.ServerRepositories.TryGetValue(repoEntry, out repo))
                 {
-                    Plugin.log.Info($"Using cache of ServerRepository '{serverRepoPath}' with {repo.Servers.Count} servers.");
+                    Plugin.log.Info($"Using cache of ServerRepository '{repoEntry}' with {repo.Servers.Count} servers.");
                 }
                 if (repo != null)
                 {
