@@ -35,6 +35,9 @@ namespace BeatSaberMultiplayerLite.Data
         [JsonProperty("ServerPort")]
         public int ServerPort { get; set; }
 
+        [JsonIgnore]
+        public string ServerId => $"{ServerAddress}:{ServerPort}";
+
         public bool IsValid
         {
             get
@@ -68,6 +71,7 @@ namespace BeatSaberMultiplayerLite.Data
     public static class Serialize
     {
         public static string ToJson(this ServerRepository self) => JsonConvert.SerializeObject(self, BeatSaberMultiplayerLite.Data.Converter.Settings);
+        public static string ToJson(this ServerRepositoryCache self) => JsonConvert.SerializeObject(self, BeatSaberMultiplayerLite.Data.Converter.Settings);
     }
 
     internal static class Converter
@@ -76,6 +80,7 @@ namespace BeatSaberMultiplayerLite.Data
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
+            Formatting = Formatting.Indented
             //Converters =
             //{
             //    new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }

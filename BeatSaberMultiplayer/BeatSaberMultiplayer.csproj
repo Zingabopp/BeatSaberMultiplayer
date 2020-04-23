@@ -47,6 +47,7 @@
     <Compile Include="ClientEventArgs.cs" />
     <Compile Include="Data\BeatSaverAPIResult.cs" />
     <Compile Include="Data\ExtraPlayerFlags.cs" />
+    <Compile Include="Data\ServerRepositoryCache.cs" />
     <Compile Include="InputTestController.cs" />
     <Compile Include="Interop\BeatSaverVotingInterop.cs" />
     <Compile Include="Interop\IDismissable.cs" />
