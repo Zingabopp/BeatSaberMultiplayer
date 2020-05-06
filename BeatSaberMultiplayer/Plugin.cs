@@ -205,7 +205,6 @@ namespace BeatSaberMultiplayerLite
             PluginUI.OnLoad();
             InGameOnlineController.OnLoad();
             SpectatingController.OnLoad();
-            BS_Utils.Gameplay.GetUserInfo.UpdateUserInfo();
             GetUserInfo.UpdateUserInfo();
             if (Environment.CommandLine.Contains("fpfc"))
             {
