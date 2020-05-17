@@ -37,7 +37,7 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
-        private List<string> _serverRepositories = new List<string> { "https://raw.githubusercontent.com/Zingabopp/BeatSaberMultiplayerServerRepo/master/CompatibleServers.json" };
+        private List<string> _serverRepositories = new List<string> { "https://zingabopp.github.io/BeatSaberMultiplayerServerRepo/CompatibleServers.json" };
 
         [NonNullable]
         [UseConverter(typeof(ListConverter<string>))]
