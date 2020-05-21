@@ -440,7 +440,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         {
             if (string.IsNullOrEmpty(server?.ServerAddress) || server.ServerPort < 1 || server.ServerPort > 65535)
                 return null;
-            ServerHubClient client = new GameObject($"ServerHubClient.{server.ServerName}").AddComponent<ServerHubClient>();
+            ServerHubClient client = new GameObject($"ServerHubClient.{server.ServerName ?? server.ServerAddress}").AddComponent<ServerHubClient>();
             client.ip = server.ServerAddress;
             client.port = server.ServerPort;
             client.serverHubName = server.ServerName;
@@ -529,7 +529,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                         try
                                         {
                                             byte[] serverVer = hailMsg.ReadBytes(4);
-                                            serverHubName = hailMsg.ReadString();
+                                            string serverNameResponse = hailMsg.ReadString();
+                                            if(!string.IsNullOrEmpty(serverNameResponse))
+                                                serverHubName = serverNameResponse;
                                         }
                                         catch (Exception e)
                                         {
