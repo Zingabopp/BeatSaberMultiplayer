@@ -21,10 +21,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
-    - name: PrintLibs
-      run: ls /usr/lib
-    - name: PrintMonoPath
-      run: ls /usr/lib/mono
+    - name: PrintWorking
+      run: ls
+    - name: PrintRefs
+      run: ls ./Refs
     - name: GetStrippedRefs
       env:
         FILES_URL: ${{ secrets.BSFILES_URL }}
