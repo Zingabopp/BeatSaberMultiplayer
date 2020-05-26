@@ -31,6 +31,8 @@ jobs:
       run: wget --no-check-certificate "$FILES_URL" -q -O bsfiles.zip
     - name: ExtractRefs
       run: unzip -q bsfiles.zip -d ./Refs/BeatSaber
+    - name: PrintRefs
+      run: ls ./Refs/BeatSaber
     - name: Build
       id: Build
       env: 
