@@ -45,3 +45,10 @@
 ""BeatSaverVoting.dll
 ""DiscordCore.dll
 ::endopt
+
+::startopt
+"::resolveInHere Libs/
+""SemVer.dll
+""Newtonsoft.Json.dll
+"::resolveInHere Beat Saber_Data/Managed/
+""IPA.Loader.dll

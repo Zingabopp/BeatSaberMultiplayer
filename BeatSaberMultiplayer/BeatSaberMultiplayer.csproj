@@ -47,6 +47,7 @@
     <Compile Include="ClientEventArgs.cs" />
     <Compile Include="Data\BeatSaverAPIResult.cs" />
     <Compile Include="Data\ExtraPlayerFlags.cs" />
+    <Compile Include="Data\ServerRepositoryCache.cs" />
     <Compile Include="InputTestController.cs" />
     <Compile Include="Interop\BeatSaverVotingInterop.cs" />
     <Compile Include="Interop\IDismissable.cs" />
@@ -226,12 +227,12 @@
     </Reference>
     <Reference Include="BeatSaverDownloader, Version=5.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\BeatSaverDownloader.dll</HintPath>
+      <HintPath>..\Refs\Mods\BeatSaverDownloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BeatSaverVoting, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\BeatSaverVoting.dll</HintPath>
+      <HintPath>..\Refs\Mods\BeatSaverVoting.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BSML, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
@@ -272,7 +273,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\Refs\BeatSaber\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NSpeex, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -288,7 +289,7 @@
     </Reference>
     <Reference Include="ScoreSaber, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Refs\ScoreSaber.dll</HintPath>
+      <HintPath>..\Refs\Mods\ScoreSaber.dll</HintPath>
       <Aliases>ScoreSaberGlobal</Aliases>
     </Reference>
     <Reference Include="SemVer, Version=1.2.2.0, Culture=neutral, PublicKeyToken=a89bb7dc6f7a145c, processorArchitecture=MSIL">

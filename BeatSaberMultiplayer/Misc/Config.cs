@@ -37,7 +37,7 @@ namespace BeatSaberMultiplayerLite
             }
         }
 
-        private List<string> _serverRepositories = new List<string> { "https://raw.githubusercontent.com/Zingabopp/BeatSaberMultiplayerServerRepo/master/CompatibleServers.json" };
+        private List<string> _serverRepositories = new List<string> { "https://zingabopp.github.io/BeatSaberMultiplayerServerRepo/CompatibleServers.json" };
 
         [NonNullable]
         [UseConverter(typeof(ListConverter<string>))]
@@ -287,8 +287,16 @@ namespace BeatSaberMultiplayerLite
 
     public class Vector3Dummy
     {
+        [SerializedName(nameof(X))]
+        [JsonProperty(PropertyName = nameof(X), Order = 0)]
         public virtual float X { get; set; } = 0f;
+
+        [SerializedName(nameof(Y))]
+        [JsonProperty(PropertyName = nameof(Y), Order = 1)]
         public virtual float Y { get; set; } = 0f;
+
+        [SerializedName(nameof(Z))]
+        [JsonProperty(PropertyName = nameof(Z), Order = 2)]
         public virtual float Z { get; set; } = 0f;
 
         public Vector3Dummy() { }
