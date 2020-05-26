@@ -19,6 +19,13 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 {
     public class RequestsViewController : BSMLResourceViewController, TableView.IDataSource
     {
+        #region Accessors
+        private static readonly FieldAccessor<LevelListTableCell, TextMeshProUGUI>.Accessor LevelListTableCell_SongNameText = FieldAccessor<LevelListTableCell, TextMeshProUGUI>.GetAccessor("_songNameText");
+        private static readonly FieldAccessor<LevelListTableCell, TextMeshProUGUI>.Accessor LevelListTableCell_AuthorText = FieldAccessor<LevelListTableCell, TextMeshProUGUI>.GetAccessor("_authorText");
+        private static readonly FieldAccessor<LevelListTableCell, RawImage>.Accessor LevelListTableCell_CoverImage = FieldAccessor<LevelListTableCell, RawImage>.GetAccessor("_coverRawImage");
+        private static readonly FieldAccessor<LevelListTableCell, RawImage>.Accessor LevelListTableCell_BadgeImage = FieldAccessor<LevelListTableCell, RawImage>.GetAccessor("_favoritesBadgeImage");
+        private static readonly FieldAccessor<LevelListTableCell, Image[]>.Accessor LevelListTableCell_CharImages = FieldAccessor<LevelListTableCell, Image[]>.GetAccessor("_beatmapCharacteristicImages");
+        #endregion
         public override string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
 
         public event Action BackPressed;
@@ -137,12 +144,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         {
             return requestedSongs.Count;
         }
-
-        static FieldAccessor<LevelListTableCell, TextMeshProUGUI>.Accessor LevelListTableCell_SongNameText = FieldAccessor<LevelListTableCell, TextMeshProUGUI>.GetAccessor("_songNameText");
-        static FieldAccessor<LevelListTableCell, TextMeshProUGUI>.Accessor LevelListTableCell_AuthorText = FieldAccessor<LevelListTableCell, TextMeshProUGUI>.GetAccessor("_authorText");
-        static FieldAccessor<LevelListTableCell, RawImage>.Accessor LevelListTableCell_CoverImage = FieldAccessor<LevelListTableCell, RawImage>.GetAccessor("_coverRawImage");
-        static FieldAccessor<LevelListTableCell, RawImage>.Accessor LevelListTableCell_BadgeImage = FieldAccessor<LevelListTableCell, RawImage>.GetAccessor("_favoritesBadgeImage");
-        static FieldAccessor<LevelListTableCell, Image[]>.Accessor LevelListTableCell_CharImages = FieldAccessor<LevelListTableCell, Image[]>.GetAccessor("_beatmapCharacteristicImages");
 
         public TableCell CellForIdx(TableView tableView, int idx)
         {

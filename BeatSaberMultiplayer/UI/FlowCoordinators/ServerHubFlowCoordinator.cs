@@ -14,6 +14,7 @@ using BeatSaberMarkupLanguage;
 using BS_Utils.Utilities;
 using UnityEngine.Networking;
 using System.Collections.Concurrent;
+using System.IO;
 
 namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 {
@@ -160,11 +161,32 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             if (Config.Instance?.MultiplayerSettings.ServerRepositories == null)
                 yield break;
             List<RepositoryServer> repoServers = new List<RepositoryServer>();
+            string repoCachePath = Path.Combine(IPA.Utilities.UnityGame.UserDataPath, "ServerRepositoryCache.json");
+            ServerRepositoryCache repoCache = null;
+            if (File.Exists(repoCachePath))
+            {
+                try
+                {
+                    repoCache = ServerRepositoryCache.FromJson(File.ReadAllText(repoCachePath));
+                }
+                catch (Exception ex)
+                {
+                    Plugin.log.Warn($"Unable to read ServerRepositoryCache.json: {ex.Message}");
+                    Plugin.log.Debug(ex);
+                }
+            }
+            else
+            {
+                Plugin.log.Debug($"ServerRepositoryCache.json not found, generating new one.");
+            }
+            if (repoCache == null)
+                repoCache = new ServerRepositoryCache();
             int repositoriesUsed = 0;
             int serversAdded = 0;
             foreach (string serverRepoPath in Config.Instance.MultiplayerSettings.ServerRepositories)
             {
                 Uri repoUri = null;
+                ServerRepository repo = null;
                 try
                 {
                     repoUri = new Uri(serverRepoPath, UriKind.Absolute);
@@ -187,22 +209,14 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                     string serverRepoJsonStr = www.downloadHandler.text;
                     try
                     {
-                        ServerRepository repo = ServerRepository.FromJson(serverRepoJsonStr);
-                        bool repositoryUsed = false;
-                        foreach (var server in repo.Servers)
+                        repo = ServerRepository.FromJson(serverRepoJsonStr);
+                        if (repo != null)
                         {
-                            Plugin.log.Debug($"Server: {server.ToString()}");
-                            if (server.IsValid)
-                            {
-                                repoServers.Add(server);
-                                serversAdded++;
-                                repositoryUsed = true;
-                            }
+                            if (repoCache.ServerRepositories.ContainsKey(serverRepoPath))
+                                repoCache.ServerRepositories[serverRepoPath] = repo;
                             else
-                                Plugin.log.Warn($"Invalid server ({server.ToString()}) in repository {repo.RepositoryName}");
+                                repoCache.ServerRepositories.Add(serverRepoPath, repo);
                         }
-                        if (repositoryUsed)
-                            repositoriesUsed++;
                     }
                     catch (Exception ex)
                     {
@@ -210,7 +224,37 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                         Plugin.log.Debug(ex);
                     }
                 }
+                if (repo == null && repoCache.ServerRepositories.TryGetValue(serverRepoPath, out repo))
+                {
+                    Plugin.log.Info($"Using cache of ServerRepository '{serverRepoPath}' with {repo.Servers.Count} servers.");
+                }
+                if (repo != null)
+                {
+                    bool repositoryUsed = false;
+                    foreach (var server in repo.Servers)
+                    {
+                        Plugin.log.Debug($"Server: {server.ToString()}");
+                        if (server.IsValid)
+                        {
+                            if (!repoServers.Any(s => s.ServerId.Equals(server.ServerId, StringComparison.OrdinalIgnoreCase)))
+                            {
+                                repoServers.Add(server);
+                                serversAdded++;
+                                repositoryUsed = true;
+                            }
+                            else
+                            {
+                                Plugin.log.Debug($"Skipping server '{server.ServerId}', already exists.");
+                            }
+                        }
+                        else
+                            Plugin.log.Warn($"Invalid server ({server.ToString()}) in repository {repo.RepositoryName}");
+                    }
+                    if (repositoryUsed)
+                        repositoriesUsed++;
+                }
             }
+
             if (serversAdded > 0)
             {
                 RepositoryServers = repoServers.ToArray();
@@ -218,6 +262,15 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             }
             else
                 Plugin.log.Debug("Did not get any servers from server repositories.");
+            try
+            {
+                File.WriteAllText(repoCachePath, repoCache.ToJson());
+            }
+            catch (Exception ex)
+            {
+                Plugin.log.Warn($"Failed to write ServerRepositoryCache to file: {ex.Message}");
+                Plugin.log.Debug(ex);
+            }
             yield return UpdateRoomsListCoroutine();
         }
 
@@ -387,7 +440,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         {
             if (string.IsNullOrEmpty(server?.ServerAddress) || server.ServerPort < 1 || server.ServerPort > 65535)
                 return null;
-            ServerHubClient client = new GameObject($"ServerHubClient.{server.ServerName}").AddComponent<ServerHubClient>();
+            ServerHubClient client = new GameObject($"ServerHubClient.{server.ServerName ?? server.ServerAddress}").AddComponent<ServerHubClient>();
             client.ip = server.ServerAddress;
             client.port = server.ServerPort;
             client.serverHubName = server.ServerName;

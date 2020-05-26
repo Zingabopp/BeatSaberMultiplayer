@@ -11,13 +11,13 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
 {
     public class OnlineBeatmapObjectManager : BeatmapObjectManager
     {
-        FieldAccessor<BeatmapObjectManager, Action<NoteController>>.Accessor GetNoteWasSpawnedEvent = FieldAccessor<BeatmapObjectManager, Action<NoteController>>.GetAccessor(nameof(BeatmapObjectManager.noteWasSpawnedEvent));
-        FieldAccessor<BeatmapObjectManager, Action<INoteController, NoteCutInfo>>.Accessor GetNoteWasCutEvent = FieldAccessor<BeatmapObjectManager, Action<INoteController, NoteCutInfo>>.GetAccessor(nameof(BeatmapObjectManager.noteWasCutEvent));
-        FieldAccessor<NoteJump, PlayerController>.Accessor NoteJumpPlayerController = FieldAccessor<NoteJump, PlayerController>.GetAccessor("_playerController");
-        FieldAccessor<NoteJump, AudioTimeSyncController>.Accessor NoteJumpAudioTimeSyncController = FieldAccessor<NoteJump, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
-        FieldAccessor<NoteFloorMovement, AudioTimeSyncController>.Accessor NoteFloorMovementAudioTimeSyncController = FieldAccessor<NoteFloorMovement, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
-        FieldAccessor<ObstacleController, PlayerController>.Accessor ObstacleControllerPlayerController = FieldAccessor<ObstacleController, PlayerController>.GetAccessor("_playerController");
-        FieldAccessor<ObstacleController, AudioTimeSyncController>.Accessor ObstacleControllerAudioTimeSyncController = FieldAccessor<ObstacleController, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
+        private static FieldAccessor<BeatmapObjectManager, Action<NoteController>>.Accessor GetNoteWasSpawnedEvent = FieldAccessor<BeatmapObjectManager, Action<NoteController>>.GetAccessor(nameof(BeatmapObjectManager.noteWasSpawnedEvent));
+        private static FieldAccessor<BeatmapObjectManager, Action<INoteController, NoteCutInfo>>.Accessor GetNoteWasCutEvent = FieldAccessor<BeatmapObjectManager, Action<INoteController, NoteCutInfo>>.GetAccessor(nameof(BeatmapObjectManager.noteWasCutEvent));
+        private static FieldAccessor<NoteJump, PlayerController>.Accessor NoteJumpPlayerController = FieldAccessor<NoteJump, PlayerController>.GetAccessor("_playerController");
+        private static FieldAccessor<NoteJump, AudioTimeSyncController>.Accessor NoteJumpAudioTimeSyncController = FieldAccessor<NoteJump, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
+        private static FieldAccessor<NoteFloorMovement, AudioTimeSyncController>.Accessor NoteFloorMovementAudioTimeSyncController = FieldAccessor<NoteFloorMovement, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
+        private static FieldAccessor<ObstacleController, PlayerController>.Accessor ObstacleControllerPlayerController = FieldAccessor<ObstacleController, PlayerController>.GetAccessor("_playerController");
+        private static FieldAccessor<ObstacleController, AudioTimeSyncController>.Accessor ObstacleControllerAudioTimeSyncController = FieldAccessor<ObstacleController, AudioTimeSyncController>.GetAccessor("_audioTimeSyncController");
 
         private BeatmapObjectManager _beatmapObjectManager;
         public OnlinePlayerController owner;

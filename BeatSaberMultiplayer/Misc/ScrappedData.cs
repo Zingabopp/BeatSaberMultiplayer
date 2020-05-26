@@ -50,13 +50,15 @@ namespace BeatSaberMultiplayerLite.Misc
 
             try
             {
-                www = SongDownloader.GetRequestForUrl(scrappedDataURL);
+                Uri uri = new Uri(scrappedDataURL);
+                www = SongDownloader.GetRequestForUri(uri);
 
                 asyncRequest = www.SendWebRequest();
             }
             catch (Exception e)
             {
-                Plugin.log.Error(e);
+                Plugin.log.Error($"Error downloading scraped data: {e.Message}");
+                Plugin.log.Debug(e);
                 yield break;
             }
 

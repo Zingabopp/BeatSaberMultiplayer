@@ -67,6 +67,12 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
     [HarmonyPatch(new Type[] { typeof(NoteController), typeof(NoteCutInfo) })]
     class SpectatorNoteWasCutEventPatch
     {
+        #region Property Setters
+        private static readonly PropertyAccessor<NoteCutInfo, bool>.Setter SetCutTooSoon = PropertyAccessor<NoteCutInfo, bool>.GetSetter("wasCutTooSoon");
+        private static readonly PropertyAccessor<NoteCutInfo, bool>.Setter SetDirectionOk = PropertyAccessor<NoteCutInfo, bool>.GetSetter("directionOK");
+        private static readonly PropertyAccessor<NoteCutInfo, bool>.Setter SetSaberTypeOK = PropertyAccessor<NoteCutInfo, bool>.GetSetter("saberTypeOK");
+        private static readonly PropertyAccessor<NoteCutInfo, bool>.Setter SetSpeedOK = PropertyAccessor<NoteCutInfo, bool>.GetSetter("speedOK");
+        #endregion
         static bool Prefix(BeatmapObjectManager __instance, NoteController noteController, NoteCutInfo noteCutInfo)
         {
             try
@@ -101,11 +107,11 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
 #if DEBUG
                                 Plugin.log.Warn("We cut the note, but the player cut it wrong");
 #endif
-
-                                    noteCutInfo.SetProperty("wasCutTooSoon", hit.wasCutTooSoon);
-                                    noteCutInfo.SetProperty("directionOK", hit.directionOK);
-                                    noteCutInfo.SetProperty("saberTypeOK", hit.saberTypeOK);
-                                    noteCutInfo.SetProperty("speedOK", hit.speedOK);
+                                    
+                                    SetCutTooSoon(ref noteCutInfo, hit.wasCutTooSoon);
+                                    SetDirectionOk(ref noteCutInfo, hit.directionOK);
+                                    SetSaberTypeOK(ref noteCutInfo, hit.saberTypeOK);
+                                    SetSpeedOK(ref noteCutInfo, hit.speedOK);
 
                                     return true;
                                 }
