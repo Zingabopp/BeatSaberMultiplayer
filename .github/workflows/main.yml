@@ -21,25 +21,19 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
-    - name: PrintWorking
-      run: ls
-    - name: PrintRefs
-      run: ls ./Refs
     - name: GetStrippedRefs
       env:
         FILES_URL: ${{ secrets.BSFILES_URL }}
       run: wget --no-check-certificate "$FILES_URL" -q -O bsfiles.zip
     - name: ExtractRefs
       run: unzip -q bsfiles.zip -d ./Refs/BeatSaber
-    - name: PrintRefs
-      run: ls ./Refs/BeatSaber
     - name: Build
       id: Build
       env: 
         FrameworkPathOverride: /usr/lib/mono/4.8-api
       run: dotnet build --configuration ClientRelease -p:DisableZipRelease=true -p:DisableCopyToPlugins=true -p:CIBuild=true
     - name: Echo Filename
-      run: echo $BUILDTEXT ($ASSEMBLYNAME)
+      run: echo "$BUILDTEXT ($ASSEMBLYNAME)"
       env:
         BUILDTEXT: Filename=${{ steps.Build.outputs.filename }}
         ASSEMBLYNAME: AssemblyName=${{ steps.Build.outputs.assemblyname }}
