@@ -530,7 +530,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                         {
                                             byte[] serverVer = hailMsg.ReadBytes(4);
                                             string serverNameResponse = hailMsg.ReadString();
-                                            if(!string.IsNullOrEmpty(serverNameResponse))
+                                            if (!string.IsNullOrEmpty(serverNameResponse))
                                                 serverHubName = serverNameResponse;
                                         }
                                         catch (Exception e)
