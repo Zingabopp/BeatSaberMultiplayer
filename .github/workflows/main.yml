@@ -33,6 +33,8 @@ jobs:
       run: unzip -q bsfiles.zip -d ./Refs/BeatSaber
     - name: Build
       id: Build
+      env: 
+        FrameworkPathOverride: /usr/lib/mono/4.8-api
       run: dotnet build --configuration ClientRelease -p:DisableZipRelease=true -p:DisableCopyToPlugins=true -p:CIBuild=true
     - name: Echo Filename
       run: echo $BUILDTEXT ($ASSEMBLYNAME)
