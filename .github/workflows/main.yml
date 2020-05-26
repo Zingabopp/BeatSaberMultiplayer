@@ -44,7 +44,7 @@ jobs:
         path: ./BeatSaberMultiplayer/bin/Release/Final
     - name: CopyPDB
       working-directory: ./BeatSaberMultiplayer/bin/Release
-      run: copy ${{ steps.Build.outputs.assemblyname }}.pdb Final/Plugins/${{ steps.Build.outputs.assemblyname }}.pdb
+      run: cp ${{ steps.Build.outputs.assemblyname }}.pdb Final/Plugins/${{ steps.Build.outputs.assemblyname }}.pdb
     - name: Upload Artifact With PDB
       uses: actions/upload-artifact@v1
       with:
