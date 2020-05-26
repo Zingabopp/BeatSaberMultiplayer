@@ -3,25 +3,37 @@ name: DevBuild
 on:
   push:
     branches: [ dev ]
-    paths: 'BeatSaberMultiplayer/**'
+    paths: 
+      - 'BeatSaberMultiplayer/**'
+      - '.github/workflows/main.yml'
   pull_request:
     branches: [ dev ]
-    paths: 'BeatSaberMultiplayer/**'
+    paths:  
+      - 'BeatSaberMultiplayer/**'
+      - '.github/workflows/main.yml'
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Setup dotnet
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+    - name: GetStrippedRefs
+      env:
+        FILES_URL: ${{ secrets.BSFILES_URL }}
+      run: wget --no-check-certificate "$FILES_URL" -q -O bsfiles.zip
+    - name: ExtractRefs
+      run: unzip -q bsfiles.zip -d ./Refs/BeatSaber
     - name: Build
       id: Build
+      env: 
+        FrameworkPathOverride: /usr/lib/mono/4.8-api
       run: dotnet build --configuration ClientRelease -p:DisableZipRelease=true -p:DisableCopyToPlugins=true -p:CIBuild=true
     - name: Echo Filename
-      run: echo $BUILDTEXT ($ASSEMBLYNAME)
+      run: echo "$BUILDTEXT ($ASSEMBLYNAME)"
       env:
         BUILDTEXT: Filename=${{ steps.Build.outputs.filename }}
         ASSEMBLYNAME: AssemblyName=${{ steps.Build.outputs.assemblyname }}
@@ -32,7 +44,7 @@ jobs:
         path: ./BeatSaberMultiplayer/bin/Release/Final
     - name: CopyPDB
       working-directory: ./BeatSaberMultiplayer/bin/Release
-      run: copy ${{ steps.Build.outputs.assemblyname }}.pdb Final/Plugins/${{ steps.Build.outputs.assemblyname }}.pdb
+      run: cp ${{ steps.Build.outputs.assemblyname }}.pdb Final/Plugins/${{ steps.Build.outputs.assemblyname }}.pdb
     - name: Upload Artifact With PDB
       uses: actions/upload-artifact@v1
       with:
