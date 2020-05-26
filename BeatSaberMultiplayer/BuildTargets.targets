@@ -19,7 +19,7 @@
     <Message Text="PluginVersion: $(PluginVersion), AssemblyVersion: $(AssemblyVersion), GameVersion: $(GameVersion)" Importance="high" />
     <Message Text="::set-output name=filename::$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash)" Importance="high" />
     <Message Text="::set-output name=assemblyname::$(AssemblyName)" Importance="high" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).dll" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final/Plugins/$(AssemblyName).dll" />
   </Target>
   <Target Name="ZipRelease" AfterTargets="Build" Condition="'$(DisableZipRelease)' != 'True' AND '$(Configuration)' == 'Release'">
     <Message Text="Zipping plugin for release." Importance="high" />
@@ -27,11 +27,11 @@
       <Output TaskParameter="CommitShortHash" PropertyName="CommitShortHash" />
     </GetCommitHash>
     <!-- Set up directory to zip-->
-    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayerLite.dll" />
-    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayerLite.pdb" />
-    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayer.dll" />
-    <Delete Files="$(OutputPath)Final\Plugins\BeatSaberMultiplayer.pdb" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final\Plugins\$(AssemblyName).dll" />
+    <Delete Files="$(OutputPath)Final/Plugins/BeatSaberMultiplayerLite.dll" />
+    <Delete Files="$(OutputPath)Final/Plugins/BeatSaberMultiplayerLite.pdb" />
+    <Delete Files="$(OutputPath)Final/Plugins/BeatSaberMultiplayer.dll" />
+    <Delete Files="$(OutputPath)Final/Plugins/BeatSaberMultiplayer.pdb" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(OutputPath)Final/Plugins/$(AssemblyName).dll" />
 
     <GetManifestInfo ErrorOnMismatch="False">
       <Output TaskParameter="PluginVersion" PropertyName="PluginVersion" />
@@ -45,14 +45,14 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
       <ZipFile>$(AssemblyName)-$(PluginVersion)-bs$(GameVersion)-$(CommitShortHash).zip</ZipFile>
     </PropertyGroup>
-    <ZipDir ZipFileName="$(OutDir)zip\$(ZipFile)" DirectoryName="$(OutputPath)Final" />
+    <ZipDir ZipFileName="$(OutDir)zip/$(ZipFile)" DirectoryName="$(OutputPath)Final" />
     <Exec Command="del /F /Q &quot;$(ProjectDir)..\Output\Publish\BeatSaberMultiplayerLite*.zip&quot;"/>
-    <Copy SourceFiles="$(OutDir)zip\$(ZipFile)" DestinationFiles="$(ProjectDir)..\Output\Publish\$(ZipFile)" />
+    <Copy SourceFiles="$(OutDir)zip/$(ZipFile)" DestinationFiles="$(ProjectDir)../Output/Publish/$(ZipFile)" />
   </Target>
   <Target Name="CopyToPlugins" AfterTargets="Build" Condition="'$(DisableCopyToPlugins)' != 'True'">
     <Error Text="Unable to copy assembly to game folder. BeatSaberDir doesn't exist: $(BeatSaberDir)" Condition="!Exists($(BeatSaberDir))"/>
     <Message Text="Copying $(OutputPath)$(AssemblyName).dll to IPA\Pending\Plugins folder" Importance="high" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(BeatSaberDir)\IPA\Pending\Plugins\$(AssemblyName).dll" />
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(BeatSaberDir)\IPA\Pending\Plugins\$(AssemblyName).pdb" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFiles="$(BeatSaberDir)/IPA/Pending/Plugins/$(AssemblyName).dll" />
+    <Copy SourceFiles="$(OutputPath)$(AssemblyName).pdb" DestinationFiles="$(BeatSaberDir)/IPA/Pending/Plugins/$(AssemblyName).pdb" />
   </Target>
 </Project>
