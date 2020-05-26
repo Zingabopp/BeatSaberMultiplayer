@@ -199,7 +199,6 @@ namespace BeatSaberMultiplayerLite.OverriddenClasses
         public override void HandleNoteWasCut(NoteController noteController, NoteCutInfo noteCutInfo)
         {
             GetNoteWasCutEvent(ref _beatmapObjectManager)?.Invoke(noteController, noteCutInfo);
-            this.GetField<Action<INoteController, NoteCutInfo>, BeatmapObjectManager>("noteWasCutEvent")?.Invoke(noteController, noteCutInfo);
             Despawn(noteController);
         }
 
