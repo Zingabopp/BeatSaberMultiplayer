@@ -5,12 +5,12 @@ on:
     branches: [ dev ]
     paths: 
       - 'BeatSaberMultiplayer/**'
-      - '.github/workflows/main.yml'
+      - '.github/workflows/devbuild.yml'
   pull_request:
     branches: [ dev ]
     paths:  
       - 'BeatSaberMultiplayer/**'
-      - '.github/workflows/main.yml'
+      - '.github/workflows/devbuild.yml'
 
 jobs:
   build:
