@@ -22,9 +22,9 @@ jobs:
       with:
         dotnet-version: 3.1.101
     - name: PrintLibs
-      run: ll /usr/lib
+      run: ls /usr/lib
     - name: PrintMonoPath
-      run: ll /usr/lib/mono
+      run: ls /usr/lib/mono
     - name: GetStrippedRefs
       env:
         FILES_URL: ${{ secrets.BSFILES_URL }}
