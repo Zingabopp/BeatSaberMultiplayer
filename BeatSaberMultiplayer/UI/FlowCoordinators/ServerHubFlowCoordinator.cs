@@ -476,7 +476,9 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                                         try
                                         {
                                             byte[] serverVer = hailMsg.ReadBytes(4);
-                                            serverHubName = hailMsg.ReadString();
+                                            string serverNameResponse = hailMsg.ReadString();
+                                            if (!string.IsNullOrEmpty(serverNameResponse))
+                                                serverHubName = serverNameResponse;
                                         }
                                         catch (Exception e)
                                         {
