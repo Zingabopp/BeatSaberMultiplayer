@@ -25,6 +25,8 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         //TextSegmentedControl packsCollectionsControl;
 
         private BeatmapLevelsModel _beatmapLevelsModel;
+        private PlayerDataModel _playerDataModel;
+        private UserFavoritesPlaylistSO _userFavoritesSO;
         private IAnnotatedBeatmapLevelCollection[] _visiblePacks;
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
@@ -65,26 +67,37 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             //{
             //    Plugin.log.Error(ex);
             //}
-
             _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
+            if (_playerDataModel == null)
+            {
+                _playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault();
+                _userFavoritesSO = Resources.FindObjectsOfTypeAll<UserFavoritesPlaylistSO>().FirstOrDefault() ??
+                                    ScriptableObject.CreateInstance<UserFavoritesPlaylistSO>();
+            }
             List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
             levelPacksAndPlaylists.AddRange(_beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks);
-            AnnotatedBeatmapLevelCollectionsViewController[] playlistViewControllers = Resources.FindObjectsOfTypeAll<AnnotatedBeatmapLevelCollectionsViewController>();
-            AnnotatedBeatmapLevelCollectionsViewController playlistController = playlistViewControllers?.FirstOrDefault();
-            if (playlistController != null)
+            if(_playerDataModel != null)
             {
-                IAnnotatedBeatmapLevelCollection[] playlists = playlistController.GetPrivateField<IAnnotatedBeatmapLevelCollection[]>("_annotatedBeatmapLevelCollections");
-                if (playlists == null)
-                    Plugin.log.Info($"Found _playlists is null.");
-                else
-                {
-                    Plugin.log.Info($"Found {playlists.Length} playlists.");
-                    if (playlists.Length > 0)
-                        levelPacksAndPlaylists.AddRange(playlists);
-                }
+                _userFavoritesSO.SetupFromLevelPackCollection(_playerDataModel.playerData.favoritesLevelIds, _beatmapLevelsModel.allLoadedBeatmapLevelPackCollection);
+                levelPacksAndPlaylists.Add(_userFavoritesSO);
             }
-            else
-                Plugin.log.Warn("Couldn't find the PlaylistsViewController.");
+            //AnnotatedBeatmapLevelCollectionsViewController[] playlistViewControllers = Resources.FindObjectsOfTypeAll<AnnotatedBeatmapLevelCollectionsViewController>();
+            //AnnotatedBeatmapLevelCollectionsViewController playlistController = playlistViewControllers?.FirstOrDefault();
+            //if (playlistController != null)
+            //{
+            //    IAnnotatedBeatmapLevelCollection[] playlists = playlistController.GetPrivateField<IAnnotatedBeatmapLevelCollection[]>("_annotatedBeatmapLevelCollections");
+            //    if (playlists == null)
+            //        Plugin.log.Info($"Found _playlists is null.");
+            //    else
+            //    {
+            //        Plugin.log.Info($"Found {playlists.Length} playlists.");
+            //        if (playlists.Length > 0)
+            //            levelPacksAndPlaylists.AddRange(playlists);
+            //    }
+            //}
+            //else
+            //    Plugin.log.Warn("Couldn't find the PlaylistsViewController.");
+            levelPacksAndPlaylists.AddRange(BeatSaberPlaylistsLib.PlaylistManager.DefaultManager.GetAllPlaylists());
             return levelPacksAndPlaylists.ToArray();
         }
 
@@ -141,7 +154,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             Plugin.log.Debug($"{packs.Length} level packs found in LevelPacksUIViewController.SetPacks()");
             foreach (IAnnotatedBeatmapLevelCollection pack in packs)
             {
-                levelPacksTableData.data.Add(new CustomListTableData.CustomCellInfo(pack.collectionName, $"{pack.beatmapLevelCollection.beatmapLevels.Length} levels", pack.coverImage.texture));
+                levelPacksTableData.data.Add(new CustomListTableData.CustomCellInfo(pack.collectionName, $"{pack.beatmapLevelCollection.beatmapLevels.Length} levels", pack.coverImage?.texture));
             }
 
             levelPacksTableData.tableView.ReloadData();

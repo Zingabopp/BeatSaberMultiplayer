@@ -225,6 +225,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\Mods\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="BeatSaberPlaylistsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Libs\BeatSaberPlaylistsLib.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="BeatSaverDownloader, Version=5.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Refs\Mods\BeatSaverDownloader.dll</HintPath>
