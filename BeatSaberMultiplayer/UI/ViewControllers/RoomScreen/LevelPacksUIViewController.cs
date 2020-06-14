@@ -68,19 +68,12 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             //    Plugin.log.Error(ex);
             //}
             _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
-            if (_playerDataModel == null)
-            {
-                _playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault();
-                _userFavoritesSO = Resources.FindObjectsOfTypeAll<UserFavoritesPlaylistSO>().FirstOrDefault() ??
-                                    ScriptableObject.CreateInstance<UserFavoritesPlaylistSO>();
-            }
+
             List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
             levelPacksAndPlaylists.AddRange(_beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks);
-            if(_playerDataModel != null)
-            {
-                _userFavoritesSO.SetupFromLevelPackCollection(_playerDataModel.playerData.favoritesLevelIds, _beatmapLevelsModel.allLoadedBeatmapLevelPackCollection);
-                levelPacksAndPlaylists.Add(_userFavoritesSO);
-            }
+            IPlaylist favorites = GetFavoritesPlaylist();
+            if (favorites != null)
+                levelPacksAndPlaylists.Add(favorites);
             //AnnotatedBeatmapLevelCollectionsViewController[] playlistViewControllers = Resources.FindObjectsOfTypeAll<AnnotatedBeatmapLevelCollectionsViewController>();
             //AnnotatedBeatmapLevelCollectionsViewController playlistController = playlistViewControllers?.FirstOrDefault();
             //if (playlistController != null)
@@ -99,6 +92,30 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             //    Plugin.log.Warn("Couldn't find the PlaylistsViewController.");
             levelPacksAndPlaylists.AddRange(BeatSaberPlaylistsLib.PlaylistManager.DefaultManager.GetAllPlaylists());
             return levelPacksAndPlaylists.ToArray();
+        }
+
+        public IPlaylist GetFavoritesPlaylist()
+        {
+            if (_playerDataModel == null)
+            {
+                _playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault();
+            }
+
+            if (_userFavoritesSO == null && _playerDataModel != null)
+            {
+                _userFavoritesSO = Resources.FindObjectsOfTypeAll<UserFavoritesPlaylistSO>().FirstOrDefault();
+                if (_userFavoritesSO == null)
+                {
+                    // TODO: Setup like this doesn't get the favorites cover image, but the above call to get the existing UserFavoritesPlaylistSO object seems to work fine.
+                    _userFavoritesSO = ScriptableObject.CreateInstance<UserFavoritesPlaylistSO>();
+                }
+            }
+            if (_userFavoritesSO != null && _playerDataModel != null && _beatmapLevelsModel != null)
+            {
+                _userFavoritesSO.SetupFromLevelPackCollection(_playerDataModel.playerData.favoritesLevelIds, _beatmapLevelsModel.allLoadedBeatmapLevelPackCollection);
+                return _userFavoritesSO;
+            }
+            return null;
         }
 
         public void Initialize()
