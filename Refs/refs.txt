@@ -10,6 +10,7 @@
 ""SteamVR.dll?alias=Beat Saber_Data\Managed\SteamVR.dll
 ""Steamworks.NET.dll?alias=Beat Saber_Data\Managed\Steamworks.NET.dll
 ""Zenject.dll?alias=Beat Saber_Data\Managed\Zenject.dll
+""Unity.TextMeshPro.dll?alias=Beat Saber_Data\Managed\Unity.TextMeshPro.dll
 ""UnityEngine.
 """dll?alias=Beat Saber_Data\Managed\UnityEngine.dll
 """AssetBundleModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.AssetBundleModule.dll
