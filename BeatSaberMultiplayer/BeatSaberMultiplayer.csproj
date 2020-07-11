@@ -168,7 +168,6 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <DependentUpon>RoomListViewController.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="BuildTargets.targets" />
     <EmbeddedResource Include="manifest.json" />
     <None Include="Directory.Build.props" />
     <None Include="Directory.Build.targets" />
@@ -280,6 +279,11 @@
     <Reference Include="Main, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(BeatSaberReferences)\Beat Saber_Data\Managed\Main.dll</HintPath>
+    </Reference>
+    <Reference Include="netstandard">
+      <HintPath>$(BeatSaberReferences)\Beat Saber_Data\Managed\netstandard.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
