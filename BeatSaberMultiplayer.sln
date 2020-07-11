@@ -4,10 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSaberMultiplayer", "BeatSaberMultiplayer\BeatSaberMultiplayer.csproj", "{19E76954-2EBA-4761-8AD4-1425CC29EC0E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F} = {5F33B310-DC8D-4C0D-877E-BAC3908DE10F}
-		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A} = {E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerHub", "ServerHub\ServerHub.csproj", "{5EB8EED4-4FC1-4ABD-B9E9-0EDB0CAEB7A1}"
 EndProject
@@ -64,30 +60,20 @@ Global
 		{5EB8EED4-4FC1-4ABD-B9E9-0EDB0CAEB7A1}.ServerRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{5EB8EED4-4FC1-4ABD-B9E9-0EDB0CAEB7A1}.ServerRelease|Any CPU.Build.0 = Release|Any CPU
 		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.AllDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.AllDebug|Any CPU.Build.0 = Debug|Any CPU
 		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.AllRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.ClientDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.ClientDebug|Any CPU.Build.0 = Debug|Any CPU
 		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.ClientRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.ServerDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.ServerDebug|Any CPU.Build.0 = Debug|Any CPU
 		{5F33B310-DC8D-4C0D-877E-BAC3908DE10F}.ServerRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.AllDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.AllDebug|Any CPU.Build.0 = Debug|Any CPU
 		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.AllRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.ClientDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.ClientDebug|Any CPU.Build.0 = Debug|Any CPU
 		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.ClientRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.ServerDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.ServerDebug|Any CPU.Build.0 = Debug|Any CPU
 		{E2CCDD2F-1D4F-4B06-9CD4-E0D2B9AE543A}.ServerRelease|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

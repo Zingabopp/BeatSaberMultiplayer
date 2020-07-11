@@ -1,6 +1,7 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.ViewControllers;
+using BeatSaberMultiplayerLite.Interop;
 using BS_Utils.Utilities;
 using HMUI;
 using System;
@@ -25,7 +26,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         //TextSegmentedControl packsCollectionsControl;
 
         private BeatmapLevelsModel _beatmapLevelsModel;
+        private PlayerDataModel _playerDataModel;
+        private UserFavoritesPlaylistSO _userFavoritesSO;
         private IAnnotatedBeatmapLevelCollection[] _visiblePacks;
+        private IPlaylistLoader PlaylistLoader;
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
@@ -33,59 +37,81 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
             //packsCollectionsControl.SetTexts(new string[] { "OST & EXTRAS", "MUSIC PACKS", "PLAYLISTS", "CUSTOM LEVELS" });
 
+            SetPlaylistLoader();
             Initialize();
+        }
 
+        protected void SetPlaylistLoader()
+        {
+            if (IPA.Loader.PluginManager.GetPluginFromId("BeatSaberPlaylistsLib") != null)
+            {
+                PlaylistLoader = new BeatSaberPlaylistsLibLoader();
+            }
+            else
+            {
+                PlaylistLoader = new FallbackPlaylistLoader();
+            }
         }
 
         public IAnnotatedBeatmapLevelCollection[] GetPlaylists()
         {
-            //try
-            //{
-            //    List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
-            //    var beatmapLevelsModels = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>()?.ToArray();
-            //    PlaylistCore.PlaylistCore.instance.LoadedPlaylistSO.First().setup
-            //    Plugin.log.Info($"BeatmapLevelsModels count: {beatmapLevelsModels.Length}");
-            //    foreach (var levelsModel in beatmapLevelsModels)
-            //    {
-            //        Plugin.log.Info($"LevelsModel: {levelsModel.name}");
-            //        levelsModel.UpdateAllLoadedBeatmapLevelPacks();
-            //        var beatmapLevelPackCollection = levelsModel.GetPrivateField<IBeatmapLevelPackCollection>("_allLoadedBeatmapLevelPackCollection");
-            //        if (beatmapLevelPackCollection?.beatmapLevelPacks != null)
-            //        {
-            //            Plugin.log.Info($"  beatmapLevelPack count: {beatmapLevelPackCollection.beatmapLevelPacks.Length}");
-            //            foreach (var item in beatmapLevelPackCollection.beatmapLevelPacks)
-            //            {
-            //                Plugin.log.Warn($"     Level Pack: {item.collectionName}");
-            //            }
-            //        }
-            //        else
-            //            Plugin.log.Info($"  beatmapLevelPack is null.");
-            //    }
-            //}catch(Exception ex)
-            //{
-            //    Plugin.log.Error(ex);
-            //}
-
             _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
+
             List<IAnnotatedBeatmapLevelCollection> levelPacksAndPlaylists = new List<IAnnotatedBeatmapLevelCollection>();
             levelPacksAndPlaylists.AddRange(_beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks);
-            AnnotatedBeatmapLevelCollectionsViewController[] playlistViewControllers = Resources.FindObjectsOfTypeAll<AnnotatedBeatmapLevelCollectionsViewController>();
-            AnnotatedBeatmapLevelCollectionsViewController playlistController = playlistViewControllers?.FirstOrDefault();
-            if (playlistController != null)
+
+            IAnnotatedBeatmapLevelCollection[] customPlaylists = PlaylistLoader?.GetCustomPlaylists() ?? Array.Empty<IAnnotatedBeatmapLevelCollection>();
+            if (PlaylistLoader != null)
             {
-                IAnnotatedBeatmapLevelCollection[] playlists = playlistController.GetPrivateField<IAnnotatedBeatmapLevelCollection[]>("_annotatedBeatmapLevelCollections");
-                if (playlists == null)
-                    Plugin.log.Info($"Found _playlists is null.");
-                else
-                {
-                    Plugin.log.Info($"Found {playlists.Length} playlists.");
-                    if (playlists.Length > 0)
-                        levelPacksAndPlaylists.AddRange(playlists);
-                }
+                customPlaylists = PlaylistLoader.GetCustomPlaylists();
             }
             else
-                Plugin.log.Warn("Couldn't find the PlaylistsViewController.");
+            {
+                Plugin.log?.Warn($"PlaylistLoader is null, unable to load custom playlists."); 
+                customPlaylists = Array.Empty<IAnnotatedBeatmapLevelCollection>();
+            }
+
+            if (!(PlaylistLoader?.IncludesBasePlaylists ?? false) || customPlaylists.Length == 0)
+            {
+                IPlaylist favorites = GetFavoritesPlaylist();
+                if (favorites != null)
+                    levelPacksAndPlaylists.Add(favorites);
+            }
+
+            if (customPlaylists.Length > 0)
+            {
+                levelPacksAndPlaylists.AddRange(PlaylistLoader.GetCustomPlaylists());
+                Plugin.log?.Debug($"{customPlaylists.Length} custom playlists loaded.");
+            }
+            else
+            {
+                Plugin.log?.Debug($"No custom playlists loaded.");
+            }
             return levelPacksAndPlaylists.ToArray();
+        }
+
+        public IPlaylist GetFavoritesPlaylist()
+        {
+            if (_playerDataModel == null)
+            {
+                _playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModel>().FirstOrDefault();
+            }
+
+            if (_userFavoritesSO == null && _playerDataModel != null)
+            {
+                _userFavoritesSO = Resources.FindObjectsOfTypeAll<UserFavoritesPlaylistSO>().FirstOrDefault();
+                if (_userFavoritesSO == null)
+                {
+                    // TODO: Setup like this doesn't get the favorites cover image, but the above call to get the existing UserFavoritesPlaylistSO object seems to work fine.
+                    _userFavoritesSO = ScriptableObject.CreateInstance<UserFavoritesPlaylistSO>();
+                }
+            }
+            if (_userFavoritesSO != null && _playerDataModel != null && _beatmapLevelsModel != null)
+            {
+                _userFavoritesSO.SetupFromLevelPackCollection(_playerDataModel.playerData.favoritesLevelIds, _beatmapLevelsModel.allLoadedBeatmapLevelPackCollection);
+                return _userFavoritesSO;
+            }
+            return null;
         }
 
         public void Initialize()
@@ -141,7 +167,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             Plugin.log.Debug($"{packs.Length} level packs found in LevelPacksUIViewController.SetPacks()");
             foreach (IAnnotatedBeatmapLevelCollection pack in packs)
             {
-                levelPacksTableData.data.Add(new CustomListTableData.CustomCellInfo(pack.collectionName, $"{pack.beatmapLevelCollection.beatmapLevels.Length} levels", pack.coverImage.texture));
+                levelPacksTableData.data.Add(new CustomListTableData.CustomCellInfo(pack.collectionName, $"{pack.beatmapLevelCollection.beatmapLevels.Length} levels", pack.coverImage?.texture));
             }
 
             levelPacksTableData.tableView.ReloadData();

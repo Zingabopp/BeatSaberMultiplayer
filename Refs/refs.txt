@@ -1,54 +1,54 @@
 ::from ./bsinstalldir.txt
-"Beat Saber_Data/
-""Managed/
-"""Main.dll?virt
-"""HMUI.dll?virt
-"""HMLib.dll?virt
-"""Colors.dll
-"""Polyglot.dll
-"""SteamVR.dll
-"""Steamworks.NET.dll
-"""Oculus.VR.dll
-"""Zenject.dll
-"""Unity.TextMeshPro.dll
-"""UnityEngine.
-""""dll
-""""AudioModule.dll
-""""InputLegacyModule.dll
-""""UnityWebRequestModule.dll
-""""CoreModule.dll
-""""AssetBundleModule.dll
-""""UnityWebRequestTextureModule.dll
-""""JSONSerializeModule.dll
-""""XRModule.dll
-""""UI
-""""".dll
-"""""Module.dll
-"""IPA.
-""""Loader.dll
-"Libs/
-""0Harmony.dll
-""Lidgren.Network.dll
-""Newtonsoft.Json.dll
-""NSpeex.dll
-""SemVer.dll
+
+"Beat Saber_Data/Managed/
+""Colors.dll?alias=Beat Saber_Data\Managed\Colors.dll
+""HMLib.dll?virt?alias=Beat Saber_Data\Managed\HMLib.dll
+""HMUI.dll?virt?alias=Beat Saber_Data\Managed\HMUI.dll
+""Main.dll?virt?alias=Beat Saber_Data\Managed\Main.dll
+""netstandard.dll?alias=Beat Saber_Data\Managed\netstandard.dll
+""Oculus.VR.dll?alias=Beat Saber_Data\Managed\Oculus.VR.dll
+""Polyglot.dll?alias=Beat Saber_Data\Managed\Polyglot.dll
+""SteamVR.dll?alias=Beat Saber_Data\Managed\SteamVR.dll
+""Steamworks.NET.dll?alias=Beat Saber_Data\Managed\Steamworks.NET.dll
+""Zenject.dll?alias=Beat Saber_Data\Managed\Zenject.dll
+""Unity.TextMeshPro.dll?alias=Beat Saber_Data\Managed\Unity.TextMeshPro.dll
+""UnityEngine.
+"""dll?alias=Beat Saber_Data\Managed\UnityEngine.dll
+"""AssetBundleModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.AssetBundleModule.dll
+"""AudioModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.AudioModule.dll
+"""CoreModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.CoreModule.dll
+"""InputLegacyModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.InputLegacyModule.dll
+"""JSONSerializeModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.JSONSerializeModule.dll
+"""UI.dll?alias=Beat Saber_Data\Managed\UnityEngine.UI.dll
+"""UIModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.UIModule.dll
+"""UnityWebRequestModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.UnityWebRequestModule.dll
+"""UnityWebRequestTextureModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll
+"""VRModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.VRModule.dll
+"""XRModule.dll?alias=Beat Saber_Data\Managed\UnityEngine.XRModule.dll
+
 "Plugins/
-""BSML.dll
-""BS_Utils.dll
-""SongCore.dll
+""BSML.dll?alias=Plugins\BSML.dll
+""BS_Utils.dll?alias=Plugins\BS_Utils.dll
+""SongCore.dll?alias=Plugins\SongCore.dll
+"Libs/
+""0Harmony.dll?alias=Libs\0Harmony.dll
 
 ::startopt
 ::from ./bsinstalldir.txt
 "Plugins/
-""BeatSaverDownloader.dll
-""ScoreSaber.dll
-""BeatSaverVoting.dll
-""DiscordCore.dll
+""BeatSaverDownloader.dll?alias=Plugins\BeatSaverDownloader.dll
+""ScoreSaber.dll?alias=Plugins\ScoreSaber.dll
+""BeatSaverVoting.dll?alias=Plugins\BeatSaverVoting.dll
+""DiscordCore.dll?alias=Plugins\DiscordCore.dll
+"Libs/
+""BeatSaberPlaylistsLib.dll?alias=Libs\BeatSaberPlaylistsLib.dll
+""Lidgren.Network.dll?native?alias=Libs\Lidgren.Network.dll
+""NSpeex.dll?native?alias=Libs\NSpeex.dll
 ::endopt
 
 ::startopt
 "::resolveInHere Libs/
-""SemVer.dll
-""Newtonsoft.Json.dll
+""SemVer.dll?alias=Libs\SemVer.dll
+""Newtonsoft.Json.dll?alias=Libs\Newtonsoft.Json.dll
 "::resolveInHere Beat Saber_Data/Managed/
-""IPA.Loader.dll
+""IPA.Loader.dll?alias=Beat Saber_Data\Managed\IPA.Loader.dll

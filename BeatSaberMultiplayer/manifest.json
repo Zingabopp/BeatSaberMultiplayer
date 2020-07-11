@@ -1,20 +1,24 @@
 {
-  "$schema": "https://github.com/nike4613/BSIPA-MetadataFileSchema/master/Schema.json",
+  "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
   "name": "Beat Saber Multiplayer Lite",
   "id": "BeatSaberMultiplayerLite",
   "version": "7.2.4",
   "author": "andruzzzhka",
   "description": "Allows you to play with friends online!",
-  "gameVersion": "1.9.0",
+  "gameVersion": "1.10.0",
   "icon": "BeatSaberMultiplayerLite.Assets.OnlineIcon.png",
   "dependsOn": {
-    "SongCore": "^2.9.1",
-    "BeatSaberMarkupLanguage": "^1.2.2",
-    "BS Utils": "^1.4.8"
+    "SongCore": "^2.9.7",
+    "BeatSaberMarkupLanguage": "^1.3.2",
+    "BS Utils": "^1.4.10"
   },
+  "files": [
+    "Libs/Lidgren.Network.dll",
+    "Libs/NSpeex.dll"
+  ],
   "links": {
     "project-source": "https://github.com/andruzzzhka/BeatSaberMultiplayer",
     "donate": "https://ko-fi.com/andruzzzhka"
   },
-  "loadAfter": [ "DiscordCore" ]
+  "loadAfter": [ "DiscordCore", "BeatSaberPlaylistsLib" ]
 }
