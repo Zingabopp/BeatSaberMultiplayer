@@ -48,13 +48,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
         private LevelListTableCell songListTableCellInstance;
         private AdditionalContentModel _additionalContentModel;
-        private BeatmapLevelsModel _beatmapLevelsModel;
 
         List<SongInfo> requestedSongs = new List<SongInfo>();
         SongInfo _selectedSong;
-
-        private IEnumerable<IPreviewBeatmapLevel> _allBeatmaps;
-
 
         protected override void DidActivate(bool firstActivation, ActivationType type)
         {
@@ -66,7 +62,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 _songsTableView.tableView.dataSource = this;
 
                 _additionalContentModel = Resources.FindObjectsOfTypeAll<AdditionalContentModel>().First();
-                _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();
             }
 
             _selectedSong = null;
@@ -77,8 +72,6 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         public void SetSongs(List<SongInfo> songs)
         {
             requestedSongs = songs;
-
-            _allBeatmaps = _beatmapLevelsModel.allLoadedBeatmapLevelPackCollection.beatmapLevelPacks.SelectMany(x => x.beatmapLevelCollection.beatmapLevels);
 
             _songsTableView.tableView.ReloadData();
 
@@ -156,7 +149,12 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 tableCell = Instantiate(songListTableCellInstance);
             }
 
-            var level = _allBeatmaps.FirstOrDefault(x => x.levelID == requestedSongs[idx].levelId);
+            IPreviewBeatmapLevel level = null;
+            string levelId = requestedSongs[idx].levelId ?? string.Empty;
+            if (levelId.StartsWith("custom_level_"))
+                level = SongCore.Loader.GetLevelById(levelId);
+            else
+                level = SongCore.Loader.GetOfficialLevelById(levelId).PreviewBeatmapLevel;
 
             if (level != null)
             {
