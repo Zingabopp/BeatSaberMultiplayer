@@ -49,7 +49,9 @@
     <Compile Include="Data\ExtraPlayerFlags.cs" />
     <Compile Include="Data\ServerRepositoryCache.cs" />
     <Compile Include="InputTestController.cs" />
+    <Compile Include="Interop\BeatSaberPlaylistsLibLoader.cs" />
     <Compile Include="Interop\BeatSaverVotingInterop.cs" />
+    <Compile Include="Interop\FallbackPlaylistLoader.cs" />
     <Compile Include="Interop\IDismissable.cs" />
     <Compile Include="Data\PlayerInfo.cs" />
     <Compile Include="Data\RoomInfo.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Data\ServerRepository.cs" />
     <Compile Include="Data\SongInfo.cs" />
     <Compile Include="Data\LevelOptionsInfo.cs" />
+    <Compile Include="Interop\IPlaylistLoader.cs" />
     <Compile Include="Interop\IVotingInterop.cs" />
     <Compile Include="Misc\Config.cs" />
     <Compile Include="OnlinePlayerPosition.cs" />
