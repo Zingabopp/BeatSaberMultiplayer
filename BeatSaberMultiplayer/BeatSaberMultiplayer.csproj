@@ -171,7 +171,6 @@
     <EmbeddedResource Include="manifest.json" />
     <None Include="Directory.Build.props" />
     <None Include="Directory.Build.targets" />
-    <None Include="packages.config" />
     <EmbeddedResource Include="UI\ViewControllers\CreateRoomScreen\MainRoomCreationViewController.bsml">
       <DependentUpon>MainRoomCreationViewController.cs</DependentUpon>
     </EmbeddedResource>
