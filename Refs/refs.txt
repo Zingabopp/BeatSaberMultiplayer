@@ -1,22 +1,28 @@
 ::from ./bsinstalldir.txt
 
 "Plugins/
-""BSML.dll
-""BS_Utils.dll
-""SongCore.dll
+""BSML.dll?alias=Plugins\BSML.dll
+""BS_Utils.dll?alias=Plugins\BS_Utils.dll
+""SongCore.dll?alias=Plugins\SongCore.dll
+"Libs/
+""0Harmony.dll?alias=Libs\0Harmony.dll
 
 ::startopt
 ::from ./bsinstalldir.txt
 "Plugins/
-""BeatSaverDownloader.dll
-""ScoreSaber.dll
-""BeatSaverVoting.dll
-""DiscordCore.dll
+""BeatSaverDownloader.dll?alias=Plugins\BeatSaverDownloader.dll
+""ScoreSaber.dll?alias=Plugins\ScoreSaber.dll
+""BeatSaverVoting.dll?alias=Plugins\BeatSaverVoting.dll
+""DiscordCore.dll?alias=Plugins\DiscordCore.dll
+"Libs/
+""BeatSaberPlaylistsLib.dll?alias=Libs\BeatSaberPlaylistsLib.dll
+""Lidgren.Network.dll?native?alias=Libs\Lidgren.Network.dll
+""NSpeex.dll?native?alias=Libs\NSpeex.dll
 ::endopt
 
 ::startopt
 "::resolveInHere Libs/
-""SemVer.dll
-""Newtonsoft.Json.dll
+""SemVer.dll?alias=Libs\SemVer.dll
+""Newtonsoft.Json.dll?alias=Libs\Newtonsoft.Json.dll
 "::resolveInHere Beat Saber_Data/Managed/
-""IPA.Loader.dll
+""IPA.Loader.dll?alias=Beat Saber_Data\Managed\IPA.Loader.dll
