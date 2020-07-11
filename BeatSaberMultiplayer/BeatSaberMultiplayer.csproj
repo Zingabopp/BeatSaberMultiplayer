@@ -170,6 +170,8 @@
     </EmbeddedResource>
     <None Include="BuildTargets.targets" />
     <EmbeddedResource Include="manifest.json" />
+    <None Include="Directory.Build.props" />
+    <None Include="Directory.Build.targets" />
     <None Include="packages.config" />
     <EmbeddedResource Include="UI\ViewControllers\CreateRoomScreen\MainRoomCreationViewController.bsml">
       <DependentUpon>MainRoomCreationViewController.cs</DependentUpon>
@@ -378,14 +380,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BSMTTasks">
-      <Version>1.0.17</Version>
+    <PackageReference Include="BeatSaberModdingTools.Tasks">
+      <Version>1.2.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>build</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="BuildTargets.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
