@@ -151,10 +151,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
 
             IPreviewBeatmapLevel level = null;
             string levelId = requestedSongs[idx].levelId ?? string.Empty;
-            if (levelId.StartsWith("custom_level_"))
-                level = SongCore.Loader.GetLevelById(levelId);
-            else
-                level = SongCore.Loader.GetOfficialLevelById(levelId).PreviewBeatmapLevel;
+            level = SongCore.Loader.GetLevelById(levelId);
 
             if (level != null)
             {
