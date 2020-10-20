@@ -25,11 +25,11 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         uint _createdRoomId;
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             _beatmapCharacteristics = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSO>();
 
-            if (firstActivation && activationType == ActivationType.AddedToHierarchy)
+            if (firstActivation && addedToHierarchy)
             {
                 _serverHubsViewController = BeatSaberUI.CreateViewController<RoomCreationServerHubsListViewController>();
                 _serverHubsViewController.selectedServerHub += ServerHubSelected;
@@ -56,7 +56,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             else if (topViewController == _mainRoomCreationViewController)
             {
                 DismissViewController(_mainRoomCreationViewController);
-                SetLeftScreenViewController(null);
+                SetLeftScreenViewController(null, ViewController.AnimationType.None);
             }
             else if (topViewController == _presetsListViewController)
                 _presetsListViewController_didFinishEvent(null);
@@ -90,7 +90,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         {
             _presetsListViewController.SetPresets(PresetsCollection.loadedPresets);
             PresentViewController(_presetsListViewController);
-            SetLeftScreenViewController(null);
+            SetLeftScreenViewController(null, ViewController.AnimationType.None);
         }
 
 
@@ -147,8 +147,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 Client.Instance.MessageReceived -= PacketReceived;
                 _createdRoomId = msg.ReadUInt32();
                 
-                DismissViewController(_mainRoomCreationViewController, null, true);
-                SetLeftScreenViewController(null);
+                DismissViewController(_mainRoomCreationViewController, ViewController.AnimationDirection.Horizontal, null, true);
+                SetLeftScreenViewController(null, ViewController.AnimationType.None);
                 didFinishEvent?.Invoke(true);
 
                 PluginUI.instance.serverHubFlowCoordinator.doNotUpdate = true;

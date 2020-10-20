@@ -139,9 +139,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             RequestsCount = songCount;
         }
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             if (firstActivation)
             {
@@ -163,7 +163,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
                 }
 
                 _songsTableView.tableView.didSelectCellWithIdxEvent += SongsTableView_DidSelectRow;
-                _songsTableView.tableView.dataSource = this;
+                _songsTableView.tableView.SetDataSource(this, true);
 
                 _playerDataModel = Resources.FindObjectsOfTypeAll<PlayerDataModel>().First();
                 _additionalContentModel = Resources.FindObjectsOfTypeAll<AdditionalContentModel>().First();
@@ -175,11 +175,11 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
             requestMode = false;
         }
 
-        protected override void DidDeactivate(DeactivationType deactivationType)
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             _parserParams.EmitEvent("closeAllMPModals");
             Plugin.log.Debug($"Removing OnRequestedSongsChanged");
-            base.DidDeactivate(deactivationType);
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
         public void SetSongs(List<IPreviewBeatmapLevel> levels)

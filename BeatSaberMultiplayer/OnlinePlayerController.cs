@@ -7,11 +7,10 @@ using System;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using Xft;
 
 namespace BeatSaberMultiplayerLite
 {
-    public class OnlinePlayerController : PlayerController
+    public class OnlinePlayerController : PlayerTransforms
     {
         private const int _voipDelay = 1;
         private PlayerInfo _playerInfo;

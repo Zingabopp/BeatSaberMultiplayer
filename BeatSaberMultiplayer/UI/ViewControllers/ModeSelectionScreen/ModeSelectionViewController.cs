@@ -52,9 +52,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ModeSelectionScreen
 #pragma warning restore CS0169
 #pragma warning restore CS0649
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, activationType);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
             if (firstActivation)
             {
                 _radioButton.interactable = false;

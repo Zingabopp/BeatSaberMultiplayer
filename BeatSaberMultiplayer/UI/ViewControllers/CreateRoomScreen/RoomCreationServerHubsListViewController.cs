@@ -26,9 +26,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
         [UIValue("hubs")]
         public List<object> hubInfosList = new List<object>();
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             hubsList.tableView.ClearSelection();
         }

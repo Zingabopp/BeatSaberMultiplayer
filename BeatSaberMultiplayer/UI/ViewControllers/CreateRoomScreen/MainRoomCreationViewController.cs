@@ -53,9 +53,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
         private StringSetting _passwordKeyboard;
 #pragma warning restore CS0649
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, activationType);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             if(firstActivation)
             {
@@ -67,7 +67,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
             parserParams.EmitEvent("cancel");
         }
 
-        protected override void DidDeactivate(DeactivationType deactivationType)
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             parserParams.EmitEvent("closeAllMPModals");
             if (_roomNameKeyboard != null)
@@ -76,7 +76,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
             }
             if (_passwordKeyboard != null)
                 _passwordKeyboard.modalKeyboard.modalView.Hide(false);
-            base.DidDeactivate(deactivationType);
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
         public void ApplyRoomSettings(RoomSettings settings)

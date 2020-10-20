@@ -61,7 +61,7 @@ namespace BeatSaberMultiplayerLite
         private ScoreController _scoreController;
         private GameEnergyCounter _energyController;
         private PauseMenuManager _pauseMenuManager;
-        private VRPlatformHelper _vrPlatformHelper;
+        private IVRPlatformHelper _vrPlatformHelper;
 
         private LocalPlayerPosition _avatarInput;
 
@@ -872,14 +872,14 @@ namespace BeatSaberMultiplayerLite
                 _vrPlatformHelper = PersistentSingleton<VRPlatformHelper>.instance;
             }
 
-            if (_vrPlatformHelper.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.Oculus)
+            if (_vrPlatformHelper.vrPlatformSDK == VRPlatformSDK.Oculus)
             {
                 Client.Instance.playerInfo.updateInfo.leftHandRot *= oculusTouchRotOffset;
                 Client.Instance.playerInfo.updateInfo.leftHandPos += oculusTouchPosOffset;
                 Client.Instance.playerInfo.updateInfo.rightHandRot *= oculusTouchRotOffset;
                 Client.Instance.playerInfo.updateInfo.rightHandPos += oculusTouchPosOffset;
             }
-            else if (_vrPlatformHelper.vrPlatformSDK == VRPlatformHelper.VRPlatformSDK.OpenVR)
+            else if (_vrPlatformHelper.vrPlatformSDK == VRPlatformSDK.OpenVR)
             {
                 Client.Instance.playerInfo.updateInfo.leftHandRot *= openVrRotOffset;
                 Client.Instance.playerInfo.updateInfo.leftHandPos += openVrPosOffset;

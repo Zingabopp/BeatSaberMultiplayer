@@ -25,9 +25,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.CreateRoomScreen
         [UIValue("presets")]
         public List<object> presetsListContents = new List<object>();
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             presetsList.tableView.ClearSelection();
         }

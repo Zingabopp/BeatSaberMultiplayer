@@ -1,16 +1,16 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
 using BeatSaberMarkupLanguage.Components.Settings;
-using BeatSaberMarkupLanguage.Notify;
 using BeatSaberMultiplayerLite.Misc;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace BeatSaberMultiplayerLite.UI
 {
-    class Settings : MonoBehaviour, INotifiableHost
+    class Settings : MonoBehaviour, INotifyPropertyChanged
     {
         public static event Action<string> voiceChatMicrophoneChanged;
 

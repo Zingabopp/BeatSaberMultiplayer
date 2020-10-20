@@ -228,6 +228,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(BeatSaberReferences)\Libs\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="BeatmapCore">
+      <HintPath>$(BeatSaberReferences)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="BeatSaberPlaylistsLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberReferences)\Libs\BeatSaberPlaylistsLib.dll</HintPath>
@@ -258,6 +263,11 @@
     <Reference Include="DiscordCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(BeatSaberReferences)\Plugins\DiscordCore.dll</HintPath>
+    </Reference>
+    <Reference Include="GameplayCore">
+      <HintPath>$(BeatSaberReferences)\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="HMLib, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -9,7 +9,7 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
     {
         private Settings _settings;
         string ResourceName => string.Join(".", GetType().Namespace, GetType().Name);
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
 
             if (firstActivation)

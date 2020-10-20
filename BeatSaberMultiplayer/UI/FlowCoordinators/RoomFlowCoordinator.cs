@@ -162,14 +162,14 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         private List<SongInfo> _requestedSongs = new List<SongInfo>();
         internal int RequestedSongCount => _requestedSongs.Count;
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             PassHostEnabled = true;
             _beatmapCharacteristics = Resources.FindObjectsOfTypeAll<BeatmapCharacteristicSO>();
             _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().FirstOrDefault();
             _contentModelSO = Resources.FindObjectsOfTypeAll<AdditionalContentModel>().FirstOrDefault();
 
-            if (firstActivation && activationType == ActivationType.AddedToHierarchy)
+            if (firstActivation && addedToHierarchy)
             {
                 _playerManagementViewController = BeatSaberUI.CreateViewController<PlayerManagementViewController>();
                 _playerManagementViewController.ParentFlowCoordinator = this;
@@ -302,7 +302,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             Client.Instance.inRoom = false;
             _requestedSongs.Clear();
             PopAllViewControllers();
-            SetLeftScreenViewController(_playerManagementViewController);
+            SetLeftScreenViewController(_playerManagementViewController, ViewController.AnimationType.None);
             PluginUI.instance.SetLobbyPresenceActivity();
             //Plugin.PresenceManager.ClearActivity();
             didFinishEvent?.Invoke();
@@ -704,13 +704,13 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             _passHostDialog.Init("Pass host?", $"Are you sure you want to pass host to <b>{newHost.playerName}</b>?", "Pass host", "Cancel",
                 (selectedButton) =>
                 {
-                    SetLeftScreenViewController(_playerManagementViewController);
+                    SetLeftScreenViewController(_playerManagementViewController, ViewController.AnimationType.None);
                     if (selectedButton == 0)
                     {
                         Client.Instance.TransferHost(newHost);
                     }
                 });
-            SetLeftScreenViewController(_passHostDialog);
+            SetLeftScreenViewController(_passHostDialog, ViewController.AnimationType.None);
         }
 
         public void StartLevel(IBeatmapLevel level, BeatmapCharacteristicSO characteristic, BeatmapDifficulty difficulty, GameplayModifiers modifiers, float startTime = 0f)
@@ -790,12 +790,12 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
                 if (childFlowCoordinator is IDismissable)
                     (childFlowCoordinator as IDismissable).Dismiss(true);
                 else
-                    DismissFlowCoordinator(childFlowCoordinator, null, true);
+                    DismissFlowCoordinator(childFlowCoordinator, ViewController.AnimationDirection.Horizontal, null, true);
             }
             if (_roomLeaveDialog.isInViewControllerHierarchy && !_roomLeaveDialog.GetPrivateField<bool>("_isInTransition"))
-                DismissViewController(_roomLeaveDialog, null, true);
+                DismissViewController(_roomLeaveDialog, ViewController.AnimationDirection.Horizontal, null, true);
             if (_passHostDialog.isInViewControllerHierarchy && !_passHostDialog.GetPrivateField<bool>("_isInTransition"))
-                DismissViewController(_passHostDialog, null, true);
+                DismissViewController(_passHostDialog, ViewController.AnimationDirection.Horizontal, null, true);
 
             if (_roomNavigationController.viewControllers.Contains(_resultsViewController))
                 HideResultsLeaderboard();
@@ -877,12 +877,12 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             if (Client.Instance.isHost || _songSelectionViewController.requestMode)
             {
                 _levelPacksViewController.gameObject.SetActive(true);
-                SetBottomScreenViewController(_levelPacksViewController);
+                SetBottomScreenViewController(_levelPacksViewController, ViewController.AnimationType.None);
             }
             else
             {
                 _levelPacksViewController.gameObject.SetActive(false);
-                SetBottomScreenViewController(null);
+                SetBottomScreenViewController(null, ViewController.AnimationType.None);
             }
 
 
@@ -892,13 +892,13 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         private void RequestModePressed()
         {
             _levelPacksViewController.gameObject.SetActive(true);
-            SetBottomScreenViewController(_levelPacksViewController);
+            SetBottomScreenViewController(_levelPacksViewController, ViewController.AnimationType.None);
         }
 
         public void HideSongsList()
         {
             _roomNavigationController.ClearChildViewControllers();
-            SetBottomScreenViewController(null);
+            SetBottomScreenViewController(null, ViewController.AnimationType.None);
         }
 
         public void SetSongs(IAnnotatedBeatmapLevelCollection selectedCollection, SortMode sortMode, string searchRequest)
@@ -1437,8 +1437,8 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             _roomNavigationController.DisplayError(error);
             if (hideSideScreens)
             {
-                SetLeftScreenViewController(null);
-                SetRightScreenViewController(null);
+                SetLeftScreenViewController(null, ViewController.AnimationType.None);
+                SetRightScreenViewController(null, ViewController.AnimationType.None);
             }
         }
 

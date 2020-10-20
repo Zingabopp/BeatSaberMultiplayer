@@ -31,9 +31,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         private IAnnotatedBeatmapLevelCollection[] _visiblePacks;
         private IPlaylistLoader PlaylistLoader;
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             //packsCollectionsControl.SetTexts(new string[] { "OST & EXTRAS", "MUSIC PACKS", "PLAYLISTS", "CUSTOM LEVELS" });
 

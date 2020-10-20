@@ -292,3 +292,5 @@ __pycache__/
 /Refs/Beat Saber_Data/Managed/HMUI.dll
 /Refs/Beat Saber_Data/Managed/HMLib.dll
 /Refs/Beat Saber_Data/Managed/Colors.dll
+/Refs/Beat Saber_Data/Managed/GameplayCore.dll
+/Refs/Beat Saber_Data/Managed/BeatmapCore.dll

@@ -44,11 +44,11 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         public bool doNotUpdate = false;
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            if (firstActivation && activationType == ActivationType.AddedToHierarchy)
+            if (firstActivation && addedToHierarchy)
             {
-                title = "Online Multiplayer";
+                SetTitle("Online Multiplayer");
 
                 _roomListViewController = BeatSaberUI.CreateViewController<RoomListViewController>();
 
@@ -80,7 +80,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         private void CreateRoomPressed()
         {
-            PresentFlowCoordinator(PluginUI.instance.roomCreationFlowCoordinator, null, false, false);
+            PresentFlowCoordinator(PluginUI.instance.roomCreationFlowCoordinator, null, ViewController.AnimationDirection.Horizontal, false, false);
             PluginUI.instance.roomCreationFlowCoordinator.SetServerHubsList(_serverHubClients);
 
             PluginUI.instance.roomCreationFlowCoordinator.didFinishEvent -= RoomCreationFlowCoordinator_didFinishEvent;
@@ -92,7 +92,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             PluginUI.instance.roomCreationFlowCoordinator.didFinishEvent -= RoomCreationFlowCoordinator_didFinishEvent;
             try
             {
-                DismissFlowCoordinator(PluginUI.instance.roomCreationFlowCoordinator, null, immediately);
+                DismissFlowCoordinator(PluginUI.instance.roomCreationFlowCoordinator, ViewController.AnimationDirection.Horizontal, null, immediately);
             }
             catch (Exception e)
             {
@@ -108,7 +108,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         public void JoinRoom(string ip, int port, uint roomId, bool usePassword, string pass = "")
         {
             pass = pass?.ToUpper();
-            PresentFlowCoordinator(PluginUI.instance.roomFlowCoordinator, null, false, false);
+            PresentFlowCoordinator(PluginUI.instance.roomFlowCoordinator, null, ViewController.AnimationDirection.Horizontal, false, false);
             PluginUI.instance.roomFlowCoordinator.JoinRoom(ip, port, roomId, usePassword, pass);
             Client.Instance.inRadioMode = false;
             PluginUI.instance.roomFlowCoordinator.didFinishEvent -= RoomFlowCoordinator_didFinishEvent;
@@ -118,7 +118,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
         private void RoomFlowCoordinator_didFinishEvent()
         {
             PluginUI.instance.roomCreationFlowCoordinator.didFinishEvent -= RoomCreationFlowCoordinator_didFinishEvent;
-            DismissFlowCoordinator(PluginUI.instance.roomFlowCoordinator, null, false);
+            DismissFlowCoordinator(PluginUI.instance.roomFlowCoordinator, ViewController.AnimationDirection.Horizontal, null, false);
         }
 
         readonly WaitForSeconds roomRefreshDelay = new WaitForSeconds(1);

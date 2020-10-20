@@ -56,14 +56,14 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         private IEnumerable<IPreviewBeatmapLevel> _allBeatmaps;
 
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             if (firstActivation)
             {
                 _songsTableView.tableView.didSelectCellWithIdxEvent += SongsTableView_DidSelectRow;
-                _songsTableView.tableView.dataSource = this;
+                _songsTableView.tableView.SetDataSource(this, true);
 
                 _additionalContentModel = Resources.FindObjectsOfTypeAll<AdditionalContentModel>().First();
                 _beatmapLevelsModel = Resources.FindObjectsOfTypeAll<BeatmapLevelsModel>().First();

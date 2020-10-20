@@ -13,7 +13,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
         ViewControllers.ModeSelectionScreen.ModeSelectionViewController _selectionViewController;
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
             if(XRDevice.refreshRate < float.Epsilon)
             {
@@ -29,7 +29,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
 
             if (firstActivation)
             {
-                title = "Select Mode";
+                SetTitle("Select Mode");
 
                 _selectionViewController = BeatSaberUI.CreateViewController<ViewControllers.ModeSelectionScreen.ModeSelectionViewController>();
                 _selectionViewController.didSelectRooms += () =>
@@ -68,7 +68,7 @@ namespace BeatSaberMultiplayerLite.UI.FlowCoordinators
             //}
             //else
             {
-                PresentFlowCoordinator(PluginUI.instance.serverHubFlowCoordinator, null, true);
+                PresentFlowCoordinator(PluginUI.instance.serverHubFlowCoordinator, null, ViewController.AnimationDirection.Horizontal, true);
                 PluginUI.instance.serverHubFlowCoordinator.JoinRoom(ip, port, roomId, !string.IsNullOrEmpty(password), password);
             }
 

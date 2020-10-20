@@ -116,9 +116,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
         private bool isHost;
         private bool perPlayerDifficulty;
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
         }
 
         [UIAction("#post-parse")]

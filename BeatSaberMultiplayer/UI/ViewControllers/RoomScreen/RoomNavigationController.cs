@@ -9,9 +9,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.RoomScreen
     {
         public TextMeshProUGUI _errorText;
 
-        protected override void DidActivate(bool firstActivation, ActivationType activationType)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            if(firstActivation && activationType == ActivationType.AddedToHierarchy)
+            if(firstActivation && addedToHierarchy)
             {
                 _errorText = BeatSaberUI.CreateText(rectTransform, "", new Vector2(0f, 0f));
                 _errorText.fontSize = 8f;

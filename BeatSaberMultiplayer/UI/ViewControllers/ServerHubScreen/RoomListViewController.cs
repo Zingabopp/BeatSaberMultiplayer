@@ -44,9 +44,9 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
 #pragma warning restore CS0649
         private ServerHubRoom _selectedRoom;
 
-        protected override void DidActivate(bool firstActivation, ActivationType type)
+        protected override void DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling)
         {
-            base.DidActivate(firstActivation, type);
+            base.DidActivate(firstActivation, addedToHierarchy, screenSystemEnabling);
 
             if (firstActivation)
             {
@@ -56,10 +56,10 @@ namespace BeatSaberMultiplayerLite.UI.ViewControllers.ServerHubScreen
             roomsList.tableView.ClearSelection();
         }
 
-        protected override void DidDeactivate(DeactivationType deactivationType)
+        protected override void DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling)
         {
             parserParams.EmitEvent("closeAllMPModals");
-            base.DidDeactivate(deactivationType);
+            base.DidDeactivate(removedFromHierarchy, screenSystemDisabling);
         }
 
         public void SetRooms(List<ServerHubRoom> rooms)
